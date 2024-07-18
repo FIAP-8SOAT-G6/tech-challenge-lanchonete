@@ -1,11 +1,48 @@
 version: '3.9'
 
 services:
-  lanchonete-node:
-    image: tech-challenge-lanchonete:latest
-    container_name: lanchonete-node
-    environment:
-      - PORT=8080
+
+  lanchonete-db:
+    image: postgres:latest
+    container_name: lanchonete_postgres
+    restart: always
     ports:
-      - 8080:8080
-    restart: unless-stopped
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: lanchonete-database
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - fiap
+    expose:
+      - 5432
+
+      
+  lanchonete-node:
+    image: tech-challenge-lanchonete:latest ##PRECISA CORRIGIR O NOME DA IMAGEM QUANDO ESTIVER PRONTO
+    container_name: lanchonete-node
+    depends_on:
+      - lanchonete-db
+    environment:
+      PORT_SERVER: 8080
+      PORT_DB: 5432
+      DB_NAME: lanchonete-database
+      DB_PASSWORD: 123456
+      ##PODE COLOCAR MAIS VARIÁVEIS
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - fiap
+    expose:
+      - 8080
+
+
+volumes:
+  db_data: 
+  
+networks:
+  fiap:
+    driver: bridge
