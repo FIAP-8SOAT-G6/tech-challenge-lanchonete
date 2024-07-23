@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 node:lts-alpine
 
-ARG PORT=80
-ENV PORT $PORT
+ARG PORT_SERVER=8080
+ENV PORT $PORT_SERVER
 
 EXPOSE $PORT
 

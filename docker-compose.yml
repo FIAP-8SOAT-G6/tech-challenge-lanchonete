@@ -7,42 +7,39 @@ services:
     container_name: lanchonete_postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "${HOST_PORT_DB}:${CONTAINER_PORT_DB}"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: lanchonete-database
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:${VOLUME_DB_DATA}
     networks:
       - fiap
     expose:
-      - 5432
-
+      - ${CONTAINER_PORT_DB}
       
   lanchonete-node:
-    image: tech-challenge-lanchonete:latest ##PRECISA CORRIGIR O NOME DA IMAGEM QUANDO ESTIVER PRONTO
+    build: .  
     container_name: lanchonete-node
     depends_on:
       - lanchonete-db
     environment:
-      PORT_SERVER: 8080
-      PORT_DB: 5432
-      DB_NAME: lanchonete-database
-      DB_PASSWORD: 123456
-      ##PODE COLOCAR MAIS VARIÁVEIS
+      PORT_SERVER: ${PORT_SERVER}
+      PORT_DB: ${PORT_DB}
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "8080:8080"
+      - "${HOST_PORT_SERVER}:${CONTAINER_PORT_SERVER}"
     restart: always
     networks:
       - fiap
     expose:
-      - 8080
-
+      - ${CONTAINER_PORT_SERVER}
 
 volumes:
-  db_data: 
-  
+  db_data:
+
 networks:
   fiap:
     driver: bridge
