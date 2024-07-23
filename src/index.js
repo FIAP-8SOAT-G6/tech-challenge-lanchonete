@@ -1,7 +1,10 @@
 const app = require("./server");
 const PORT_SERVER = process.env.PORT_SERVER || 3000;
 
-const server = app.listen(PORT_SERVER, () => console.log(`Server running on port ${PORT_SERVER}`));
+const server = app.listen(PORT_SERVER, () => {
+    console.log(`Server running on port ${PORT_SERVER}`), 
+    console.log(`Documentação da API disponível em http://localhost:${PORT_SERVER}/api-docs`)
+});
 
 process.on("SIGINT", function onSigint() {
     console.info(
