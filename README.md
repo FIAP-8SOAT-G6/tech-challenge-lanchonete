@@ -4,6 +4,10 @@ Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP ut
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael, @anadezuo e @RobsonArcoleze.
 
+## Tarefas
+As tarefas estão descritas em projetos da organização do GitHub.
+- [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
+
 ## Tecnologias & Bibliotecas
 * NodeJS & JavaScript
   * `express` - https://www.npmjs.com/package/express
