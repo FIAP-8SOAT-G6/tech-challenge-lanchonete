@@ -4,6 +4,13 @@ Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP ut
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael, @anadezuo e @RobsonArcoleze.
 
+## Rodando o Projeto
+Tenha o `docker` instalado em sua máquina e execute o seguinte comando:
+
+* `docker-compose up --build`
+
+*_A flag `--build` é adicionada para garantir que a imagem esteja atualizada com as últimas modificações locais._  
+
 ## Tarefas
 As tarefas estão descritas em projetos da organização do GitHub.
 - [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
