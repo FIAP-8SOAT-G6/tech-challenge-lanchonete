@@ -1,0 +1,51 @@
+const Product = require("../entities/Product");
+const ProductCategory = require("../entities/ProductCategory");
+
+class ProductManagement {
+  constructor(productRepository) {
+    this.productRepository = productRepository;
+  }
+
+  async create(productValues) {
+    const { name, category, description } = productValues;
+    const product = new Product(null, name, category, description);
+    return await this.productRepository.create(product);
+  }
+
+  async findAll() {
+    const products = await this.productRepository.findAll();
+    return products;
+  }
+
+  async findById(productId) {
+    const product = await this.productRepository.findById(productId);
+    return product;
+  }
+
+  async findByCategory(category) {
+    if (!ProductCategory[category]) throw new Error("Invalid Category");
+    const products = await this.productRepository.findByCategory(category);
+    return products;
+  }
+
+  async update(productId, updatedValues) {
+    const product = await this.productRepository.findById(productId);
+
+    if (!product) {
+      throw new Error("Product does not exist")
+    }
+
+    if (updatedValues.name) product.setName(updatedValues.name);
+    if (updatedValues.category) product.setCategory(updatedValues.category);
+    if (updatedValues.description)
+      product.setDescription(updatedValues.description);
+
+    return await this.productRepository.update(product);
+  }
+
+  async delete(id) {
+    await this.productRepository.delete(id);
+  }
+}
+
+module.exports = ProductManagement;
