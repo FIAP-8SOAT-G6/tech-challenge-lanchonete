@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha 'src/tests/**/*.js' --recursive",
+    "coverage": "nyc --reporter=text npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -18,10 +20,17 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
+    "@types/chai": "^4.3.16",
+    "@types/chai-as-promised": "^7.1.8",
     "@types/express": "^4.17.21",
+    "@types/mocha": "^10.0.7",
     "@types/sequelize": "^4.28.20",
+    "chai": "^4",
+    "chai-as-promised": "^7.0.0",
     "eslint": "^9.8.0",
     "globals": "^15.8.0",
+    "mocha": "^10.7.0",
+    "nyc": "^17.0.0",
     "sequelize-cli": "^6.6.2"
   }
 }
