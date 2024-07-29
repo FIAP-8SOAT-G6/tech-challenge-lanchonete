@@ -1,9 +1,11 @@
 const FakeProductRepository = require("../../../adapters/database/FakeProductRepository");
 const ProductCategory = require("../../../core/entities/ProductCategory");
+const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
 const ProductManagement = require("../../../core/use-cases/ProductManagement");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
+const UnexistingProductError = require("../../../core/exceptions/UnexistingProductError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -114,7 +116,9 @@ context("ProductManagement", () => {
 
       await expect(
         productManagementUseCase.findByCategory(invalidCategory)
-      ).to.be.eventually.rejectedWith("Invalid Category");
+      ).to.be.eventually.rejectedWith(
+        new InvalidCategoryError(invalidCategory).message
+      );
     });
   });
   describe("update", () => {
@@ -131,22 +135,30 @@ context("ProductManagement", () => {
       await productManagementUseCase.update(product.id, {
         name: "French Fries",
         description: "This should actually be some French Fries",
-        category: ProductCategory.Acompanhamento
+        category: ProductCategory.Acompanhamento,
       });
 
       let foundProduct = await productManagementUseCase.findById(product.id);
       expect(foundProduct).to.not.be.undefined;
       expect(foundProduct.name).to.be.equals("French Fries");
-      expect(foundProduct.category).to.be.equals(ProductCategory.Acompanhamento);
-      expect(foundProduct.description).to.be.equals("This should actually be some French Fries");
+      expect(foundProduct.category).to.be.equals(
+        ProductCategory.Acompanhamento
+      );
+      expect(foundProduct.description).to.be.equals(
+        "This should actually be some French Fries"
+      );
 
       await productManagementUseCase.update(product.id, {});
 
       foundProduct = await productManagementUseCase.findById(product.id);
       expect(foundProduct).to.not.be.undefined;
       expect(foundProduct.name).to.be.equals("French Fries");
-      expect(foundProduct.category).to.be.equals(ProductCategory.Acompanhamento);
-      expect(foundProduct.description).to.be.equals("This should actually be some French Fries");
+      expect(foundProduct.category).to.be.equals(
+        ProductCategory.Acompanhamento
+      );
+      expect(foundProduct.description).to.be.equals(
+        "This should actually be some French Fries"
+      );
     });
     it("should reject if product does not exist", async () => {
       const repository = new FakeProductRepository();
@@ -157,7 +169,9 @@ context("ProductManagement", () => {
         description: "Very Big Hamburguer",
       });
 
-      await expect(updatePromise).to.be.eventually.rejectedWith("Product does not exist")
+      await expect(updatePromise).to.be.eventually.rejectedWith(
+        new UnexistingProductError(unexistingId).message
+      );
     });
   });
   describe("delete", () => {

@@ -1,3 +1,5 @@
+const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
+const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 const ProductCategory = require("./ProductCategory");
 
 class Product {
@@ -25,13 +27,17 @@ class Product {
 
   #validateName(name) {
     if (!name) {
-      throw new Error("Missing mandatory property name")
+      throw new InvalidPropertyError("name");
     }
   }
 
   #validateCategory(category) {
+    if (!category) {
+      throw new InvalidPropertyError("category");
+    }
+
     if (!ProductCategory[category]) {
-      throw new Error("Invalid Category")
+      throw new InvalidCategoryError(category);
     }
   }
 }

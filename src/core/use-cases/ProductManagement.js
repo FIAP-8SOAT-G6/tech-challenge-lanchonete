@@ -1,5 +1,7 @@
 const Product = require("../entities/Product");
 const ProductCategory = require("../entities/ProductCategory");
+const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
+const UnexistingProductError = require("../exceptions/UnexistingProductError");
 
 class ProductManagement {
   constructor(productRepository) {
@@ -23,7 +25,7 @@ class ProductManagement {
   }
 
   async findByCategory(category) {
-    if (!ProductCategory[category]) throw new Error("Invalid Category");
+    if (!ProductCategory[category]) throw new InvalidCategoryError(category);
     const products = await this.productRepository.findByCategory(category);
     return products;
   }
@@ -31,9 +33,7 @@ class ProductManagement {
   async update(productId, updatedValues) {
     const product = await this.productRepository.findById(productId);
 
-    if (!product) {
-      throw new Error("Product does not exist")
-    }
+    if (!product) throw new UnexistingProductError(productId);
 
     if (updatedValues.name) product.setName(updatedValues.name);
     if (updatedValues.category) product.setCategory(updatedValues.category);
