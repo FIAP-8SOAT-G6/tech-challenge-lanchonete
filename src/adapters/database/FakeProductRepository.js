@@ -4,12 +4,13 @@ class FakeProductRepository {
   #products = [];
 
   async create(product) {
-    const { name, category, description } = product;
+    const { name, category, description, price } = product;
     const createdProduct = {
       id: this.#products.length + 1,
       name,
       category,
       description,
+      price
     };
     this.#products.push(createdProduct);
     return Promise.resolve(this.#instantiateProduct(createdProduct));
@@ -47,6 +48,7 @@ class FakeProductRepository {
     this.#products[productIndex].name = product.name;
     this.#products[productIndex].category = product.category;
     this.#products[productIndex].description = product.description;
+    this.#products[productIndex].price = product.price;
 
     return this.#instantiateProduct(this.#products[productIndex]);
   }
@@ -56,7 +58,8 @@ class FakeProductRepository {
       databaseProduct.id,
       databaseProduct.name,
       databaseProduct.category,
-      databaseProduct.description
+      databaseProduct.description,
+      databaseProduct.price
     );
   }
 }

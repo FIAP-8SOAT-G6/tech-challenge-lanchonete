@@ -42,11 +42,12 @@ class ProductManagementController {
 
     this.router.post("/products", async (req, res) => {
       try {
-        const { name, description, category } = req.body;
+        const { name, description, category, price } = req.body;
         const product = await this.useCase.create({
           name,
           description,
           category,
+          price,
         });
         return res.status(201).json(product);
       } catch (error) {
@@ -63,11 +64,12 @@ class ProductManagementController {
     this.router.put("/products/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const { name, description, category } = req.body;
+        const { name, description, category, price } = req.body;
         const product = await this.useCase.update(id, {
           name,
           description,
           category,
+          price,
         });
         return res.status(201).json(product);
       } catch (error) {

@@ -14,7 +14,8 @@ context("Product", () => {
             undefined,
             "",
             ProductCategory.Lanche,
-            "Describing this product..."
+            "Describing this product...",
+            10
           )
       ).to.throw(new MissingPropertyError("name").message);
     });
@@ -25,9 +26,34 @@ context("Product", () => {
             undefined,
             "Naming this product",
             undefined,
-            "Describing this product..."
+            "Describing this product...",
+            10
           )
       ).to.throw(new MissingPropertyError("category").message);
+    });
+    it("should throw an error when price is 0", () => {
+      expect(
+        () =>
+          new Product(
+            undefined,
+            "Naming this product",
+            ProductCategory.Lanche,
+            "Describing this product...",
+            0
+          )
+      ).to.throw(new MissingPropertyError("price").message);
+    });
+    it("should throw an error when price is negative", () => {
+      expect(
+        () =>
+          new Product(
+            undefined,
+            "Naming this product",
+            ProductCategory.Lanche,
+            "Describing this product...",
+            -10
+          )
+      ).to.throw(new MissingPropertyError("price").message);
     });
     it("should throw an error when invalid category is provided", () => {
       expect(
@@ -36,7 +62,8 @@ context("Product", () => {
             undefined,
             "Product1",
             "INVALID CATEGORY",
-            "Describing this product..."
+            "Describing this product...",
+            12
           )
       ).to.throw(new InvalidCategoryError("INVALID CATEGORY").message);
     });
@@ -47,7 +74,8 @@ context("Product", () => {
             undefined,
             "Product1",
             ProductCategory.Lanche,
-            "Describing this product..."
+            "Describing this product...",
+            12
           )
       ).to.not.throw();
     });

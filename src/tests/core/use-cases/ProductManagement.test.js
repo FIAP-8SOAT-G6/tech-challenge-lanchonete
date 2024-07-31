@@ -19,6 +19,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
+        price: 12.0,
       };
 
       const product = await productManagementUseCase.create(productValues);
@@ -35,6 +36,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
+        price: 10.0,
       };
       const product = await productManagementUseCase.create(productValues);
 
@@ -62,11 +64,13 @@ context("ProductManagement", () => {
           name: "Hamburguer",
           category: ProductCategory.Lanche,
           description: "Big Hamburguer",
+          price: 10.0,
         }),
         productManagementUseCase.create({
           name: "French Fries",
           category: ProductCategory.Acompanhamento,
           description: "250g of French Fries",
+          price: 6.0,
         }),
       ]);
 
@@ -85,16 +89,19 @@ context("ProductManagement", () => {
           name: "Hamburguer",
           category: ProductCategory.Lanche,
           description: "Big Hamburguer",
+          price: 10.0,
         }),
         productManagementUseCase.create({
           name: "Hot-Dog",
           category: ProductCategory.Lanche,
           description: "Classic New York Hot Dog",
+          price: 10.0,
         }),
         productManagementUseCase.create({
           name: "French Fries",
           category: ProductCategory.Acompanhamento,
           description: "250g of French Fries",
+          price: 10.0,
         }),
       ]);
 
@@ -129,6 +136,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
+        price: 10.0,
       };
       const product = await productManagementUseCase.create(productValues);
 
@@ -136,6 +144,7 @@ context("ProductManagement", () => {
         name: "French Fries",
         description: "This should actually be some French Fries",
         category: ProductCategory.Acompanhamento,
+        price: 12.0,
       });
 
       let foundProduct = await productManagementUseCase.findById(product.id);
@@ -147,6 +156,7 @@ context("ProductManagement", () => {
       expect(foundProduct.description).to.be.equals(
         "This should actually be some French Fries"
       );
+      expect(foundProduct.price).to.be.equals(12.0);
 
       await productManagementUseCase.update(product.id, {});
 
@@ -159,6 +169,7 @@ context("ProductManagement", () => {
       expect(foundProduct.description).to.be.equals(
         "This should actually be some French Fries"
       );
+      expect(foundProduct.price).to.be.equals(12.0);
     });
     it("should reject if product does not exist", async () => {
       const repository = new FakeProductRepository();
@@ -182,6 +193,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
+        price: 10.0,
       };
       const product = await productManagementUseCase.create(productValues);
 

@@ -18,6 +18,9 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
+      price: {
+        type: DataTypes.DECIMAL(10, 2)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

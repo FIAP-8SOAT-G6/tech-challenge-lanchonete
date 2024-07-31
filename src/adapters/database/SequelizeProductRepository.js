@@ -5,11 +5,12 @@ const { Product: SequelizeProduct } = sequelize.models;
 
 class SequelizeProductRepository {
   async create(product) {
-    const { name, category, description } = product;
+    const { name, category, description, price } = product;
     const createdProduct = await SequelizeProduct.create({
       name,
       category,
       description,
+      price
     });
     return this.#instantiateProduct(createdProduct);
   }
@@ -37,6 +38,7 @@ class SequelizeProductRepository {
       name: product.name,
       category: product.category,
       description: product.description,
+      price: product.price
     });
     return this.#instantiateProduct(updatedProduct);
   }
@@ -51,7 +53,8 @@ class SequelizeProductRepository {
       databaseProduct.id,
       databaseProduct.name,
       databaseProduct.category,
-      databaseProduct.description
+      databaseProduct.description,
+      databaseProduct.price
     );
   }
 }

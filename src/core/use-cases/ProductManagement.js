@@ -9,8 +9,8 @@ class ProductManagement {
   }
 
   async create(productValues) {
-    const { name, category, description } = productValues;
-    const product = new Product(null, name, category, description);
+    const { name, category, description, price } = productValues;
+    const product = new Product(null, name, category, description, price);
     return await this.productRepository.create(product);
   }
 
@@ -39,6 +39,7 @@ class ProductManagement {
     if (updatedValues.category) product.setCategory(updatedValues.category);
     if (updatedValues.description)
       product.setDescription(updatedValues.description);
+    if (updatedValues.price) product.setPrice(updatedValues.price);
 
     return await this.productRepository.update(product);
   }
