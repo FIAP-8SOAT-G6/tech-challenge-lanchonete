@@ -23,7 +23,7 @@ class ProductManagementController {
 
     this.router.get("/products/:id", async (req, res) => {
       const id = req.params.id;
-      const products = await this.useCase.findById(id);
+      const product = await this.useCase.findById(id);
       return res.status(200).json(products);
     });
 
