@@ -73,7 +73,11 @@ class ProductManagementController {
         });
         return res.status(201).json(product);
       } catch (error) {
-        if (error instanceof UnexistingProductError) {
+        if (
+          error instanceof UnexistingProductError ||
+          error instanceof MissingPropertyError ||
+          error instanceof InvalidCategoryError
+        ) {
           return res.status(400).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });

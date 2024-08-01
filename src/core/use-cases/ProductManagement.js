@@ -35,11 +35,10 @@ class ProductManagement {
 
     if (!product) throw new UnexistingProductError(productId);
 
-    if (updatedValues.name) product.setName(updatedValues.name);
-    if (updatedValues.category) product.setCategory(updatedValues.category);
-    if (updatedValues.description)
-      product.setDescription(updatedValues.description);
-    if (updatedValues.price) product.setPrice(updatedValues.price);
+    product.setName(updatedValues.name);
+    product.setCategory(updatedValues.category);
+    product.setDescription(updatedValues.description);
+    product.setPrice(updatedValues.price);
 
     return await this.productRepository.update(product);
   }
