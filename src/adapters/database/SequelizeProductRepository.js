@@ -1,4 +1,4 @@
-const Product = require("../../core/entities/Product");
+const Product = require("../../core/products/entities/Product");
 const { sequelize } = require("../../infrastructure/database/models");
 
 const { Product: SequelizeProduct } = sequelize.models;

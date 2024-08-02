@@ -1,5 +1,5 @@
-const Product = require("../../../core/entities/Product");
-const ProductCategory = require("../../../core/entities/ProductCategory");
+const Product = require("../../../core/products/entities/Product");
+const ProductCategory = require("../../../core/products/entities/ProductCategory");
 const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
 const MissingPropertyError = require("../../../core/exceptions/MissingPropertyError");
 

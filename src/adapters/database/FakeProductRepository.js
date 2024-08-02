@@ -1,4 +1,4 @@
-const Product = require("../../core/entities/Product");
+const Product = require("../../core/products/entities/Product");
 
 class FakeProductRepository {
   #products = [];

@@ -1,5 +1,5 @@
 const FakeProductRepository = require("../../../adapters/database/FakeProductRepository");
-const ProductCategory = require("../../../core/entities/ProductCategory");
+const ProductCategory = require("../../../core/products/entities/ProductCategory");
 const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
 const ProductManagement = require("../../../core/use-cases/ProductManagement");
 
