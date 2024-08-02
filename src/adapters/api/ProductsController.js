@@ -27,7 +27,7 @@ class ProductsController {
       return res.status(200).json(products);
     });
 
-    this.router.get("/products/category/:category", async (req, res) => {
+    this.router.get("/category/:category/products", async (req, res) => {
       try {
         const category = req.params.category;
         const products = await this.useCase.findByCategory(category);
