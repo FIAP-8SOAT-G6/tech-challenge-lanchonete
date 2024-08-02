@@ -3,7 +3,7 @@ const InvalidCategoryError = require("../../core/exceptions/InvalidCategoryError
 const MissingPropertyError = require("../../core/exceptions/MissingPropertyError");
 const UnexistingProductError = require("../../core/exceptions/UnexistingProductError");
 
-class ProductManagementController {
+class ProductsController {
   constructor(productManagementUseCase) {
     this.router = new Router();
     this.useCase = productManagementUseCase;
@@ -96,4 +96,4 @@ class ProductManagementController {
   }
 }
 
-module.exports = ProductManagementController;
+module.exports = ProductsController;
