@@ -1,5 +1,5 @@
 const ProductsController = require("../../adapters/api/ProductsController");
-const ProductManagement = require("../../core/use-cases/ProductManagement");
+const ProductManagement = require("../../core/products/use-cases/ProductManagement");
 const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
 
 module.exports = class ControllerFactory {

@@ -1,7 +1,7 @@
 const Product = require("../../../core/products/entities/Product");
 const ProductCategory = require("../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../../core/exceptions/MissingPropertyError");
+const InvalidCategoryError = require("../../../core/products/exceptions/InvalidCategoryError");
+const MissingPropertyError = require("../../../core/products/exceptions/MissingPropertyError");
 
 const expect = require("chai").expect;
 

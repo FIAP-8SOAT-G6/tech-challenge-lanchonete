@@ -11,5 +11,4 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', exampleRoutes);
 app.use(productManagementController.getRouter());
 
-
 module.exports = app;

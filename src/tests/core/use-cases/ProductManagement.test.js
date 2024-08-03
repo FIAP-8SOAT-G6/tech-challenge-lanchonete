@@ -1,11 +1,11 @@
 const FakeProductRepository = require("../../../adapters/database/FakeProductRepository");
 const ProductCategory = require("../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
-const ProductManagement = require("../../../core/use-cases/ProductManagement");
+const InvalidCategoryError = require("../../../core/products/exceptions/InvalidCategoryError");
+const ProductManagement = require("../../../core/products/use-cases/ProductManagement");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
-const UnexistingProductError = require("../../../core/exceptions/UnexistingProductError");
+const UnexistingProductError = require("../../../core/products/exceptions/UnexistingProductError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
