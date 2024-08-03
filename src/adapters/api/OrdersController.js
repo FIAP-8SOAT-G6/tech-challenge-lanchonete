@@ -16,7 +16,7 @@ class OrdersController {
   }
 
   initializeRoutes() {
-    this.router.get("/orders", async (req, res) => {
+    this.router.post("/orders", async (req, res) => {
       // const { name, description, category, price } = req.body;
       // const order = await this.useCase.create({});
     

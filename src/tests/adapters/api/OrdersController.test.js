@@ -1,6 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const app = require('../app');
+const request = require('supertest');
+const app = require("../../../../src/server");
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -18,7 +19,7 @@ describe('OrdersController', () => {
       expect(res.status).to.equal(201);
       // expect(res.body).to.have.property('id');
       // expect(res.body.name).to.equal(productData.name);
-      expect(res.body).to.equal({ 'xunda': 'loxa' });
+      expect(res.body.xunda).to.equal('loxa');
     });
 
     //it('should return an error if name is missing', async () => {
