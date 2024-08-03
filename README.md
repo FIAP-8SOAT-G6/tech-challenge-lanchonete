@@ -35,3 +35,4 @@ As tarefas estão descritas em projetos da organização do GitHub.
 * `app.js` - Ponto de entrada da aplicação, onde os objetos são instanciados com suas respectivas dependências e a aplicação começa a ser executada.
 
 ![Estrutura do Projeto](assets/ProjectStructure.png)
+
