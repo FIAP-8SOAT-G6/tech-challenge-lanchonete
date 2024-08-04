@@ -10,7 +10,7 @@ const { expect } = chai;
 describe('OrdersController', () => {
   describe('create', () => {
     it('should create a new order', async () => {
-      const product = await productManagementUseCase.create(productValues);
+      //const product = await productManagementUseCase.create(productValues);
 
       const orderAttributes = {
         items: [

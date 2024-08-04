@@ -1,9 +1,10 @@
-const InvalidPropertyError = require("../exceptions/MissingPropertyError");
+const InvalidPropertyError = require("../../products/exceptions/MissingPropertyError");
 
-class OrderItem {
+class Item {
   constructor(id, product, quantity) {
     this.id = id;
-    this.product = product; // Instância de Product
+    this.product_id = product; 
+    this.order_id = order;
     this.quantity = quantity;
 
     this.#validateQuantity(quantity);
@@ -16,4 +17,4 @@ class OrderItem {
   }
 }
 
-module.exports = Item;
+module.exports = OrderItem;

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Order.init({
+    code: DataTypes.STRING,
     status: DataTypes.STRING,
-    totalPrice: DataTypes.NUMBER,
-    code: DataTypes.STRING
+    totalPrice: DataTypes.NUMBER
   }, {
     sequelize,
     modelName: 'Order',
