@@ -34,7 +34,6 @@ class ProductManagement {
     const product = await this.productRepository.findById(productId);
 
     if (!product) throw new UnexistingProductError(productId);
-
     product.setName(updatedValues.name);
     product.setCategory(updatedValues.category);
     product.setDescription(updatedValues.description);

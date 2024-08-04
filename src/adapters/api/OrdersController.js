@@ -1,7 +1,4 @@
 const { Router } = require("express");
-const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../core/products/exceptions/MissingPropertyError");
-const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -16,14 +13,12 @@ class OrdersController {
   }
 
   initializeRoutes() {
-    this.router.get("/orders", async (req, res) => {
-      // const { name, description, category, price } = req.body;
-      // const order = await this.useCase.create({});
+    this.router.post("/orders", async (req, res) => {
+      const { items } = req.body;
+      const order = await this.useCase.create(items);
     
-      return res.status(201).json(
-        { 'xunda': 'loxa' }
-      );
-    })
+      return res.status(201).json(order);
+    });
   }
 }
 

@@ -1,6 +1,8 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const app = require('../app');
+const request = require('supertest');
+const app = require("../../../../src/server");
+const Product = require('../../../core/products/entities/Product');
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -8,30 +10,25 @@ const { expect } = chai;
 describe('OrdersController', () => {
   describe('create', () => {
     it('should create a new order', async () => {
+      const product = await productManagementUseCase.create(productValues);
+
       const orderAttributes = {
-        name: 'Test Product',
-        price: 9.99
+        items: [
+          {
+            product_id: 123, 
+            quantity: 10
+          }
+        ]
       };
 
       const res = await request(app).post('/orders').send(orderAttributes);
 
       expect(res.status).to.equal(201);
-      // expect(res.body).to.have.property('id');
-      // expect(res.body.name).to.equal(productData.name);
-      expect(res.body).to.equal({ 'xunda': 'loxa' });
+      expect(res.body.status).to.equal('waiting_approval');
+      expect(res.body.total_price).to.equal(1000);
+      expect(res.body.items.product_id).to.equal(123);
+      expect(res.body.items.quantity).to.equal(10);
+      expect(res.body.customer.name).to.equal('Gabriel');
     });
-
-    //it('should return an error if name is missing', async () => {
-    //  const productData = {
-    //    price: 9.99
-    //  };
-//
-    //  const res = await request(app)
-    //    .post('/api/products')
-    //    .send(productData);
-//
-    //  expect(res.status).to.equal(400);
-    //  expect(res.body).to.have.property('message');
-    //});
   });
 });
