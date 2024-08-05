@@ -1,13 +1,9 @@
 const ProductsController = require('../../adapters/api/ProductsController');
 const ProductManagement = require('../../core/products/use-cases/ProductManagement');
 const SequelizeProductRepository = require('../../adapters/database/SequelizeProductRepository');
-const CustomerController = requie('../../adapters/api/CustomerController');
-const CustomerManagement = requie(
-  '../../core/customers/use-cases/CustomerManagement'
-);
-const SequelizeCustomerRepository = requie(
-  '../../adapters/database/SequelizeCustomerRepository'
-);
+const CustomerController = require('../../adapters/api/CustomerController');
+const CustomerManagement = require('../../core/customers/use-cases/CustomerManagement');
+const SequelizeCustomerRepository = require('../../adapters/database/SequelizeCustomerRepository');
 
 module.exports = class ControllerFactory {
   static makeProductManagementController() {

@@ -1,4 +1,4 @@
-const InvalidPropertyError = require('../exceptions/MissingPropertyError');
+const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 class Customer {
   constructor({ id, name, cpf, email }) {
@@ -26,19 +26,19 @@ class Customer {
 
   #validateName(name) {
     if (!name) {
-      throw new InvalidPropertyError('name');
+      throw new InvalidPropertyError("name");
     }
   }
 
   #validateCPF(cpf) {
     if (!cpf) {
-      throw new InvalidPropertyError('cpf');
+      throw new InvalidPropertyError("cpf");
     }
   }
 
   #validateEmail(email) {
     if (!email) {
-      throw new InvalidPropertyError('email');
+      throw new InvalidPropertyError("email");
     }
   }
 }

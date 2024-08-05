@@ -1,10 +1,10 @@
-const Customer = require('../../core/customers/entities/Customer');
-const { sequelize } = require('../../infrastructure/database/models');
+const Customer = require("../../core/customers/entities/Customer");
+const { sequelize } = require("../../infrastructure/database/models");
 
 const { Customer: SequelizeCustomer } = sequelize.models;
 
 class SequelizeCustomerRepository {
-  async create(customer) {
+  async create({ customer }) {
     const { name, cpf, email } = customer;
     const newCustomer = await SequelizeCustomer.create({
       name,

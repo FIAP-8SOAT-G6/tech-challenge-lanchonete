@@ -1,7 +1,7 @@
-const Product = require("../../../core/products/entities/Product");
-const ProductCategory = require("../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../../core/exceptions/MissingPropertyError");
+const Product = require("../../../../core/products/entities/Product");
+const ProductCategory = require("../../../../core/products/entities/ProductCategory");
+const InvalidCategoryError = require("../../../../core/products/exceptions/InvalidCategoryError");
+const MissingPropertyError = require("../../../../core/products/exceptions/MissingPropertyError");
 
 const expect = require("chai").expect;
 
@@ -15,8 +15,8 @@ context("Product", () => {
             "",
             ProductCategory.Lanche,
             "Describing this product...",
-            10
-          )
+            10,
+          ),
       ).to.throw(new MissingPropertyError("name").message);
     });
     it("should throw an error when category is not provided", () => {
@@ -27,8 +27,8 @@ context("Product", () => {
             "Naming this product",
             undefined,
             "Describing this product...",
-            10
-          )
+            10,
+          ),
       ).to.throw(new MissingPropertyError("category").message);
     });
     it("should throw an error when price is 0", () => {
@@ -39,8 +39,8 @@ context("Product", () => {
             "Naming this product",
             ProductCategory.Lanche,
             "Describing this product...",
-            0
-          )
+            0,
+          ),
       ).to.throw(new MissingPropertyError("price").message);
     });
     it("should throw an error when price is negative", () => {
@@ -51,8 +51,8 @@ context("Product", () => {
             "Naming this product",
             ProductCategory.Lanche,
             "Describing this product...",
-            -10
-          )
+            -10,
+          ),
       ).to.throw(new MissingPropertyError("price").message);
     });
     it("should throw an error when invalid category is provided", () => {
@@ -63,8 +63,8 @@ context("Product", () => {
             "Product1",
             "INVALID CATEGORY",
             "Describing this product...",
-            12
-          )
+            12,
+          ),
       ).to.throw(new InvalidCategoryError("INVALID CATEGORY").message);
     });
     it("should not throw an error when validations pass", () => {
@@ -75,8 +75,8 @@ context("Product", () => {
             "Product1",
             ProductCategory.Lanche,
             "Describing this product...",
-            12
-          )
+            12,
+          ),
       ).to.not.throw();
     });
   });

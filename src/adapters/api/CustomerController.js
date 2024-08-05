@@ -1,8 +1,8 @@
-const { Router } = require('express');
-const InvalidCPFError = require('../../core/customers/exceptions/InvalidCPFError');
-const ExistentCustomerError = require('../../core/customers/exceptions/ExistentCustomerError');
-const MissingPropertyError = require('../../core/customers/exceptions/MissingPropertyError');
-const NonexistentCustomerError = require('../../core/customers/exceptions/NonexistentCustomerError');
+const { Router } = require("express");
+const InvalidCPFError = require("../../core/customers/exceptions/InvalidCPFError");
+const ExistentCustomerError = require("../../core/customers/exceptions/ExistentCustomerError");
+const MissingPropertyError = require("../../core/customers/exceptions/MissingPropertyError");
+const NonexistentCustomerError = require("../../core/customers/exceptions/NonexistentCustomerError");
 
 class CustomerController {
   constructor(customerManagementUseCase) {
@@ -17,11 +17,11 @@ class CustomerController {
   }
 
   initializeRoutes() {
-    this.router.getByCPF('/customer/:cpf', async (req, res) => {
+    this.router.get("/customer/:cpf", async (req, res) => {
       try {
         const cpf = req.params.id;
-        const customer = await this.useCase.findByCPF(cpf);
-        return res.status(200).json(customer);
+        const customerFound = await this.useCase.findByCPF({ cpf });
+        return res.status(200).json(customerFound);
       } catch (error) {
         if (error instanceof NonexistentCustomerError) {
           return res.status(400).json({ message: error.message });
@@ -30,16 +30,17 @@ class CustomerController {
       }
     });
 
-    this.router.post('/customers', async (req, res) => {
+    this.router.post("/customers", async (req, res) => {
       try {
         const { name, cpf, email } = req.body;
-        const customer = await this.useCase.create({
+        const customer = {
           name,
           cpf,
           email,
-        });
+        };
+        const customerCreated = await this.useCase.create(customer);
 
-        return res.status(201).json(customer);
+        return res.status(201).json(customerCreated);
       } catch (error) {
         if (
           error instanceof InvalidCPFError ||

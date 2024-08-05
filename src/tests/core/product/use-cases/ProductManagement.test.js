@@ -1,11 +1,11 @@
-const FakeProductRepository = require("../../../adapters/database/FakeProductRepository");
-const ProductCategory = require("../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
-const ProductManagement = require("../../../core/use-cases/ProductManagement");
+const FakeProductRepository = require("../../../../adapters/database/FakeProductRepository");
+const ProductCategory = require("../../../../core/products/entities/ProductCategory");
+const InvalidCategoryError = require("../../../../core/products/exceptions/InvalidCategoryError");
+const ProductManagement = require("../../../../core/products/use-cases/ProductManagement");
+const UnexistingProductError = require("../../../../core/products/exceptions/UnexistingProductError");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
-const UnexistingProductError = require("../../../core/exceptions/UnexistingProductError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -49,9 +49,8 @@ context("ProductManagement", () => {
       const productManagementUseCase = new ProductManagement(repository);
       const unexistingId = 1;
 
-      const foundProduct = await productManagementUseCase.findById(
-        unexistingId
-      );
+      const foundProduct =
+        await productManagementUseCase.findById(unexistingId);
       expect(foundProduct).to.be.undefined;
     });
   });
@@ -106,13 +105,13 @@ context("ProductManagement", () => {
       ]);
 
       const products = await productManagementUseCase.findByCategory(
-        ProductCategory.Lanche
+        ProductCategory.Lanche,
       );
 
       expect(products).to.not.be.undefined;
       expect(products.length).to.be.equals(2);
       products.forEach((product) =>
-        expect(product.category).to.be.equal(ProductCategory.Lanche)
+        expect(product.category).to.be.equal(ProductCategory.Lanche),
       );
     });
 
@@ -122,9 +121,9 @@ context("ProductManagement", () => {
       const invalidCategory = "UNEXISTING_CATEGORY";
 
       await expect(
-        productManagementUseCase.findByCategory(invalidCategory)
+        productManagementUseCase.findByCategory(invalidCategory),
       ).to.be.eventually.rejectedWith(
-        new InvalidCategoryError(invalidCategory).message
+        new InvalidCategoryError(invalidCategory).message,
       );
     });
   });
@@ -151,10 +150,10 @@ context("ProductManagement", () => {
       expect(foundProduct).to.not.be.undefined;
       expect(foundProduct.name).to.be.equals("French Fries");
       expect(foundProduct.category).to.be.equals(
-        ProductCategory.Acompanhamento
+        ProductCategory.Acompanhamento,
       );
       expect(foundProduct.description).to.be.equals(
-        "This should actually be some French Fries"
+        "This should actually be some French Fries",
       );
       expect(foundProduct.price).to.be.equals(12.0);
 
@@ -164,10 +163,10 @@ context("ProductManagement", () => {
       expect(foundProduct).to.not.be.undefined;
       expect(foundProduct.name).to.be.equals("French Fries");
       expect(foundProduct.category).to.be.equals(
-        ProductCategory.Acompanhamento
+        ProductCategory.Acompanhamento,
       );
       expect(foundProduct.description).to.be.equals(
-        "This should actually be some French Fries"
+        "This should actually be some French Fries",
       );
       expect(foundProduct.price).to.be.equals(12.0);
     });
@@ -181,7 +180,7 @@ context("ProductManagement", () => {
       });
 
       await expect(updatePromise).to.be.eventually.rejectedWith(
-        new UnexistingProductError(unexistingId).message
+        new UnexistingProductError(unexistingId).message,
       );
     });
   });

@@ -1,9 +1,9 @@
-const Customer = require('../../core/customers/entities/Customer');
+const Customer = require("../../core/customers/entities/Customer");
 
 class FakeCustomerRepository {
   #customer = [];
 
-  async create(customer) {
+  async create({ customer }) {
     const { name, cpf, email } = customer;
     const newCustomer = {
       id: this.#customer.length + 1,
@@ -15,7 +15,7 @@ class FakeCustomerRepository {
     return Promise.resolve(this.#instantiateCustomer(newCustomer));
   }
 
-  async findByCPF(cpf) {
+  async findByCPF({ cpf }) {
     const customer = this.#customer.find((customer) => customer?.cpf === cpf);
     return Promise.resolve(this.#instantiateCustomer(customer));
   }
