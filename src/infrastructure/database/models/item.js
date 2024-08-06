@@ -32,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false,
     },
-    quantity: DataTypes.NUMBER,
-    unitPrice: DataTypes.NUMBER,
-    totalPrice: DataTypes.NUMBER
+    quantity: DataTypes.INTEGER,
+    unitPrice: DataTypes.DECIMAL(10, 2),
+    totalPrice: DataTypes.DECIMAL(10, 2)
   }, {
     sequelize,
     modelName: 'Item',
