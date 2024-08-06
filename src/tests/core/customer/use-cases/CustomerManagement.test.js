@@ -103,7 +103,7 @@ context("Customer Management", () => {
       await expect(
         customerManagementUseCase.findByCPF({ cpf: "" })
       ).to.be.eventually.rejectedWith(
-        new MissingPropertyError({ property: "" }).message
+        new MissingPropertyError({ property: "cpf" }).message
       );
     });
   });

@@ -18,7 +18,7 @@ class CustomerController {
   initializeRoutes() {
     this.router.get("/customer/:cpf", async (req, res) => {
       try {
-        const cpf = req.params.id;
+        const cpf = req.params.cpf;
         const customerFound = await this.useCase.findByCPF({ cpf });
         return res.status(200).json(customerFound);
       } catch (error) {
@@ -37,7 +37,7 @@ class CustomerController {
           cpf,
           email
         };
-        const customerCreated = await this.useCase.create(customer);
+        const customerCreated = await this.useCase.create({ customer });
 
         return res.status(201).json(customerCreated);
       } catch (error) {

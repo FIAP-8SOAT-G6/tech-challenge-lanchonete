@@ -26,19 +26,19 @@ class Customer {
 
   #validateName(name) {
     if (!name) {
-      throw new MissingPropertyError("name");
+      throw new MissingPropertyError({ property: "name" });
     }
   }
 
   #validateCPF(cpf) {
     if (!cpf) {
-      throw new MissingPropertyError("cpf");
+      throw new MissingPropertyError({ property: "cpf" });
     }
   }
 
   #validateEmail(email) {
     if (!email) {
-      throw new MissingPropertyError("email");
+      throw new MissingPropertyError({ property: "email" });
     }
   }
 }

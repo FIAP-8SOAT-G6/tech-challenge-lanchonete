@@ -9,7 +9,7 @@ class FakeCustomerRepository {
       id: this.#customer.length + 1,
       name,
       cpf,
-      email,
+      email
     };
     this.#customer.push(newCustomer);
     return Promise.resolve(this.#instantiateCustomer(newCustomer));
@@ -21,7 +21,7 @@ class FakeCustomerRepository {
   }
 
   #instantiateCustomer(dbCustomer) {
-    if (!dbCustomer) return undefined;
+    if (!dbCustomer || dbCustomer?.length === 0) return undefined;
 
     const { id, name, cpf, email } = dbCustomer;
     return new Customer({ id, name, cpf, email });

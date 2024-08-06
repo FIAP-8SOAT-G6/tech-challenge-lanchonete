@@ -10,7 +10,6 @@ class CustomerManagement {
 
   async create({ customer }) {
     const { name, cpf, email } = customer;
-
     await this.validateCustomerExistence({ cpf });
 
     const newCustomer = new Customer({ name, cpf, email });
@@ -18,7 +17,7 @@ class CustomerManagement {
   }
 
   async findByCPF({ cpf }) {
-    if (!cpf) throw new MissingPropertyError({ property: cpf });
+    if (!cpf) throw new MissingPropertyError({ property: "cpf" });
 
     const customer = await this.customerRepository.findByCPF({ cpf });
     if (!customer) throw new NonexistentCustomerError({ cpf });

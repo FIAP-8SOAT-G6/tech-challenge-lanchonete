@@ -11,18 +11,19 @@ class SequelizeCustomerRepository {
       cpf,
       email
     });
+
     return this.#instantiateCustomer(newCustomer);
   }
 
-  async findByCPF(cpf) {
-    const customer = await SequelizeCustomer.findAll({
+  async findByCPF({ cpf }) {
+    const customers = await SequelizeCustomer.findAll({
       where: { cpf: cpf }
     });
-    return this.#instantiateCustomer(customer);
+    return this.#instantiateCustomer(customers[0]);
   }
 
   #instantiateCustomer(dbCustomer) {
-    if (!dbCustomer) return undefined;
+    if (!dbCustomer || dbCustomer?.length === 0) return undefined;
 
     const { id, name, cpf, email } = dbCustomer;
     return new Customer({ id, name, cpf, email });
