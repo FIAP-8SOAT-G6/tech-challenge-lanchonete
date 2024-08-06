@@ -1,11 +1,11 @@
 const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 class Order {
-  constructor(id, code, status, total_price, customer, items = []) {
+  constructor(id, code, status, totalPrice, customer, items = []) {
     this.id = id;
     this.code = code; 
     this.status = status;
-    this.total_price = total_price;
+    this.total_price = totalPrice;
     this.customer = customer; 
     this.items = items; 
   }

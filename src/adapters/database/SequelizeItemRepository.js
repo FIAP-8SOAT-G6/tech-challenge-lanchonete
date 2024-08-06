@@ -13,11 +13,7 @@ class SequelizeItemRepository {
       const { productId, orderId, quantity, unitPrice, totalPrice } = item.toHash();
     });
 
-    const createdItems = await SequelizeItem.bulkCreate(items, {
-      // TODO Checar se isso é necessário
-      validate: true, // Ensures model validations are run
-      returning: true // Required for PostgreSQL to return created rows
-    });
+    const createdItems = await SequelizeItem.bulkCreate(items);
     
     return this.#instantiateItems(createdItems);
   }
@@ -34,4 +30,5 @@ class SequelizeItemRepository {
   }
 }
 
-// TODO Acho que aqui o código tá ok. Ainda tô muito na dúvida sobre a motivação dessa conversão de hash pra entity e entity pra hash toda hora. Precisamos melhorar isso
+// TODO Acho que aqui o código tá ok. 
+// Ainda tô muito na dúvida sobre a motivação dessa conversão de hash pra entity e entity pra hash toda hora. Precisamos melhorar isso

@@ -4,15 +4,13 @@ class FakeItemRepository {
   #items = [];
 
   async bulkCreate(items) {
-    const createdItems = items.map( item => {
-        productId: item.productId,
-        orderId: item.orderId, 
-        quantity: item.quantity,
-        unitPrice: item.unitPrice, 
-        totalPrice: item.totalPrice
-      }
-      
-    );
+    const createdItems = items.map( item => ({
+      productId: item.productId,
+      orderId: item.orderId,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      totalPrice: item.totalPrice
+    }));
 
     return Promise.resolve(this.#instantiateItems(createdItems));
   }
