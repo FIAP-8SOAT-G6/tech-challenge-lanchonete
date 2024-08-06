@@ -12,6 +12,7 @@ class FakeItemRepository {
       totalPrice: item.totalPrice
     }));
 
+    this.#items.push(...createdItems);
     return Promise.resolve(this.#instantiateItems(createdItems));
   }
 
@@ -27,4 +28,4 @@ class FakeItemRepository {
   }
 }
 
-module.exports = FakeProductRepository;
+module.exports = FakeItemRepository;
