@@ -2,7 +2,8 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const request = require('supertest');
 const app = require("../../../../src/server");
-const Product = require('../../../core/products/entities/Product');
+// const FakeProductRepository = require('../../../adapters/database/FakeProductRepository');
+const SequelizeProductRepository = require('../../../adapters/database/SequelizeProductRepository');
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -10,15 +11,19 @@ const { expect } = chai;
 describe('OrdersController', () => {
   describe('create', () => {
     it('should create a new order', async () => {
-      //const product = await productManagementUseCase.create(productValues);
+      const repository = new SequelizeProductRepository();
 
+      const product = await repository.create({
+        name: 'Product1',
+        category: 'Lanche',
+        description: 'HotDog',
+        price: 200
+      });
+
+      console.log(product)
       const orderAttributes = {
-        items: [
-          {
-            product_id: 123, 
-            quantity: 10
-          }
-        ]
+        code: "0001",
+        status: 'pending'
       };
 
       const res = await request(app).post('/orders').send(orderAttributes);
@@ -26,9 +31,6 @@ describe('OrdersController', () => {
       expect(res.status).to.equal(201);
       expect(res.body.status).to.equal('waiting_approval');
       expect(res.body.total_price).to.equal(1000);
-      expect(res.body.items.product_id).to.equal(123);
-      expect(res.body.items.quantity).to.equal(10);
-      expect(res.body.customer.name).to.equal('Gabriel');
     });
   });
 });

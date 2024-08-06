@@ -1,10 +1,10 @@
 const chai = require('chai');
 const expect = chai.expect;
-const Order = require("../../../core/products/entities/Order");
+const Order = require("../../../core/orders/entities/Order");
 
 describe('Order', function() {
   let order;
-  
+
   beforeEach(function() {
     order = new Order('1', 'CODE123', 'pending', 100.0, 'Customer1');
   });

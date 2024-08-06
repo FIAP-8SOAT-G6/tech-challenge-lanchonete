@@ -2,6 +2,8 @@ const OrdersController = require("../../adapters/api/OrdersController");
 const ProductsController = require("../../adapters/api/ProductsController");
 const ProductManagement = require("../../core/products/use-cases/ProductManagement");
 const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
+const SequelizeOrderRepository = require("../../adapters/database/SequelizeOrderRepository");
+const OrderManagement = require("../../core/products/use-cases/OrderManagement");
 
 module.exports = class ControllerFactory {
   static makeProductManagementController() {
@@ -12,8 +14,7 @@ module.exports = class ControllerFactory {
 
   static makeOrdersController() {
     return new OrdersController(
-      // TODO vir aqui 
-      new ProductManagement(new SequelizeProductRepository())
+      new OrderManagement(new SequelizeOrderRepository())
     );
   }
 };
