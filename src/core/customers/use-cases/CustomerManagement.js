@@ -11,9 +11,9 @@ class CustomerManagement {
   async create({ customer }) {
     const { name, cpf, email } = customer;
 
-    await this.existCustomer({ cpf });
+    await this.validateCustomerExistence({ cpf });
 
-    const newCustomer = new Customer({ id: null, name, cpf, email });
+    const newCustomer = new Customer({ name, cpf, email });
     return await this.customerRepository.create({ customer: newCustomer });
   }
 
@@ -26,10 +26,12 @@ class CustomerManagement {
     return customer;
   }
 
-  async existCustomer({ cpf }) {
-    const existCustomer = await this.customerRepository.findByCPF({ cpf });
+  async validateCustomerExistence({ cpf }) {
+    const validateCustomerExistence = await this.customerRepository.findByCPF({
+      cpf
+    });
 
-    if (existCustomer) {
+    if (validateCustomerExistence) {
       throw new ExistentCustomerError({ cpf });
     }
   }

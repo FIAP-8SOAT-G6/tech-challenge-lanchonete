@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 context("Customer Management", () => {
-  async function setupRepository() {
+  function setupUseCase() {
     const repository = new FakeCustomerRepository();
     return new CustomerManagement(repository);
   }
@@ -19,13 +19,12 @@ context("Customer Management", () => {
   describe("create", () => {
     it("should create a Customer with an id", async () => {
       const customer = {
-        id: null,
         name: "Ana",
         cpf: "123.456.789-00",
         email: "test@mail.com"
       };
 
-      const customerManagementUseCase = await setupRepository();
+      const customerManagementUseCase = setupUseCase();
       const customerCreated = await customerManagementUseCase.create({
         customer
       });
@@ -36,13 +35,12 @@ context("Customer Management", () => {
 
     it("should display an error message when an existing CPF is provided", async () => {
       const customer = {
-        id: null,
         name: "Ana",
         cpf: "123.456.789-01",
         email: "test@mail.com"
       };
 
-      const customerManagementUseCase = await setupRepository();
+      const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create({ customer });
 
       try {
@@ -60,13 +58,12 @@ context("Customer Management", () => {
   describe("findByCPF", () => {
     it("should find customer by CPF", async () => {
       const customer = {
-        id: null,
         name: "Ana",
         cpf: "123.456.789-00",
         email: "test@mail.com"
       };
 
-      const customerManagementUseCase = await setupRepository();
+      const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create({ customer });
 
       const customerFound = await customerManagementUseCase.findByCPF({
@@ -78,46 +75,36 @@ context("Customer Management", () => {
 
     it("should display an error message when it cannot find the customer", async () => {
       const customer = {
-        id: null,
         name: "Ana",
         cpf: "123.456.789-00",
         email: "test@mail.com"
       };
 
-      const customerManagementUseCase = await setupRepository();
+      const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create({ customer });
 
-      try {
-        await customerManagementUseCase.findByCPF({ cpf: "123" });
-        throw new Error("Esperava uma exceção, mas nenhuma foi lançada.");
-      } catch (error) {
-        expect(error).to.be.instanceOf(NonexistentCustomerError);
-        expect(error.message).to.equal(
-          new NonexistentCustomerError({ cpf: "123" }).message
-        );
-      }
+      await expect(
+        customerManagementUseCase.findByCPF({ cpf: "123" })
+      ).to.be.eventually.rejectedWith(
+        new NonexistentCustomerError({ cpf: "123" }).message
+      );
     });
 
     it("should display an error message when a CPF is not provided", async () => {
       const customer = {
-        id: null,
         name: "Ana",
         cpf: "123.456.789-00",
         email: "test@mail.com"
       };
 
-      const customerManagementUseCase = await setupRepository();
+      const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create({ customer });
 
-      try {
-        await customerManagementUseCase.findByCPF({ cpf: "" });
-        throw new Error("Esperava uma exceção, mas nenhuma foi lançada.");
-      } catch (error) {
-        expect(error).to.be.instanceOf(MissingPropertyError);
-        expect(error.message).to.equal(
-          new MissingPropertyError({ property: "" }).message
-        );
-      }
+      await expect(
+        customerManagementUseCase.findByCPF({ cpf: "" })
+      ).to.be.eventually.rejectedWith(
+        new MissingPropertyError({ property: "" }).message
+      );
     });
   });
 });

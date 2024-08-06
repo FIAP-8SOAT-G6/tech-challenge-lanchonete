@@ -23,7 +23,7 @@ class CustomerController {
         return res.status(200).json(customerFound);
       } catch (error) {
         if (error instanceof NonexistentCustomerError) {
-          return res.status(400).json({ message: error.message });
+          return res.status(404).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });
       }
