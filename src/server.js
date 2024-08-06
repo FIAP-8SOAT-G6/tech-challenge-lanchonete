@@ -1,5 +1,5 @@
 const express = require('express');
-const { swaggerUi, swaggerDocs } = require('./config/swagger');
+const { swaggerUi, swaggerDocs } = require('./infrastructure/config/swagger');
 const exampleRoutes = require('./routes/exampleRoutes');
 const ControllerFactory = require('./infrastructure/factories/ControllerFactory');
 
