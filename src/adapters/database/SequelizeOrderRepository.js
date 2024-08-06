@@ -4,7 +4,16 @@ const { sequelize } = require("../../infrastructure/database/models");
 const { Order: SequelizeOrder } = sequelize.models;
 
 class SequelizeOrderRepository {
-  async create(order) {
+  async create(orderAttributes) {
+    const { code, status, customer } = orderAttributes;
+    const createdOrder = await SequelizeOrder.create({
+      code,
+      status
+    });
+    return this.#instantiateOrder(createdOrder);
+  }
+
+  async update(order) {
     const { code, status, customer } = order;
     const createdOrder = await SequelizeOrder.create({
       code,
