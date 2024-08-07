@@ -8,30 +8,30 @@ class CustomerManagement {
     this.customerRepository = customerRepository;
   }
 
-  async create({ customer }) {
+  async create(customer) {
     const { name, cpf, email } = customer;
-    await this.validateCustomerExistence({ cpf });
+    await this.validateCustomerExistence(cpf);
 
     const newCustomer = new Customer({ name, cpf, email });
-    return await this.customerRepository.create({ customer: newCustomer });
+    return await this.customerRepository.create(newCustomer);
   }
 
-  async findByCPF({ cpf }) {
-    if (!cpf) throw new MissingPropertyError({ property: "cpf" });
+  async findByCPF(cpf) {
+    if (!cpf) throw new MissingPropertyError("cpf");
 
-    const customer = await this.customerRepository.findByCPF({ cpf });
-    if (!customer) throw new NonexistentCustomerError({ cpf });
+    const customer = await this.customerRepository.findByCPF(cpf);
+    if (!customer) throw new NonexistentCustomerError(cpf);
 
     return customer;
   }
 
-  async validateCustomerExistence({ cpf }) {
-    const validateCustomerExistence = await this.customerRepository.findByCPF({
+  async validateCustomerExistence(cpf) {
+    const validateCustomerExistence = await this.customerRepository.findByCPF(
       cpf
-    });
+    );
 
     if (validateCustomerExistence) {
-      throw new ExistentCustomerError({ cpf });
+      throw new ExistentCustomerError(cpf);
     }
   }
 }

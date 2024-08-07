@@ -1,7 +1,7 @@
 const message = "CPF '&1' provided is already registered";
 
 class ExistentCustomerError extends Error {
-  constructor({ cpf }) {
+  constructor(cpf) {
     super(message.replace("&1", cpf));
   }
 }

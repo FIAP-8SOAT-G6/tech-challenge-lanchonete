@@ -4,7 +4,7 @@ const { sequelize } = require("../../infrastructure/database/models");
 const { Customer: SequelizeCustomer } = sequelize.models;
 
 class SequelizeCustomerRepository {
-  async create({ customer }) {
+  async create(customer) {
     const { name, cpf, email } = customer;
     const newCustomer = await SequelizeCustomer.create({
       name,
@@ -15,15 +15,15 @@ class SequelizeCustomerRepository {
     return this.#instantiateCustomer(newCustomer);
   }
 
-  async findByCPF({ cpf }) {
-    const customers = await SequelizeCustomer.findAll({
+  async findByCPF(cpf) {
+    const customers = await SequelizeCustomer.findOne({
       where: { cpf: cpf }
     });
-    return this.#instantiateCustomer(customers[0]);
+    return this.#instantiateCustomer(customers);
   }
 
   #instantiateCustomer(dbCustomer) {
-    if (!dbCustomer || dbCustomer?.length === 0) return undefined;
+    if (!dbCustomer) return undefined;
 
     const { id, name, cpf, email } = dbCustomer;
     return new Customer({ id, name, cpf, email });

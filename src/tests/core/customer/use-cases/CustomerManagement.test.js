@@ -25,9 +25,7 @@ context("Customer Management", () => {
       };
 
       const customerManagementUseCase = setupUseCase();
-      const customerCreated = await customerManagementUseCase.create({
-        customer
-      });
+      const customerCreated = await customerManagementUseCase.create(customer);
 
       expect(customerCreated).to.not.be.undefined;
       expect(customerCreated.id).to.be.equal(1);
@@ -41,17 +39,13 @@ context("Customer Management", () => {
       };
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create({ customer });
+      await customerManagementUseCase.create(customer);
 
-      try {
-        await customerManagementUseCase.create({ customer });
-        throw new Error("Esperava uma exceção, mas nenhuma foi lançada.");
-      } catch (error) {
-        expect(error).to.be.instanceOf(ExistentCustomerError);
-        expect(error.message).to.equal(
-          new ExistentCustomerError({ cpf: customer.cpf }).message
-        );
-      }
+      await expect(
+        customerManagementUseCase.create(customer)
+      ).to.be.eventually.rejectedWith(
+        new ExistentCustomerError(customer.cpf).message
+      );
     });
   });
 
@@ -64,11 +58,11 @@ context("Customer Management", () => {
       };
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create({ customer });
+      await customerManagementUseCase.create(customer);
 
-      const customerFound = await customerManagementUseCase.findByCPF({
-        cpf: customer.cpf
-      });
+      const customerFound = await customerManagementUseCase.findByCPF(
+        customer.cpf
+      );
 
       expect(customerFound).to.not.be.undefined;
     });
@@ -81,12 +75,12 @@ context("Customer Management", () => {
       };
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create({ customer });
+      await customerManagementUseCase.create(customer);
 
       await expect(
-        customerManagementUseCase.findByCPF({ cpf: "123" })
+        customerManagementUseCase.findByCPF("123")
       ).to.be.eventually.rejectedWith(
-        new NonexistentCustomerError({ cpf: "123" }).message
+        new NonexistentCustomerError("123").message
       );
     });
 
@@ -98,13 +92,11 @@ context("Customer Management", () => {
       };
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create({ customer });
+      await customerManagementUseCase.create(customer);
 
       await expect(
-        customerManagementUseCase.findByCPF({ cpf: "" })
-      ).to.be.eventually.rejectedWith(
-        new MissingPropertyError({ property: "cpf" }).message
-      );
+        customerManagementUseCase.findByCPF("")
+      ).to.be.eventually.rejectedWith(new MissingPropertyError("cpf").message);
     });
   });
 });

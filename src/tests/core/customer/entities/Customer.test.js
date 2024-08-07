@@ -26,7 +26,7 @@ context("Customer", () => {
             cpf: "123.456.789-00",
             email: "test@mail.com"
           })
-      ).to.throw(new MissingPropertyError({ property: "name" }).message);
+      ).to.throw(new MissingPropertyError("name").message);
     });
 
     it("should throw an error when CPF is not provided", () => {
@@ -38,7 +38,7 @@ context("Customer", () => {
             cpf: null,
             email: "test@mail.com"
           })
-      ).to.throw(new MissingPropertyError({ property: "cpf" }).message);
+      ).to.throw(new MissingPropertyError("cpf").message);
     });
 
     it("should throw an error when email is not provided", () => {
@@ -50,7 +50,7 @@ context("Customer", () => {
             cpf: "123.456.789-00",
             email: undefined
           })
-      ).to.throw(new MissingPropertyError({ property: "email" }).message);
+      ).to.throw(new MissingPropertyError("email").message);
     });
   });
 });

@@ -1,7 +1,7 @@
 const message = "CPF '&1' provided is invalid";
 
 class InvalidCPFError extends Error {
-  constructor({ cpf }) {
+  constructor(cpf) {
     super(message.replace("&1", cpf));
   }
 }
