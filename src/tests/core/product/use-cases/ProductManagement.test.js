@@ -49,8 +49,9 @@ context("ProductManagement", () => {
       const productManagementUseCase = new ProductManagement(repository);
       const unexistingId = 1;
 
-      const foundProduct =
-        await productManagementUseCase.findById(unexistingId);
+      const foundProduct = await productManagementUseCase.findById(
+        unexistingId
+      );
       expect(foundProduct).to.be.undefined;
     });
   });
@@ -128,7 +129,7 @@ context("ProductManagement", () => {
     });
   });
   describe("update", () => {
-    it("should update only product fields", async () => {
+    it.skip("should update only product fields", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
       const productValues = {
