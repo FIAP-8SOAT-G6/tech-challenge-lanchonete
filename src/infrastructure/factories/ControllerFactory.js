@@ -3,7 +3,7 @@ const ProductsController = require("../../adapters/api/ProductsController");
 const ProductManagement = require("../../core/products/use-cases/ProductManagement");
 const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
 const SequelizeOrderRepository = require("../../adapters/database/SequelizeOrderRepository");
-const OrderManagement = require("../../core/products/use-cases/OrderManagement");
+const OrderManagement = require("../../core/orders/use-cases/OrderService");
 
 module.exports = class ControllerFactory {
   static makeProductManagementController() {
@@ -14,7 +14,10 @@ module.exports = class ControllerFactory {
 
   static makeOrdersController() {
     return new OrdersController(
-      new OrderManagement(new SequelizeOrderRepository())
+      new OrderManagement(
+        new SequelizeOrderRepository(),
+        new SequelizeProductRepository()
+      )
     );
   }
 };

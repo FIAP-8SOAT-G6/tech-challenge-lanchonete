@@ -15,11 +15,25 @@ class OrdersController {
   initializeRoutes() {
     this.router.post("/orders", async (req, res) => {
       try {
-        // const { status, items } = req.body;
-        const order = await this.useCase.create(req.body);
-        res.status(201).json(order);
+        const order = await this.useCase.create();
+        return res.status(201).json(order);
       } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.post("/orders/:id/items", async (req, res) => {
+      try {
+        const orderId = req.params.id;
+        const { productId, quantity } = req.body;
+        const order = await this.useCase.addItem(orderId, {
+          productId,
+          quantity,
+        });
+        return res.status(201).json(order);
+      } catch (error) {
+        console.log(error.stack)
+        return res.status(500).json({ error: error.message });
       }
     });
   }

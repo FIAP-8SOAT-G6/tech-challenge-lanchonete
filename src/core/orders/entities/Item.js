@@ -1,13 +1,24 @@
 const InvalidPropertyError = require("../../products/exceptions/MissingPropertyError");
 
 class Item {
-  constructor(id, product, quantity, unitPrice, totalPrice) {
+  constructor({
+    id,
+    orderId,
+    productId,
+    productName,
+    productDescription,
+    quantity,
+    unitPrice,
+  }) {
     this.id = id;
-    this.orderId = order;
-    this.productId = product; 
+    this.orderId = orderId;
+    this.productId = productId;
     this.quantity = quantity;
     this.unitPrice = unitPrice;
-    this.totalPrice = totalPrice;
+    this.totalPrice = this.unitPrice * quantity;
+
+    this.productName = productName;
+    this.productDescription = productDescription;
 
     this.#validateQuantity(quantity);
   }
@@ -18,16 +29,16 @@ class Item {
     }
   }
 
-  toHash() {
+  getAttributes() {
     return {
       id: this.id,
-      orderId: this.orderId,      
+      orderId: this.orderId,
       productId: this.productId,
       quantity: this.quantity,
-      unitPrice: this.unitPrice, 
-      totalPrice: this.unitPrice
+      unitPrice: this.unitPrice,
+      totalPrice: this.totalPrice,
     };
   }
 }
 
-module.exports = OrderItem;
+module.exports = Item;

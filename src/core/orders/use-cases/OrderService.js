@@ -1,29 +1,37 @@
 const Product = require("../../products/entities/Product");
+const Order = require("../entities/Order");
+const OrderStatus = require("../entities/OrderStatus");
 
 class OrderService {
-  constructor(orderRepository, itemRepository) {
+  constructor(orderRepository, productRepository) {
     this.orderRepository = orderRepository;
-    this.itemRepository = itemRepository;
+    this.productRepository = productRepository;
   }
 
-  async create(orderAttributes) {
-    const { status } = orderAttributes;
-    const order = new Order(status);    
+  async create() {
+    const order = new Order({ status: OrderStatus.CREATED });
     const createdOrder = await this.orderRepository.create(order);
+    console.log(createdOrder);
+    return createdOrder;
+  }
 
-    const items = orderAttributes.items.map(item => 
-      new Item({
-        orderId: createdOrder.id,
-        productId: item.productId,
-        quantity: item.quantity, 
-        unitPrice: item.unitPrice,
-        totalPrice: (item.quantity * item.unitPrice)
-      })
-    );
-    // TODO checar como fazer
-    const createdItems = await this.itemRepository.bulkCreate(items)
+  async addItem(orderId, itemAttributes) {
+    const { productId, quantity } = itemAttributes;
+    const product = await this.productRepository.findById(productId);
+    const order = await this.orderRepository.findById(orderId);
 
-    return this.buildOrder(createdOrder, createdItems)
+    const item = order.addItem({
+      productId: product.id,
+      quantity,
+      unitPrice: product.price,
+    });
+    console.log(item);
+    await this.orderRepository.createItem(order, item);
+
+    const orderWithItems = await this.orderRepository.findById(orderId);
+    console.log(orderWithItems);
+
+    return orderWithItems;
   }
 
   #buildOrder(orderModel, itemsModel) {
@@ -31,7 +39,7 @@ class OrderService {
       orderModel.id,
       orderModel.code,
       orderModel.status,
-      orderModel.totalPrice, 
+      orderModel.totalPrice,
       null, // customer
       items
     );
