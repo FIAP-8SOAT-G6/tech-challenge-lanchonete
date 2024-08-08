@@ -1,11 +1,11 @@
-const FakeProductRepository = require("../../../adapters/database/FakeProductRepository");
-const ProductCategory = require("../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../core/exceptions/InvalidCategoryError");
-const ProductManagement = require("../../../core/use-cases/ProductManagement");
+const FakeProductRepository = require("../../../../adapters/database/FakeProductRepository");
+const ProductCategory = require("../../../../core/products/entities/ProductCategory");
+const InvalidCategoryError = require("../../../../core/products/exceptions/InvalidCategoryError");
+const ProductManagement = require("../../../../core/products/use-cases/ProductManagement");
+const UnexistingProductError = require("../../../../core/products/exceptions/UnexistingProductError");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
-const UnexistingProductError = require("../../../core/exceptions/UnexistingProductError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -19,7 +19,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 12.0,
+        price: 12.0
       };
 
       const product = await productManagementUseCase.create(productValues);
@@ -36,7 +36,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 10.0,
+        price: 10.0
       };
       const product = await productManagementUseCase.create(productValues);
 
@@ -49,9 +49,8 @@ context("ProductManagement", () => {
       const productManagementUseCase = new ProductManagement(repository);
       const unexistingId = 1;
 
-      const foundProduct = await productManagementUseCase.findById(
-        unexistingId
-      );
+      const foundProduct =
+        await productManagementUseCase.findById(unexistingId);
       expect(foundProduct).to.be.undefined;
     });
   });
@@ -64,14 +63,14 @@ context("ProductManagement", () => {
           name: "Hamburguer",
           category: ProductCategory.Lanche,
           description: "Big Hamburguer",
-          price: 10.0,
+          price: 10.0
         }),
         productManagementUseCase.create({
           name: "French Fries",
           category: ProductCategory.Acompanhamento,
           description: "250g of French Fries",
-          price: 6.0,
-        }),
+          price: 6.0
+        })
       ]);
 
       const products = await productManagementUseCase.findAll();
@@ -89,20 +88,20 @@ context("ProductManagement", () => {
           name: "Hamburguer",
           category: ProductCategory.Lanche,
           description: "Big Hamburguer",
-          price: 10.0,
+          price: 10.0
         }),
         productManagementUseCase.create({
           name: "Hot-Dog",
           category: ProductCategory.Lanche,
           description: "Classic New York Hot Dog",
-          price: 10.0,
+          price: 10.0
         }),
         productManagementUseCase.create({
           name: "French Fries",
           category: ProductCategory.Acompanhamento,
           description: "250g of French Fries",
-          price: 10.0,
-        }),
+          price: 10.0
+        })
       ]);
 
       const products = await productManagementUseCase.findByCategory(
@@ -136,7 +135,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 10.0,
+        price: 10.0
       };
       const product = await productManagementUseCase.create(productValues);
 
@@ -144,7 +143,7 @@ context("ProductManagement", () => {
         name: "French Fries",
         description: "This should actually be some French Fries",
         category: ProductCategory.Acompanhamento,
-        price: 12.0,
+        price: 12.0
       });
 
       let foundProduct = await productManagementUseCase.findById(product.id);
@@ -177,7 +176,7 @@ context("ProductManagement", () => {
       const unexistingId = -1;
 
       const updatePromise = productManagementUseCase.update(unexistingId, {
-        description: "Very Big Hamburguer",
+        description: "Very Big Hamburguer"
       });
 
       await expect(updatePromise).to.be.eventually.rejectedWith(
@@ -193,7 +192,7 @@ context("ProductManagement", () => {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 10.0,
+        price: 10.0
       };
       const product = await productManagementUseCase.create(productValues);
 
