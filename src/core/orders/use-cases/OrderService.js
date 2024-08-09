@@ -17,32 +17,20 @@ class OrderService {
 
   async addItem(orderId, itemAttributes) {
     const { productId, quantity } = itemAttributes;
-    const product = await this.productRepository.findById(productId);
-    const order = await this.orderRepository.findById(orderId);
+    const [product, order] = await Promise.all([
+      this.productRepository.findById(productId),
+      this.orderRepository.findById(orderId),
+    ]);
 
     const item = order.addItem({
       productId: product.id,
       quantity,
       unitPrice: product.price,
     });
-    console.log(item);
+
     await this.orderRepository.createItem(order, item);
 
-    const orderWithItems = await this.orderRepository.findById(orderId);
-    console.log(orderWithItems);
-
-    return orderWithItems;
-  }
-
-  #buildOrder(orderModel, itemsModel) {
-    return new Order(
-      orderModel.id,
-      orderModel.code,
-      orderModel.status,
-      orderModel.totalPrice,
-      null, // customer
-      items
-    );
+    return await this.orderRepository.findById(orderId);
   }
 }
 
