@@ -2,16 +2,19 @@ const Product = require("../../products/entities/Product");
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 
-class OrderService {
+class OrderManagement {
   constructor(orderRepository, productRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
   }
 
   async create() {
-    const order = new Order({ status: OrderStatus.CREATED });
+    const order = new Order({ 
+      status: OrderStatus.CREATED, 
+      code: this.#generateCode()
+    });
     const createdOrder = await this.orderRepository.create(order);
-    console.log(createdOrder);
+
     return createdOrder;
   }
 
@@ -53,6 +56,10 @@ class OrderService {
     await this.orderRepository.updateItem(itemId, updatedItem);
     return await this.orderRepository.findById(orderId);
   }
+
+  #generateCode() { 
+    return (Math.floor(1000 + Math.random() * 9000)).toString();
+  }
 }
 
-module.exports = OrderService;
+module.exports = OrderManagement;

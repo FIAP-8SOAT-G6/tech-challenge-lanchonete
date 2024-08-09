@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       code: DataTypes.STRING,
       status: DataTypes.STRING,
-      totalPrice: DataTypes.DECIMAL(10, 2),
+      totalPrice: {
+        type: DataTypes.DECIMAL(10, 2),
+        defaultValue: 0
+      }
     },
     {
       sequelize,

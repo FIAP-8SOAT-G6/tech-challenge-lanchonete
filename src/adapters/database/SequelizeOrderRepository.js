@@ -1,5 +1,6 @@
 const Order = require("../../core/orders/entities/Order");
 const { sequelize } = require("../../infrastructure/database/models");
+const order = require("../../infrastructure/database/models/order");
 
 const {
   Order: SequelizeOrder,
@@ -9,10 +10,8 @@ const {
 
 class SequelizeOrderRepository {
   async create(orderAttributes) {
-    const { status } = orderAttributes;
-    const createdOrder = await SequelizeOrder.create({
-      status,
-    });
+    const { status, code } = orderAttributes;
+    const createdOrder = await SequelizeOrder.create({ status, code });
     return this.#instantiateOrder(createdOrder);
   }
 
@@ -86,6 +85,8 @@ class SequelizeOrderRepository {
     const order = new Order({
       id: orderAttributes.id,
       status: orderAttributes.status,
+      code: orderAttributes.code,
+      totalPrice: orderAttributes.totalPrice
     });
     orderAttributes.Items?.forEach((item) => {
       const {
