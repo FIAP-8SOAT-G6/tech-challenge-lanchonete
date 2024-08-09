@@ -47,7 +47,7 @@ class ProductsController {
           name,
           description,
           category,
-          price,
+          price
         });
         return res.status(201).json(product);
       } catch (error) {
@@ -69,7 +69,7 @@ class ProductsController {
           name,
           description,
           category,
-          price,
+          price
         });
         return res.status(201).json(product);
       } catch (error) {
