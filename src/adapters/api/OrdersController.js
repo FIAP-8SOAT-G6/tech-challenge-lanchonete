@@ -22,6 +22,25 @@ class OrdersController {
       }
     });
 
+    this.router.get("/orders", async (req, res) => {
+      try {
+        const order = await this.useCase.getOrders();
+        return res.status(201).json(order);
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.get("/orders/:id", async (req, res) => {
+      try {
+        const orderId = req.params.id;
+        const order = await this.useCase.getOrder(orderId);
+        return res.status(201).json(order);
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
     this.router.post("/orders/:id/items", async (req, res) => {
       try {
         const orderId = req.params.id;
@@ -32,7 +51,29 @@ class OrdersController {
         });
         return res.status(201).json(order);
       } catch (error) {
-        console.log(error.stack)
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.delete("/orders/:orderId/items/:itemId", async (req, res) => {
+      try {
+        const { orderId, itemId } = req.params;
+        await this.useCase.removeItem(orderId, itemId);
+        return res.status(204).json({});
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.put("/orders/:orderId/items/:itemId", async (req, res) => {
+      try {
+        const { orderId, itemId } = req.params;
+        const { quantity } = req.body;
+        const updatedOrder = await this.useCase.updateItem(Number(orderId), Number(itemId), {
+          quantity,
+        });
+        return res.status(200).json(updatedOrder);
+      } catch (error) {
         return res.status(500).json({ error: error.message });
       }
     });

@@ -15,6 +15,16 @@ class OrderService {
     return createdOrder;
   }
 
+  async getOrders() {
+    const orders = await this.orderRepository.findAll();
+    return orders;
+  }
+
+  async getOrder(orderId) {
+    const order = await this.orderRepository.findById(orderId);
+    return order;
+  }
+
   async addItem(orderId, itemAttributes) {
     const { productId, quantity } = itemAttributes;
     const [product, order] = await Promise.all([
@@ -30,6 +40,17 @@ class OrderService {
 
     await this.orderRepository.createItem(order, item);
 
+    return await this.orderRepository.findById(orderId);
+  }
+
+  async removeItem(orderId, itemId) {
+    await this.orderRepository.removeItem(orderId, itemId);
+  }
+
+  async updateItem(orderId, itemId, updatedItemValues) {
+    const order = await this.orderRepository.findById(orderId);
+    const updatedItem = order.updateItem(itemId, updatedItemValues);
+    await this.orderRepository.updateItem(itemId, updatedItem);
     return await this.orderRepository.findById(orderId);
   }
 }

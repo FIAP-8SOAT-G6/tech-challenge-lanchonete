@@ -23,6 +23,11 @@ class Item {
     this.#validateQuantity(quantity);
   }
 
+  setQuantity(quantity) {
+    this.#validateQuantity(quantity);
+    this.quantity = quantity;
+  }
+
   #validateQuantity(quantity) {
     if (!quantity || quantity <= 0) {
       throw new InvalidPropertyError("quantity");

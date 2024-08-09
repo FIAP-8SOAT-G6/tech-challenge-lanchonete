@@ -40,6 +40,15 @@ class Order {
   removeItem(itemId) {
     this.items = this.items.filter((item) => item.id !== itemId);
   }
+
+  updateItem(itemId, updatedValues) {
+    console.log(itemId);
+    console.log(this.items);
+    const item = this.items.find((item) => { console.log(`item.id ${typeof item.id} - itemId ${typeof itemId}, comparison: ${item.id === itemId}`); return item.id === itemId} );
+    const { quantity } = updatedValues;
+    item.setQuantity(quantity);
+    return item;
+  }
 }
 
 module.exports = Order;

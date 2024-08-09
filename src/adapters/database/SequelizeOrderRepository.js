@@ -28,6 +28,20 @@ class SequelizeOrderRepository {
     return order ? this.#instantiateOrder(order) : undefined;
   }
 
+  async findAll() {
+    const orders = await SequelizeOrder.findAll({
+      include: [
+        {
+          model: SequelizeItem,
+          include: [SequelizeProduct],
+        },
+      ],
+    });
+    return orders?.length === 0
+      ? undefined
+      : orders.map(this.#instantiateOrder);
+  }
+
   async createItem(order, item) {
     const orderModel = await SequelizeOrder.findByPk(order.id);
     const {
@@ -38,7 +52,7 @@ class SequelizeOrderRepository {
       unitPrice,
       totalPrice,
     } = item.getAttributes();
-    const orderWithItems = await orderModel.createItem({
+    await orderModel.createItem({
       id,
       OrderId,
       ProductId,
@@ -46,6 +60,17 @@ class SequelizeOrderRepository {
       unitPrice,
       totalPrice,
     });
+  }
+
+  async removeItem(orderId, itemId) {
+    const order = await SequelizeOrder.findByPk(orderId);
+    await order.removeItem(itemId);
+  }
+
+  async updateItem(itemId, updatedItem) {
+    const itemAttributes = updatedItem.getAttributes();
+    const item = await SequelizeItem.findByPk(itemId);
+    await item.update(itemAttributes);
   }
 
   async update(order) {
@@ -69,8 +94,7 @@ class SequelizeOrderRepository {
         ProductId: productId,
         quantity,
         unitPrice,
-      } = item
-      console.log(item)
+      } = item;
       order.addItem({
         id,
         orderId,
