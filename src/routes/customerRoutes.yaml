@@ -1,7 +1,9 @@
 paths:
   /customer/{cpf}:
     get:
-      summary: Retorna um cliente pelo CPF
+      summary: Exibe dados de um cliente pelo CPF
+      tags:
+        - Clientes
       parameters:
         - in: path
           name: cpf
@@ -33,6 +35,8 @@ paths:
   /customer:
     post:
       summary: Cria um novo cliente
+      tags:
+        - Clientes
       requestBody:
         required: true
         content:
