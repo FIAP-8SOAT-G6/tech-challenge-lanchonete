@@ -2,6 +2,7 @@ const { Router } = require("express");
 const ExistentCustomerError = require("../../core/customers/exceptions/ExistentCustomerError");
 const MissingPropertyError = require("../../core/customers/exceptions/MissingPropertyError");
 const NonexistentCustomerError = require("../../core/customers/exceptions/NonexistentCustomerError");
+const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
 
 class CustomerController {
   constructor(customerManagementUseCase) {
@@ -32,12 +33,12 @@ class CustomerController {
     this.router.post("/customer", async (req, res) => {
       try {
         const { name, cpf, email } = req.body;
-        const customer = {
+        const customerDTO = new CustomerDTO({
           name,
           cpf,
           email
-        };
-        const customerCreated = await this.useCase.create(customer);
+        });
+        const customerCreated = await this.useCase.create(customerDTO);
 
         return res.status(201).json(customerCreated);
       } catch (error) {
