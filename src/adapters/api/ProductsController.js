@@ -87,8 +87,8 @@ class ProductsController {
     this.router.delete("/products/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const product = await this.useCase.delete(id);
-        return res.status(201).json(product);
+        await this.useCase.delete(id);
+        return res.status(201).json({});
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }

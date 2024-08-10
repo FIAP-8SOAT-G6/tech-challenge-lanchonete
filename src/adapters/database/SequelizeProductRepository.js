@@ -28,7 +28,7 @@ class SequelizeProductRepository {
   async findByCategory(category) {
     const products = await SequelizeProduct.findAll({
       where: { category: category }
-    })
+    });
     return products.map(this.#instantiateProduct);
   }
 
@@ -45,6 +45,7 @@ class SequelizeProductRepository {
 
   async delete(id) {
     const product = await SequelizeProduct.findByPk(id);
+    if (!product) return;
     await product.destroy();
   }
 

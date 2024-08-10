@@ -213,5 +213,18 @@ context("ProductManagement", () => {
         new UnexistingProductError(product.id).message
       );
     });
+
+    it("should delete the Product when id nonexisting", async () => {
+      const repository = new FakeProductRepository();
+      const productManagementUseCase = new ProductManagement(repository);
+      const idNonexisting = 12;
+      await productManagementUseCase.delete(idNonexisting);
+
+      await expect(
+        productManagementUseCase.findById(idNonexisting)
+      ).to.be.eventually.rejectedWith(
+        new UnexistingProductError(idNonexisting).message
+      );
+    });
   });
 });
