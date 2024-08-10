@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/index.js",
     "test": "mocha 'src/tests/**/*.js' --recursive",
     "coverage": "nyc --reporter=text npm run test"
   },
