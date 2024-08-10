@@ -1,4 +1,4 @@
-const InvalidPropertyError = require("../../products/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 
 class Item {
   constructor({
@@ -35,7 +35,7 @@ class Item {
 
   #validateQuantity(quantity) {
     if (!quantity || quantity <= 0) {
-      throw new InvalidPropertyError("quantity");
+      throw new MissingPropertyError("quantity");
     }
   }
 
