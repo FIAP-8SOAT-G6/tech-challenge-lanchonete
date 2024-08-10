@@ -2,6 +2,7 @@ const Product = require("../../products/entities/Product");
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
+const UnexistingProductError = require("../../products/exceptions/UnexistingProductError");
 
 class OrderManagement {
   constructor(orderRepository, productRepository) {
@@ -10,8 +11,8 @@ class OrderManagement {
   }
 
   async create() {
-    const order = new Order({ 
-      status: OrderStatus.CREATED, 
+    const order = new Order({
+      status: OrderStatus.CREATED,
       code: this.#generateCode()
     });
     const createdOrder = await this.orderRepository.create(order);
@@ -36,13 +37,16 @@ class OrderManagement {
     const { productId, quantity } = itemAttributes;
     const [product, order] = await Promise.all([
       this.productRepository.findById(productId),
-      this.orderRepository.findById(orderId),
+      this.orderRepository.findById(orderId)
     ]);
+
+    if (!order) throw new UnexistingOrderError(orderId);
+    if (!product) throw new UnexistingProductError(productId);
 
     const item = order.addItem({
       productId: product.id,
       quantity,
-      unitPrice: product.price,
+      unitPrice: product.price
     });
 
     await this.orderRepository.createItem(order, item);
@@ -61,8 +65,8 @@ class OrderManagement {
     return await this.orderRepository.findById(orderId);
   }
 
-  #generateCode() { 
-    return (Math.floor(1000 + Math.random() * 9000)).toString();
+  #generateCode() {
+    return Math.floor(1000 + Math.random() * 9000).toString();
   }
 }
 
