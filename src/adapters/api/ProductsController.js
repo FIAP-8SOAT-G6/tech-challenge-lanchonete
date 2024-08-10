@@ -17,24 +17,22 @@ class ProductsController {
 
   initializeRoutes() {
     this.router.get("/products", async (req, res) => {
-      const products = await this.useCase.findAll();
-      return res.status(200).json(products);
+      try {
+        const products = await this.useCase.findAll();
+        return res.status(200).json(products);
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
     });
 
     this.router.get("/products/:id", async (req, res) => {
-      const id = req.params.id;
-      const products = await this.useCase.findById(id);
-      return res.status(200).json(products);
-    });
-
-    this.router.get("/category/:category/products", async (req, res) => {
       try {
-        const category = req.params.category;
-        const products = await this.useCase.findByCategory(category);
+        const id = req.params.id;
+        const products = await this.useCase.findById(id);
         return res.status(200).json(products);
       } catch (error) {
-        if (error instanceof InvalidCategoryError) {
-          return res.status(400).json({ message: error.message });
+        if (error instanceof UnexistingProductError) {
+          return res.status(404).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });
       }
@@ -73,8 +71,10 @@ class ProductsController {
         });
         return res.status(201).json(product);
       } catch (error) {
+        if (error instanceof UnexistingProductError) {
+          return res.status(404).json({ message: error.message });
+        }
         if (
-          error instanceof UnexistingProductError ||
           error instanceof MissingPropertyError ||
           error instanceof InvalidCategoryError
         ) {
@@ -87,9 +87,22 @@ class ProductsController {
     this.router.delete("/products/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const product = await this.useCase.delete(id);
-        return res.status(201).json(product);
+        await this.useCase.delete(id);
+        return res.status(204).json({});
       } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
+    });
+
+    this.router.get("/category/:category/products", async (req, res) => {
+      try {
+        const category = req.params.category;
+        const products = await this.useCase.findByCategory(category);
+        return res.status(200).json(products);
+      } catch (error) {
+        if (error instanceof InvalidCategoryError) {
+          return res.status(400).json({ message: error.message });
+        }
         return res.status(500).json({ message: error.message });
       }
     });
