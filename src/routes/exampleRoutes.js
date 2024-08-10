@@ -94,9 +94,19 @@ const router = express.Router();
  *       '400':
  *         description: Invalid input
  *       '500':
+ *         description: Server error 
+ *   get:
+ *     summary: Lista todos os pedidos
+ *     description: Foobar
+ *     tags:
+ *       - Orders
+ *     responses:
+ *       '400':
+ *         description: Invalid input
+ *       '500':
  *         description: Server error
+ * 
  */
-
 router.get('/example', (req, res) => {
   res.json({ exampleField: 'Este é um exemplo' });
 });

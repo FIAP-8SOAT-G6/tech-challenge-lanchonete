@@ -25,7 +25,7 @@ class OrdersController {
     this.router.get("/orders", async (req, res) => {
       try {
         const order = await this.useCase.getOrders();
-        return res.status(201).json(order);
+        return res.status(200).json(order);
       } catch (error) {
         return res.status(500).json({ error: error.message });
       }
