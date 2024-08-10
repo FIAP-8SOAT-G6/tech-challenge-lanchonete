@@ -44,7 +44,7 @@ class FakeProductRepository {
     const productIndex = this.#products.findIndex(
       (persistedProduct) => persistedProduct?.id === product.id
     );
-
+   
     this.#products[productIndex].name = product.name;
     this.#products[productIndex].category = product.category;
     this.#products[productIndex].description = product.description;
