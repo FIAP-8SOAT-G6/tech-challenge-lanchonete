@@ -88,7 +88,7 @@ class ProductsController {
       try {
         const id = req.params.id;
         await this.useCase.delete(id);
-        return res.status(201).json({});
+        return res.status(204).json({});
       } catch (error) {
         return res.status(500).json({ message: error.message });
       }

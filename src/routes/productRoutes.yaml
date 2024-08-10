@@ -163,7 +163,7 @@ paths:
           required: true
           description: ID do produto
       responses:
-        "201":
+        "204":
           description: Produto removido com sucesso
         "500":
           description: Erro interno do servidor

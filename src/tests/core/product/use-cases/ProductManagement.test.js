@@ -201,7 +201,7 @@ context("ProductManagement", () => {
       );
     });
 
-    it("should delete the Product when id nonexisting", async () => {
+    it("should throw error  when Product does not exist", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
       const idNonexisting = 12;

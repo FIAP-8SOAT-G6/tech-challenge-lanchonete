@@ -29,3 +29,27 @@ paths:
           description: Cliente não encontrado
         "500":
           description: Erro interno do servidor
+
+  /customer:
+    post:
+      summary: Cria um novo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                cpf:
+                  type: string
+                email:
+                  type: string
+      responses:
+        "201":
+          description: Cliente criado
+        "400":
+          description: Erro na validação dos dados do cliente
+        "500":
+          description: Erro interno do servidor
