@@ -26,11 +26,11 @@ const swaggerOptions = {
   },
   apis: ['./src/routes/*.js'],
 };
-console.log('Swagger Options:', swaggerOptions);
+// console.log('Swagger Options:', swaggerOptions);
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-console.log(swaggerDocs)
+// console.log(swaggerDocs)
 
 module.exports = {
   swaggerUi,
