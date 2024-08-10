@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
+const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -69,6 +70,12 @@ class OrdersController {
         await this.useCase.removeItem(orderId, itemId);
         return res.status(204).json({});
       } catch (error) {
+        if (
+          error instanceof UnexistingOrderError ||
+          error instanceof UnexistingItemError
+        )
+          return res.status(404).json({ error: error.message });
+
         return res.status(500).json({ error: error.message });
       }
     });

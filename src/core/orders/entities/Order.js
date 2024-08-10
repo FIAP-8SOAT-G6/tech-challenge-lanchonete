@@ -2,6 +2,7 @@
 // const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 const Item = require("./Item");
+const UnexistingItemError = require("../exceptions/UnexistingItemError");
 
 class Order {
   constructor({ id, code, status, totalPrice, customer, items = [] }) {
@@ -21,7 +22,7 @@ class Order {
     unitPrice,
     totalPrice,
     productName,
-    productDescription,
+    productDescription
   }) {
     const item = new Item({
       id,
@@ -31,7 +32,7 @@ class Order {
       unitPrice,
       totalPrice,
       productName,
-      productDescription,
+      productDescription
     });
     this.items.push(item);
     return item;
@@ -44,7 +45,17 @@ class Order {
   updateItem(itemId, updatedValues) {
     console.log(itemId);
     console.log(this.items);
-    const item = this.items.find((item) => { console.log(`item.id ${typeof item.id} - itemId ${typeof itemId}, comparison: ${item.id === itemId}`); return item.id === itemId} );
+    const item = this.items.find((item) => {
+      console.log(
+        `item.id ${typeof item.id} - itemId ${typeof itemId}, comparison: ${
+          item.id === itemId
+        }`
+      );
+      return item.id === itemId;
+    });
+
+    if (!item) throw new UnexistingItemError(itemId);
+
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
     return item;

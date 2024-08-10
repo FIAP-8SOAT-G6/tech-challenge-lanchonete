@@ -60,6 +60,9 @@ class OrderManagement {
 
   async updateItem(orderId, itemId, updatedItemValues) {
     const order = await this.orderRepository.findById(orderId);
+
+    if (!order) throw new UnexistingOrderError(orderId);
+
     const updatedItem = order.updateItem(itemId, updatedItemValues);
     await this.orderRepository.updateItem(itemId, updatedItem);
     return await this.orderRepository.findById(orderId);
