@@ -13,23 +13,23 @@ class Item {
     this.id = id;
     this.orderId = orderId;
     this.productId = productId;
-    this.quantity = quantity;
-    this.unitPrice = unitPrice;
-    this.totalPrice = this.unitPrice * quantity;
 
     this.productName = productName;
     this.productDescription = productDescription;
+    this.unitPrice = unitPrice;
 
-    this.#validateQuantity(quantity);
+    this.setQuantity(quantity);
+
+    this.#updateTotalPrice();
   }
 
   setQuantity(quantity) {
     this.#validateQuantity(quantity);
     this.quantity = quantity;
-    this.updateTotalPrice();
+    this.#updateTotalPrice();
   }
 
-  updateTotalPrice() {
+  #updateTotalPrice() {
     this.totalPrice = this.unitPrice * this.quantity;
   }
 
