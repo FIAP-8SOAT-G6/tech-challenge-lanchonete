@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const InvalidCategoryError = require("../../core/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../core/exceptions/MissingPropertyError");
-const UnexistingProductError = require("../../core/exceptions/UnexistingProductError");
+const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError.js");
+const MissingPropertyError = require("../../core/products/exceptions/MissingPropertyError.js");
+const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError.js");
 
 class ProductsController {
   constructor(productManagementUseCase) {
