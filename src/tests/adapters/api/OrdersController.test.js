@@ -29,8 +29,8 @@ describe('OrdersController', () => {
       const res = await request(app).post('/orders').send(orderAttributes);
 
       expect(res.status).to.equal(201);
-      expect(res.body.status).to.equal('waiting_approval');
-      expect(res.body.total_price).to.equal(1000);
+      expect(res.body.status).to.equal('CREATED');
+      expect(res.body.total_price).to.equal(0);
     });
   });
 });

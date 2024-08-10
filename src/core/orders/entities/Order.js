@@ -4,12 +4,13 @@
 const Item = require("./Item");
 
 class Order {
-  constructor({ id, code, status, totalPrice, customer, items = [] }) {
+  constructor({ id, code, status, totalPrice, customer, items = [], createdAt }) {
     this.id = id;
     this.code = code;
     this.status = status;
     this.totalPrice = totalPrice;
     this.items = [];
+    this.createdAt = createdAt;
 
     items?.forEach(this.addItem);
   }
@@ -39,6 +40,10 @@ class Order {
 
   removeItem(itemId) {
     this.items = this.items.filter((item) => item.id !== itemId);
+  }
+
+  getElapsedTime() {
+    return Date.now() - this.createdAt.getTime();
   }
 
   updateItem(itemId, updatedValues) {
