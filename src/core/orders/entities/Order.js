@@ -43,8 +43,6 @@ class Order {
   }
 
   updateItem(itemId, updatedValues) {
-    console.log(itemId);
-    console.log(this.items);
     const item = this.items.find((item) => item.id === itemId);
 
     if (!item) throw new UnexistingItemError(itemId);
