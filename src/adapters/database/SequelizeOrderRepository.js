@@ -38,7 +38,7 @@ class SequelizeOrderRepository {
     });
     return orders?.length === 0
       ? undefined
-      : orders.map(this.#instantiateOrder);
+      : orders.map(this.#instantiateOrder).sort((a, b) => a.createdAt - b.createdAt);
   }
 
   async createItem(order, item) {
@@ -86,7 +86,8 @@ class SequelizeOrderRepository {
       id: orderAttributes.id,
       status: orderAttributes.status,
       code: orderAttributes.code,
-      totalPrice: orderAttributes.totalPrice
+      totalPrice: orderAttributes.totalPrice,
+      createdAt: orderAttributes.createdAt
     });
     orderAttributes.Items?.forEach((item) => {
       const {
@@ -106,6 +107,20 @@ class SequelizeOrderRepository {
         productDescription: item.Product?.description,
       });
     });
+
+    // TODO: Add to a decorator + test (wait for DTO disussion)
+    const minutes = Math.floor(order.getElapsedTime() / 60000);
+    let response = 0
+
+    if (minutes < 60) {
+      response = `${minutes} minute${minutes === 1 ? '' : 's'}`;
+    } else {
+      const hours = Math.floor(minutes / 60);
+      response = `${hours} hour${hours === 1 ? '' : 's'}`;
+    }
+
+    order["elapsedTime"] = response;
+
     return order;
   }
 }
