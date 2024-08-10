@@ -29,7 +29,7 @@ class CustomerController {
       }
     });
 
-    this.router.post("/customers", async (req, res) => {
+    this.router.post("/customer", async (req, res) => {
       try {
         const { name, cpf, email } = req.body;
         const customer = {

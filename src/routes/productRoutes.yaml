@@ -1,0 +1,205 @@
+paths:
+  /products:
+    get:
+      summary: Retorna todos os produtos
+      responses:
+        "200":
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    category:
+                      type: string
+                    price:
+                      type: number
+                      format: float
+                    description:
+                      type: string
+        "500":
+          description: Erro interno do servidor
+
+    post:
+      summary: Cria um novo produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  category:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                  description:
+                    type: string
+        "400":
+          description: Erro de validação
+        "500":
+          description: Erro interno do servidor
+
+  /products/{id}:
+    get:
+      summary: Retorna um produto pelo ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        "201":
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  category:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                  description:
+                    type: string
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno do servidor
+
+    put:
+      summary: Atualiza um produto existente
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  category:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                  description:
+                    type: string
+        "400":
+          description: Erro de validação
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno do servidor
+
+    delete:
+      summary: Remove um produto existente
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        "204":
+          description: Produto removido com sucesso
+        "500":
+          description: Erro interno do servidor
+
+  /category/{category}/products:
+    get:
+      summary: Retorna produtos por categoria
+      parameters:
+        - in: path
+          name: category
+          schema:
+            type: string
+          required: true
+          description: Categoria do produto
+      responses:
+        "200":
+          description: Lista de produtos na categoria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    category:
+                      type: string
+                    price:
+                      type: number
+                      format: float
+                    description:
+                      type: string
+        "400":
+          description: Categoria inválida
+        "500":
+          description: Erro interno do servidor
