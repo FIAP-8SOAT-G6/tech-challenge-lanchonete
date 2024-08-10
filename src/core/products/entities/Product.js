@@ -3,8 +3,14 @@ const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 const ProductCategory = require("./ProductCategory");
 
 class Product {
+  #id;
+  #name;
+  #category;
+  #description;
+  #price;
+
   constructor(id, name, category, description, price) {
-    this.id = id;
+    this.#id = id;
 
     this.setName(name);
     this.setCategory(category);
@@ -12,23 +18,43 @@ class Product {
     this.setPrice(price);
   }
 
+  getId() {
+    return this.#id;
+  }
+
+  getName() {
+    return this.#name;
+  }
+
+  getCategory() {
+    return this.#category;
+  }
+
+  getDescription() {
+    return this.#description;
+  }
+
+  getPrice() {
+    return this.#price;
+  }
+
   setName(name) {
     this.#validateName(name);
-    this.name = name;
+    this.#name = name;
   }
 
   setCategory(category) {
     this.#validateCategory(category);
-    this.category = category;
+    this.#category = category;
   }
 
   setPrice(price) {
     this.#validatePrice(price);
-    this.price = price;
+    this.#price = price;
   }
 
   setDescription(description) {
-    this.description = description;
+    this.#description = description;
   }
 
   #validateName(name) {

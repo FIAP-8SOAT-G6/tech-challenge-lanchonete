@@ -1,4 +1,5 @@
 const Product = require("../entities/Product");
+const ProductDTO = require("../dto/ProductDTO");
 const ProductCategory = require("../entities/ProductCategory");
 const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
 const UnexistingProductError = require("../exceptions/UnexistingProductError");
@@ -8,10 +9,9 @@ class ProductManagement {
     this.productRepository = productRepository;
   }
 
-  async create(productValues) {
-    const { name, category, description, price } = productValues;
-    const product = new Product(null, name, category, description, price);
-    return await this.productRepository.create(product);
+  async create(productDTO) {
+    const product = this.#toProductEntity(productDTO);
+    return await this.productRepository.create(this.#toProductDTO(product));
   }
 
   async findAll() {
@@ -19,34 +19,55 @@ class ProductManagement {
     return products;
   }
 
-  async findById(productId) {
-    const product = await this.productRepository.findById(productId);
-
-    if (!product) throw new UnexistingProductError(productId);
-
+  async findById(id) {
+    const product = await this.productRepository.findById(id);
+    if (!product) throw new UnexistingProductError(id);
     return product;
   }
 
   async findByCategory(category) {
     if (!ProductCategory[category]) throw new InvalidCategoryError(category);
-    const products = await this.productRepository.findByCategory(category);
-    return products;
+    const productDTOs = await this.productRepository.findByCategory(category);
+    return productDTOs;
   }
 
-  async update(productId, updatedValues) {
-    const product = await this.productRepository.findById(productId);
+  async update(productDTO) {
+    const { id } = productDTO;
+    const currentProductDTO = await this.productRepository.findById(id);
+    if (!currentProductDTO) throw new UnexistingProductError(id);
 
-    if (!product) throw new UnexistingProductError(productId);
-    product.setName(updatedValues.name);
-    product.setCategory(updatedValues.category);
-    product.setDescription(updatedValues.description);
-    product.setPrice(updatedValues.price);
+    const product = this.#toProductEntity(currentProductDTO);
+    product.setName(productDTO.name);
+    product.setCategory(productDTO.category);
+    product.setDescription(productDTO.description);
+    product.setPrice(productDTO.price);
 
-    return await this.productRepository.update(product);
+    const updatedProductDTO = this.#toProductDTO(product);
+    return await this.productRepository.update(updatedProductDTO);
   }
 
   async delete(id) {
     await this.productRepository.delete(id);
+  }
+
+  #toProductDTO(productEntity) {
+    return new ProductDTO({
+      id: productEntity.getId(),
+      name: productEntity.getName(),
+      category: productEntity.getCategory(),
+      description: productEntity.getDescription(),
+      price: productEntity.getPrice()
+    });
+  }
+
+  #toProductEntity(productDTO) {
+    return new Product(
+      productDTO.id,
+      productDTO.name,
+      productDTO.category,
+      productDTO.description,
+      productDTO.price
+    );
   }
 }
 

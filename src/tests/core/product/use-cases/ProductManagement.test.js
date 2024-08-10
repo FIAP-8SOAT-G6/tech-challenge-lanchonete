@@ -6,6 +6,7 @@ const UnexistingProductError = require("../../../../core/products/exceptions/Une
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
+const ProductDTO = require("../../../../core/products/dto/ProductDTO");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -15,14 +16,14 @@ context("ProductManagement", () => {
     it("should create a Product with an id", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const productValues = {
+      const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
         price: 12.0
-      };
+      });
 
-      const product = await productManagementUseCase.create(productValues);
+      const product = await productManagementUseCase.create(productDTO);
 
       expect(product).to.not.be.undefined;
       expect(product.id).to.be.equal(1);
@@ -33,13 +34,14 @@ context("ProductManagement", () => {
     it("should return the Product if given id", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const productValues = {
+      const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 10.0
-      };
-      const product = await productManagementUseCase.create(productValues);
+        price: 12.0
+      });
+
+      const product = await productManagementUseCase.create(productDTO);
 
       const foundProduct = await productManagementUseCase.findById(product.id);
 
@@ -64,18 +66,22 @@ context("ProductManagement", () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
       await Promise.all([
-        productManagementUseCase.create({
-          name: "Hamburguer",
-          category: ProductCategory.Lanche,
-          description: "Big Hamburguer",
-          price: 10.0
-        }),
-        productManagementUseCase.create({
-          name: "French Fries",
-          category: ProductCategory.Acompanhamento,
-          description: "250g of French Fries",
-          price: 6.0
-        })
+        productManagementUseCase.create(
+          new ProductDTO({
+            name: "Hamburguer",
+            category: ProductCategory.Lanche,
+            description: "Big Hamburguer",
+            price: 10.0
+          })
+        ),
+        productManagementUseCase.create(
+          new ProductDTO({
+            name: "French Fries",
+            category: ProductCategory.Acompanhamento,
+            description: "250g of French Fries",
+            price: 6.0
+          })
+        )
       ]);
 
       const products = await productManagementUseCase.findAll();
@@ -90,24 +96,30 @@ context("ProductManagement", () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
       await Promise.all([
-        productManagementUseCase.create({
-          name: "Hamburguer",
-          category: ProductCategory.Lanche,
-          description: "Big Hamburguer",
-          price: 10.0
-        }),
-        productManagementUseCase.create({
-          name: "Hot-Dog",
-          category: ProductCategory.Lanche,
-          description: "Classic New York Hot Dog",
-          price: 10.0
-        }),
-        productManagementUseCase.create({
-          name: "French Fries",
-          category: ProductCategory.Acompanhamento,
-          description: "250g of French Fries",
-          price: 10.0
-        })
+        productManagementUseCase.create(
+          new ProductDTO({
+            name: "Hamburguer",
+            category: ProductCategory.Lanche,
+            description: "Big Hamburguer",
+            price: 10.0
+          })
+        ),
+        productManagementUseCase.create(
+          new ProductDTO({
+            name: "Hot-Dog",
+            category: ProductCategory.Lanche,
+            description: "Classic New York Hot Dog",
+            price: 10.0
+          })
+        ),
+        productManagementUseCase.create(
+          new ProductDTO({
+            name: "French Fries",
+            category: ProductCategory.Acompanhamento,
+            description: "250g of French Fries",
+            price: 10.0
+          })
+        )
       ]);
 
       const products = await productManagementUseCase.findByCategory(
@@ -138,44 +150,54 @@ context("ProductManagement", () => {
     it("should update only product fields", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const productValues = {
+      const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
         price: 10.0
-      };
-      const product = await productManagementUseCase.create(productValues);
+      });
+      const createdProductDTO = await productManagementUseCase.create(
+        productDTO
+      );
 
-      await productManagementUseCase.update(product.id, {
+      const updateProductDTO = new ProductDTO({
+        id: createdProductDTO.id,
         name: "French Fries",
         description: "This should actually be some French Fries",
         category: ProductCategory.Acompanhamento,
         price: 12.0
       });
 
-      let foundProduct = await productManagementUseCase.findById(product.id);
-      expect(foundProduct).to.not.be.undefined;
-      expect(foundProduct.name).to.be.equals("French Fries");
-      expect(foundProduct.category).to.be.equals(
+      await productManagementUseCase.update(updateProductDTO);
+
+      const foundProductDTO = await productManagementUseCase.findById(
+        updateProductDTO.id
+      );
+      expect(foundProductDTO).to.not.be.undefined;
+      expect(foundProductDTO.name).to.be.equals("French Fries");
+      expect(foundProductDTO.category).to.be.equals(
         ProductCategory.Acompanhamento
       );
-      expect(foundProduct.description).to.be.equals(
+      expect(foundProductDTO.description).to.be.equals(
         "This should actually be some French Fries"
       );
-      expect(foundProduct.price).to.be.equals(12.0);
+      expect(foundProductDTO.price).to.be.equals(12.0);
     });
 
     it("should reject if product does not exist", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const unexistingId = -1;
 
-      const updatePromise = productManagementUseCase.update(unexistingId, {
+      const unexistingProductDTO = new ProductDTO({
+        id: -1,
         description: "Very Big Hamburguer"
       });
 
+      const updatePromise =
+        productManagementUseCase.update(unexistingProductDTO);
+
       await expect(updatePromise).to.be.eventually.rejectedWith(
-        new UnexistingProductError(unexistingId).message
+        new UnexistingProductError(unexistingProductDTO.id).message
       );
     });
   });
@@ -184,20 +206,22 @@ context("ProductManagement", () => {
     it("should delete the Product of given id", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const productValues = {
+      const productDTO = {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
         price: 10.0
       };
-      const product = await productManagementUseCase.create(productValues);
+      const createdProductDTO = await productManagementUseCase.create(
+        productDTO
+      );
 
-      await productManagementUseCase.delete(product.id);
+      await productManagementUseCase.delete(createdProductDTO.id);
 
       await expect(
-        productManagementUseCase.findById(product.id)
+        productManagementUseCase.findById(createdProductDTO.id)
       ).to.be.eventually.rejectedWith(
-        new UnexistingProductError(product.id).message
+        new UnexistingProductError(createdProductDTO.id).message
       );
     });
 
