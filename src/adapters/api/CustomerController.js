@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const ExistentCustomerError = require("../../core/customers/exceptions/ExistentCustomerError");
-const MissingPropertyError = require("../../core/customers/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
 const NonexistentCustomerError = require("../../core/customers/exceptions/NonexistentCustomerError");
 
 class CustomerController {
