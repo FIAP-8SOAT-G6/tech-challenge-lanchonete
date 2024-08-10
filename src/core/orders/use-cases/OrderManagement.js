@@ -1,6 +1,7 @@
 const Product = require("../../products/entities/Product");
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
+const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
 
 class OrderManagement {
   constructor(orderRepository, productRepository) {
@@ -25,6 +26,9 @@ class OrderManagement {
 
   async getOrder(orderId) {
     const order = await this.orderRepository.findById(orderId);
+
+    if (!order) throw new UnexistingOrderError(orderId);
+
     return order;
   }
 
