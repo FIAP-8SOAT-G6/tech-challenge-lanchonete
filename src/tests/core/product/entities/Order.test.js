@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const Order = require("../../../core/orders/entities/Order");
+const Order = require("../../../../core/orders/entities/Order");
 
 describe('Order', function() {
   let order;
