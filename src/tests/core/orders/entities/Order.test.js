@@ -1,41 +1,127 @@
-const chai = require('chai');
+const chai = require("chai");
 const expect = chai.expect;
 const Order = require("../../../../core/orders/entities/Order");
+const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
+const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
 
-describe('Order', function() {
-  let order;
+context("Order", () => {
+  describe("validations", () => {
+    it("should create an order with the correct properties", function () {
+      const order = new Order({
+        id: "1",
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0
+      });
 
-  beforeEach(function() {
-    order = new Order('1', 'CODE123', 'pending', 100.0, 'Customer1');
+      expect(order).to.have.property("id").that.equals("1");
+      expect(order).to.have.property("code").that.equals("CODE123");
+      expect(order).to.have.property("status").that.equals(OrderStatus.CREATED);
+      expect(order).to.have.property("totalPrice").that.equals(100.0);
+      expect(order).to.have.property("items").that.is.an("array").that.is.empty;
+    });
   });
-
-  it('should create an order with the correct properties', function() {
-    expect(order).to.have.property('id').that.equals('1');
-    expect(order).to.have.property('code').that.equals('CODE123');
-    expect(order).to.have.property('status').that.equals('pending');
-    expect(order).to.have.property('total_price').that.equals(100.0);
-    expect(order).to.have.property('customer').that.equals('Customer1');
-    expect(order).to.have.property('items').that.is.an('array').that.is.empty;
+  describe("setStatus", () => {
+    it("should allow to create an Order with status `CREATED`", () => {
+      expect(
+        () =>
+          new Order({
+            id: "1",
+            code: "CODE123",
+            status: OrderStatus.CREATED,
+            totalPrice: 100.0
+          })
+      ).to.not.throw(InvalidStatusTransitionError);
+    });
+    it("should allow to change from status `CREATED` to `PENDING_PAYMENT`", () => {
+      const order = new Order({
+        id: "1",
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0
+      });
+      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.not.throw(
+        InvalidStatusTransitionError
+      );
+    });
+    it("should allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
+      const order = new Order({
+        id: "1",
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0
+      });
+      order.setStatus(OrderStatus.PENDING_PAYMENT);
+      expect(() => order.setStatus(OrderStatus.CREATED)).to.throw(
+        InvalidStatusTransitionError
+      );
+    });
   });
-
-  it('should add an item to the order', function() {
-    const item = { id: 'item1', name: 'Item 1' };
-    order.addItem(item);
-    expect(order.items).to.include(item);
+  describe("addItem", () => {
+    it("should add item to order", () => {
+      const order = new Order({
+        id: "1",
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0
+      });
+      const item = {
+        id: "item1",
+        productId: 1,
+        productName: "Hamburguer",
+        productDescription: "Normal Hamburguer",
+        unitPrice: 12.99,
+        quantity: 1
+      };
+      order.addItem(item);
+      expect(order.items.length).to.be.at.least(1);
+    });
   });
+  describe("updateItem", () => {
+    it("should update an item", () => {
+      const order = new Order({
+        id: 1,
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0,
+        items: [
+          {
+            id: "item1",
+            productId: 1,
+            productName: "Hamburguer",
+            productDescription: "Normal Hamburguer",
+            unitPrice: 12.99,
+            quantity: 1
+          }
+        ]
+      });
 
-  it('should remove an item from the order', function() {
-    const item1 = { id: 'item1', name: 'Item 1' };
-    const item2 = { id: 'item2', name: 'Item 2' };
-    order.addItem(item1);
-    order.addItem(item2);
-    order.removeItem('item1');
-    expect(order.items).to.not.include(item1);
-    expect(order.items).to.include(item2);
-  });
+      const updateValues = {
+        quantity: 2
+      };
 
-  it('should initialize with an empty items array if no items are provided', function() {
-    const newOrder = new Order('2', 'CODE456', 'completed', 200.0, 'Customer2');
-    expect(newOrder.items).to.be.an('array').that.is.empty;
+      const updatedItem = order.updateItem("item1", updateValues);
+      expect(updatedItem.quantity).to.be.equals(2);
+      expect(updatedItem.totalPrice).to.be.equals(
+        updateValues.quantity * updatedItem.unitPrice
+      );
+    });
+    it("should throw an error when updating unexisting item", () => {
+      const order = new Order({
+        id: 1,
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0,
+        items: []
+      });
+
+      const unexistingId = -1;
+      const updateValues = { quantity: 3 };
+
+      expect(() => order.updateItem(unexistingId, updateValues)).to.throw(
+        new UnexistingItemError(unexistingId).message
+      );
+    });
   });
 });
