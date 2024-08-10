@@ -20,7 +20,9 @@ services:
       - ${CONTAINER_PORT_DB}
       
   lanchonete-node:
-    build: .  
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: lanchonete-node
     depends_on:
       - lanchonete-db
@@ -36,6 +38,9 @@ services:
       - fiap
     expose:
       - ${CONTAINER_PORT_SERVER}
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
 
 volumes:
   db_data:
