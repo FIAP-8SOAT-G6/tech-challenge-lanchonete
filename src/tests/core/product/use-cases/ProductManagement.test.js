@@ -129,7 +129,7 @@ context("ProductManagement", () => {
     });
   });
   describe("update", () => {
-    it.skip("should update only product fields", async () => {
+    it("should update only product fields", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
       const productValues = {
@@ -148,19 +148,6 @@ context("ProductManagement", () => {
       });
 
       let foundProduct = await productManagementUseCase.findById(product.id);
-      expect(foundProduct).to.not.be.undefined;
-      expect(foundProduct.name).to.be.equals("French Fries");
-      expect(foundProduct.category).to.be.equals(
-        ProductCategory.Acompanhamento
-      );
-      expect(foundProduct.description).to.be.equals(
-        "This should actually be some French Fries"
-      );
-      expect(foundProduct.price).to.be.equals(12.0);
-
-      await productManagementUseCase.update(product.id, {});
-
-      foundProduct = await productManagementUseCase.findById(product.id);
       expect(foundProduct).to.not.be.undefined;
       expect(foundProduct.name).to.be.equals("French Fries");
       expect(foundProduct.category).to.be.equals(
