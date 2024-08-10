@@ -1,9 +1,9 @@
 const chai = require("chai");
 const expect = chai.expect;
-const Order = require("../../../../../core/orders/entities/Order");
-const OrderStatus = require("../../../../../core/orders/entities/OrderStatus");
-const InvalidStatusTransitionError = require("../../../../../core/orders/exceptions/InvalidStatusTransitionError");
-const UnexistingItemError = require("../../../../../core/orders/exceptions/UnexistingItemError");
+const Order = require("../../../../core/orders/entities/Order");
+const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
+const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
 
 context("Order", () => {
   describe("validations", () => {
