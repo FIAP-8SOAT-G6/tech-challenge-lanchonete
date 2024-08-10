@@ -8,7 +8,7 @@ class Item {
     productName,
     productDescription,
     quantity,
-    unitPrice,
+    unitPrice
   }) {
     this.id = id;
     this.orderId = orderId;
@@ -26,6 +26,11 @@ class Item {
   setQuantity(quantity) {
     this.#validateQuantity(quantity);
     this.quantity = quantity;
+    this.updateTotalPrice();
+  }
+
+  updateTotalPrice() {
+    this.totalPrice = this.unitPrice * this.quantity;
   }
 
   #validateQuantity(quantity) {
@@ -41,7 +46,7 @@ class Item {
       productId: this.productId,
       quantity: this.quantity,
       unitPrice: this.unitPrice,
-      totalPrice: this.totalPrice,
+      totalPrice: this.totalPrice
     };
   }
 }

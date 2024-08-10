@@ -3,16 +3,37 @@
 
 const Item = require("./Item");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
+const OrderStatus = require("./OrderStatus");
+const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
+
+const ALLOWED_TARGET_STATUS_TRANSITIONS = {
+  [OrderStatus.CREATED]: [],
+  [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED]
+};
 
 class Order {
   constructor({ id, code, status, totalPrice, customer, items = [] }) {
     this.id = id;
     this.code = code;
-    this.status = status;
     this.totalPrice = totalPrice;
     this.items = [];
 
-    items?.forEach(this.addItem);
+    this.setStatus(status);
+
+    items?.forEach(this.addItem.bind(this));
+  }
+
+  setStatus(status) {
+    const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
+    if (!this.status || requiredStatusForTarget.includes(this.status)) {
+      this.status = status;
+    } else {
+      throw new InvalidStatusTransitionError(
+        this.status,
+        status,
+        ALLOWED_TARGET_STATUS_TRANSITIONS[status]
+      );
+    }
   }
 
   addItem({
