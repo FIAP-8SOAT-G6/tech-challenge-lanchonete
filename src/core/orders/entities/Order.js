@@ -59,10 +59,6 @@ class Order {
     return item;
   }
 
-  removeItem(itemId) {
-    this.items = this.items.filter((item) => item.id !== itemId);
-  }
-
   updateItem(itemId, updatedValues) {
     const item = this.items.find((item) => item.id === itemId);
 

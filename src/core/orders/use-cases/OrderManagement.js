@@ -1,4 +1,3 @@
-const Product = require("../../products/entities/Product");
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 const UnexistingOrderError = require("../exceptions/UnexistingOrderError");

@@ -78,28 +78,6 @@ context("Order", () => {
       expect(order.items.length).to.be.at.least(1);
     });
   });
-  describe("removeItem", () => {
-    it("should remove existing item from order", () => {
-      const order = new Order({
-        id: 1,
-        code: "CODE123",
-        status: OrderStatus.CREATED,
-        totalPrice: 100.0,
-        items: [
-          {
-            id: "item1",
-            productId: 1,
-            productName: "Hamburguer",
-            productDescription: "Normal Hamburguer",
-            unitPrice: 12.99,
-            quantity: 1
-          }
-        ]
-      });
-      order.removeItem("item1");
-      expect(order.items.length).to.be.equal(0);
-    });
-  });
   describe("updateItem", () => {
     it("should update an item", () => {
       const order = new Order({
