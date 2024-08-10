@@ -28,6 +28,7 @@ context("ProductManagement", () => {
       expect(product.id).to.be.equal(1);
     });
   });
+
   describe("findById", () => {
     it("should return the Product if given id", async () => {
       const repository = new FakeProductRepository();
@@ -44,17 +45,20 @@ context("ProductManagement", () => {
 
       expect(foundProduct).to.not.be.undefined;
     });
-    it("should return undefined if no Product exists for ID", async () => {
+
+    it("should return error if no Product exists for ID", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
-      const unexistingId = 1;
+      const unexistingId = 15;
 
-      const foundProduct = await productManagementUseCase.findById(
-        unexistingId
+      await expect(
+        productManagementUseCase.findById(unexistingId)
+      ).to.be.eventually.rejectedWith(
+        new UnexistingProductError(unexistingId).message
       );
-      expect(foundProduct).to.be.undefined;
     });
   });
+
   describe("findAll", () => {
     it("should return all Products", async () => {
       const repository = new FakeProductRepository();
@@ -80,6 +84,7 @@ context("ProductManagement", () => {
       expect(products.length).to.be.at.least(2);
     });
   });
+
   describe("findByCategory", () => {
     it("should return all Products of given category", async () => {
       const repository = new FakeProductRepository();
@@ -128,6 +133,7 @@ context("ProductManagement", () => {
       );
     });
   });
+
   describe("update", () => {
     it.skip("should update only product fields", async () => {
       const repository = new FakeProductRepository();
@@ -171,6 +177,7 @@ context("ProductManagement", () => {
       );
       expect(foundProduct.price).to.be.equals(12.0);
     });
+
     it("should reject if product does not exist", async () => {
       const repository = new FakeProductRepository();
       const productManagementUseCase = new ProductManagement(repository);
@@ -185,6 +192,7 @@ context("ProductManagement", () => {
       );
     });
   });
+
   describe("delete", () => {
     it("should delete the Product of given id", async () => {
       const repository = new FakeProductRepository();
@@ -199,8 +207,11 @@ context("ProductManagement", () => {
 
       await productManagementUseCase.delete(product.id);
 
-      const foundProduct = await productManagementUseCase.findById(product.id);
-      expect(foundProduct).to.be.undefined;
+      await expect(
+        productManagementUseCase.findById(product.id)
+      ).to.be.eventually.rejectedWith(
+        new UnexistingProductError(product.id).message
+      );
     });
   });
 });

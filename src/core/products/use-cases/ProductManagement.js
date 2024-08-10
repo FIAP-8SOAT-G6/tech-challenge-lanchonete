@@ -21,6 +21,9 @@ class ProductManagement {
 
   async findById(productId) {
     const product = await this.productRepository.findById(productId);
+
+    if (!product) throw new UnexistingProductError(productId);
+
     return product;
   }
 
