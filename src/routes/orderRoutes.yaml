@@ -160,6 +160,13 @@ paths:
       summary: Cria um novo item no pedido
       tags:
         - Pedidos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
       requestBody:
         description: Payload para criar um item no pedido
         required: true
@@ -168,25 +175,48 @@ paths:
             schema:
               type: object
               properties:
-                orders:
-                  type: object
-                  properties:
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          product_id:
-                            type: string
-                            description: ID of the product
-                          quantity:
-                            type: integer
-                            description: Quantity of the product
-                      example:
-                        - product_id: "12345"
-                          quantity: 2
+                productId:
+                  type: string
+                  description: ID of the product
+                quantity:
+                  type: integer
+                  description: Quantity of the product
+              example:
+                - productId: "1"
+                  quantity: 2
               required:
-                - orders
+                - productId
+                - quantity
+      responses:
+        "201":
+          description: Exibe o pedido com o item criado
+          content:
+            application/json:
+              schema:
+                type: object              
+                properties:
+                  id:
+                    type: integer
+                  code: 
+                    type: string
+                  status: 
+                    type: string
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      description:
+                        type: string
+        "500":
+          description: Erro interno do servidor
   /orders/{id}/items/{itemId}:
     put: 
       summary: Atualiza um item existente do pedido
