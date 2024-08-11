@@ -155,3 +155,57 @@ paths:
                         type: string
         "500":
           description: Erro interno do servidor
+  /orders/{id}/items:
+    post: 
+      summary: Cria um novo item no pedido
+      tags:
+        - Pedidos
+      requestBody:
+        description: Payload para criar um item no pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          product_id:
+                            type: string
+                            description: ID of the product
+                          quantity:
+                            type: integer
+                            description: Quantity of the product
+                      example:
+                        - product_id: "12345"
+                          quantity: 2
+              required:
+                - orders
+  /orders/{id}/items/{itemId}:
+    put: 
+      summary: Atualiza um item específico do pedido
+      tags:
+        - Pedidos
+      requestBody:
+        description: Payload para atualizar um item no pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Quantidade do item no pedido
+              required:
+                - quantity
+    delete: 
+      summary: Remove um item específico do pedido
+      tags:
+        - Pedidos
