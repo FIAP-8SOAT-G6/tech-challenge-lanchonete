@@ -115,14 +115,14 @@ paths:
           description: Server error 
   /orders/{id}:
     get: 
-      summary: Lista o pedido desejado filtrando pelo ID
+      summary: Exibe um pedido pelo ID
       parameters:
         - in: path
-          name: cpf
+          name: id
           required: true
-          description: CPF do cliente
+          description: ID do pedido
           schema:
-            type: string
+            type: integer
       tags:
         - Pedidos
       responses:
@@ -189,7 +189,7 @@ paths:
                 - orders
   /orders/{id}/items/{itemId}:
     put: 
-      summary: Atualiza um item específico do pedido
+      summary: Atualiza um item existente do pedido
       tags:
         - Pedidos
       requestBody:
@@ -206,6 +206,6 @@ paths:
               required:
                 - quantity
     delete: 
-      summary: Remove um item específico do pedido
+      summary: Remove um item existente do pedido
       tags:
         - Pedidos
