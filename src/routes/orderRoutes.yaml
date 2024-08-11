@@ -38,38 +38,24 @@ paths:
           description: Erro interno do servidor
     post:
       summary: Cria um novo pedido
-      description: Creates a new order with the specified items.
       tags:
         - Pedidos
       requestBody:
-        description: Payload to create a new order
+        description: Exemplo de payload para criar um novo pedido
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                orders:
-                  type: object
-                  properties:
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          product_id:
-                            type: string
-                            description: ID of the product
-                          quantity:
-                            type: integer
-                            description: Quantity of the product
-                      example:
-                        - product_id: "12345"
-                          quantity: 2
+                customerId:
+                  type: integer
               required:
                 - orders
+              example:
+                customerId: 1
       responses:
-        '200':
+        '201':
           description: Order created successfully
           content:
             application/json:
@@ -182,8 +168,8 @@ paths:
                   type: integer
                   description: Quantity of the product
               example:
-                - productId: "1"
-                  quantity: 2
+                productId: "1"
+                quantity: 2
               required:
                 - productId
                 - quantity
