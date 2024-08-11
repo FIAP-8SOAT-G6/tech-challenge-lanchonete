@@ -208,8 +208,7 @@ components:
           description: Código do Pedido
           example: 9999
         status:
-          type: string
-          description: Status do Pedido
+          $ref: "#/components/schemas/OrderStatus"
           example: CREATED
 
     OrderWithItems:
@@ -259,3 +258,10 @@ components:
           format: float
           example: 24.98
           description: Preço Total do Item
+
+    OrderStatus:
+      type: string
+      description: Status do Pedido
+      enum:
+        - CREATED
+        - PENDING_PAYMENT
