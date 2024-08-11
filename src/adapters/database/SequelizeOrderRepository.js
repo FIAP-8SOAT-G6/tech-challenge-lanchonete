@@ -1,6 +1,7 @@
 const Order = require("../../core/orders/entities/Order");
 const { sequelize } = require("../../infrastructure/database/models");
 const order = require("../../infrastructure/database/models/order");
+const SequelizeCustomerRepository = require("./SequelizeCustomerRepository");
 
 const {
   Order: SequelizeOrder,
@@ -10,9 +11,14 @@ const {
 
 class SequelizeOrderRepository {
   async create(orderAttributes) {
-    const { status, code } = orderAttributes;
-    const createdOrder = await SequelizeOrder.create({ status, code });
-    return this.#instantiateOrder(createdOrder);
+    const { status, code, CustomerId } = orderAttributes;
+
+    const repository = new SequelizeCustomerRepository()
+    const customer = await repository.findById(CustomerId);
+    const { id, cpf, name, email } = customer;
+
+    const createdOrder = await SequelizeOrder.create({ status, code, CustomerId });
+    return this.#instantiateOrder(createdOrder, { id, cpf, name, email });
   }
 
   async findById(id) {
@@ -81,14 +87,21 @@ class SequelizeOrderRepository {
     return this.#instantiateOrder(createdOrder);
   }
 
-  #instantiateOrder(orderAttributes) {
+  #instantiateOrder(orderAttributes, customerAttributes = {}) {
     const order = new Order({
       id: orderAttributes.id,
       status: orderAttributes.status,
       code: orderAttributes.code,
       totalPrice: orderAttributes.totalPrice,
-      createdAt: orderAttributes.createdAt
+      createdAt: orderAttributes.createdAt,
+      CustomerId: orderAttributes.CustomerId,
     });
+
+    if (customerAttributes && Object.keys(customerAttributes).length !== 0) {
+      order.setCustomer(customerAttributes);
+    }
+    // const customerAttributes = orderAttributes.Customer?
+    // orderAttributes.Customer?.id && order.setCustomer(orderAttributes.Customer.id);
     orderAttributes.Items?.forEach((item) => {
       const {
         id,
@@ -120,7 +133,6 @@ class SequelizeOrderRepository {
     }
 
     order["elapsedTime"] = response;
-
     return order;
   }
 }

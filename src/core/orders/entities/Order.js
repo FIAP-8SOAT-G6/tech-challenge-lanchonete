@@ -4,6 +4,7 @@
 const Item = require("./Item");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const OrderStatus = require("./OrderStatus");
+const Customer = require("../../customers/entities/Customer");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
@@ -12,16 +13,25 @@ const ALLOWED_TARGET_STATUS_TRANSITIONS = {
 };
 
 class Order {
-  constructor({ id, code, status, totalPrice, customer, items = [], createdAt }) {
+  constructor({ id, code, status, totalPrice, CustomerId, customer, items = [], createdAt }) {
     this.id = id;
     this.code = code;
     this.totalPrice = totalPrice;
     this.items = [];
     this.createdAt = createdAt;
+    this.CustomerId = CustomerId;
+    this.customer = null;
 
+    this.setCustomer(customer);
     this.setStatus(status);
 
     items?.forEach(this.addItem.bind(this));
+  }
+
+  setCustomer(customerAttributes) {
+    if (customerAttributes && Object.keys(customerAttributes).length !== 0) {
+      this.customer = new Customer(customerAttributes);
+    }
   }
 
   setStatus(status) {

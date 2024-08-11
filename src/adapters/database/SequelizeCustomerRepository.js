@@ -22,6 +22,12 @@ class SequelizeCustomerRepository {
     return this.#instantiateCustomer(customers);
   }
 
+  async findById(id) {
+    const customer = await SequelizeCustomer.findByPk(id);
+    let { name, cpf, email } = customer;
+    return this.#instantiateCustomer({ id, name, cpf, email });
+  }
+
   #instantiateCustomer(dbCustomer) {
     if (!dbCustomer) return undefined;
 

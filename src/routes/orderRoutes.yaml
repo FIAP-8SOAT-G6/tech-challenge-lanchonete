@@ -11,14 +11,14 @@ paths:
             application/json:
               schema:
                 type: array
-                orders: 
-                  type: object               
+                orders:
+                  type: object
                   properties:
                     id:
                       type: integer
-                    code: 
+                    code:
                       type: string
-                    status: 
+                    status:
                       type: string
                     items:
                       type: object
@@ -49,25 +49,13 @@ paths:
             schema:
               type: object
               properties:
-                orders:
-                  type: object
-                  properties:
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          product_id:
-                            type: string
-                            description: ID of the product
-                          quantity:
-                            type: integer
-                            description: Quantity of the product
-                      example:
-                        - product_id: "12345"
-                          quantity: 2
-              required:
-                - orders
+                customerId:
+                  type: integer
+                  description: ID of the customer
+            required:
+              - customerId
+            example:
+              customerId: 9
       responses:
         '200':
           description: Order created successfully
@@ -112,9 +100,9 @@ paths:
         '400':
           description: Invalid input
         '500':
-          description: Server error 
+          description: Server error
   /orders/{id}:
-    get: 
+    get:
       summary: Exibe um pedido pelo ID
       parameters:
         - in: path
@@ -131,13 +119,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object              
+                type: object
                 properties:
                   id:
                     type: integer
-                  code: 
+                  code:
                     type: string
-                  status: 
+                  status:
                     type: string
                   items:
                     type: object
@@ -156,7 +144,7 @@ paths:
         "500":
           description: Erro interno do servidor
   /orders/{id}/items:
-    post: 
+    post:
       summary: Cria um novo item no pedido
       tags:
         - Pedidos
@@ -193,13 +181,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object              
+                type: object
                 properties:
                   id:
                     type: integer
-                  code: 
+                  code:
                     type: string
-                  status: 
+                  status:
                     type: string
                   items:
                     type: object
@@ -218,7 +206,7 @@ paths:
         "500":
           description: Erro interno do servidor
   /orders/{id}/items/{itemId}:
-    put: 
+    put:
       summary: Atualiza um item existente do pedido
       tags:
         - Pedidos
@@ -235,7 +223,7 @@ paths:
                   description: Quantidade do item no pedido
               required:
                 - quantity
-    delete: 
+    delete:
       summary: Remove um item existente do pedido
       tags:
         - Pedidos
