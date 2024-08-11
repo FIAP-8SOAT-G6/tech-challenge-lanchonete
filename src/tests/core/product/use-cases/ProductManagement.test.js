@@ -11,16 +11,21 @@ const ProductDTO = require("../../../../core/products/dto/ProductDTO");
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-context("ProductManagement", () => {
+context.only("ProductManagement", () => {
+  function setupUseCase() {
+    const repository = new FakeProductRepository();
+    return new ProductManagement(repository);
+  }
+
   describe("create", () => {
-    it("should create a Product with an id", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+    it.only("should create a Product with an id", async () => {
+      const productManagementUseCase = setupUseCase();
       const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
-        price: 12.0
+        price: 12.0,
+        images: ["image1", "image2"]
       });
 
       const product = await productManagementUseCase.create(productDTO);
@@ -32,8 +37,7 @@ context("ProductManagement", () => {
 
   describe("findById", () => {
     it("should return the Product if given id", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
@@ -49,8 +53,7 @@ context("ProductManagement", () => {
     });
 
     it("should return error if no Product exists for ID", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const unexistingId = 15;
 
       await expect(
@@ -63,8 +66,7 @@ context("ProductManagement", () => {
 
   describe("findAll", () => {
     it("should return all Products", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       await Promise.all([
         productManagementUseCase.create(
           new ProductDTO({
@@ -93,8 +95,7 @@ context("ProductManagement", () => {
 
   describe("findByCategory", () => {
     it("should return all Products of given category", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       await Promise.all([
         productManagementUseCase.create(
           new ProductDTO({
@@ -134,8 +135,7 @@ context("ProductManagement", () => {
     });
 
     it("should reject if invalid category is passed", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const invalidCategory = "UNEXISTING_CATEGORY";
 
       await expect(
@@ -148,8 +148,7 @@ context("ProductManagement", () => {
 
   describe("update", () => {
     it("should update only product fields", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const productDTO = new ProductDTO({
         name: "Hamburguer",
         category: ProductCategory.Lanche,
@@ -185,9 +184,7 @@ context("ProductManagement", () => {
     });
 
     it("should reject if product does not exist", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
-
+      const productManagementUseCase = setupUseCase();
       const unexistingProductDTO = new ProductDTO({
         id: -1,
         description: "Very Big Hamburguer"
@@ -204,8 +201,7 @@ context("ProductManagement", () => {
 
   describe("delete", () => {
     it("should delete the Product of given id", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const productDTO = {
         name: "Hamburguer",
         category: ProductCategory.Lanche,
@@ -226,8 +222,7 @@ context("ProductManagement", () => {
     });
 
     it("should throw error  when Product does not exist", async () => {
-      const repository = new FakeProductRepository();
-      const productManagementUseCase = new ProductManagement(repository);
+      const productManagementUseCase = setupUseCase();
       const idNonexisting = 12;
       await productManagementUseCase.delete(idNonexisting);
 

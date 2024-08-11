@@ -41,12 +41,13 @@ class ProductsController {
 
     this.router.post("/products", async (req, res) => {
       try {
-        const { name, description, category, price } = req.body;
+        const { name, description, category, price, images } = req.body;
         const productDTO = new ProductDTO({
           name,
           description,
           category,
-          price
+          price,
+          images
         });
         const product = await this.useCase.create(productDTO);
         return res.status(201).json(product);

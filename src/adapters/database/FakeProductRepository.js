@@ -1,18 +1,26 @@
 const ProductDTO = require("../../core/products/dto/ProductDTO");
-
+//const Image = require("../../core/products/entities/Image");
 class FakeProductRepository {
   #products = [];
+  #images = [];
 
   async create(product) {
-    const { name, category, description, price } = product;
+    const { name, category, description, price, images } = product;
+
     const createdProduct = {
       id: this.#products.length + 1,
       name,
       category,
       description,
-      price
+      price,
+      images: []
     };
+
     this.#products.push(createdProduct);
+    this.#addImages({ productId: createdProduct.id, images });
+
+    createdProduct.images.push(...this.#images);
+
     return Promise.resolve(this.#createProductDTO(createdProduct));
   }
 
@@ -34,12 +42,12 @@ class FakeProductRepository {
     return Promise.resolve(products.map(this.#createProductDTO));
   }
 
-  delete(id) {
-    const productIndex = this.#products.findIndex(
-      (product) => product?.id === id
-    );
-    delete this.#products[productIndex];
-    return Promise.resolve();
+  #addImages({ productId, images }) {
+    images?.map((image) => {
+      image.id = this.#images?.length + 1;
+      image.productId = productId;
+      this.#images.push(image);
+    });
   }
 
   update(product) {
@@ -51,8 +59,17 @@ class FakeProductRepository {
     this.#products[productIndex].category = product.category;
     this.#products[productIndex].description = product.description;
     this.#products[productIndex].price = product.price;
+    this.#products[productIndex].images = product.images;
 
     return this.#createProductDTO(this.#products[productIndex]);
+  }
+
+  delete(id) {
+    const productIndex = this.#products.findIndex(
+      (product) => product?.id === id
+    );
+    delete this.#products[productIndex];
+    return Promise.resolve();
   }
 
   #createProductDTO(values) {
@@ -61,7 +78,8 @@ class FakeProductRepository {
       name: values.name,
       category: values.category,
       description: values.description,
-      price: values.price
+      price: values.price,
+      images: values.images
     });
   }
 }

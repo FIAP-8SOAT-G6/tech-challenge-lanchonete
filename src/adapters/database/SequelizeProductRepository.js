@@ -2,16 +2,27 @@ const ProductDTO = require("../../core/products/dto/ProductDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 
 const { Product: SequelizeProduct } = sequelize.models;
+const { Image: SequelizeImage } = sequelize.models;
 
 class SequelizeProductRepository {
   async create(productDTO) {
-    const { name, category, description, price } = productDTO;
+    const { name, category, description, price, images } = productDTO;
     const createdProduct = await SequelizeProduct.create({
       name,
       category,
       description,
       price
     });
+
+    await images?.forEach(async (image) => {
+      const createdImage = await SequelizeImage.create({
+        productId: createdProduct.id,
+        url: image.url
+      });
+
+      await createdProduct.images.push(createdImage);
+    });
+
     return this.#createProductDTO(createdProduct);
   }
 
@@ -38,7 +49,8 @@ class SequelizeProductRepository {
       name: productDTO.name,
       category: productDTO.category,
       description: productDTO.description,
-      price: productDTO.price
+      price: productDTO.price,
+      images: productDTO.images
     });
     return this.#createProductDTO(updatedProduct);
   }
@@ -55,7 +67,8 @@ class SequelizeProductRepository {
       name: values.name,
       category: values.category,
       description: values.description,
-      price: values.price
+      price: values.price,
+      images: values.images
     });
   }
 }

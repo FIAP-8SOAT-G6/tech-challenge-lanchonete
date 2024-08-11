@@ -25,6 +25,15 @@ paths:
                       format: float
                     description:
                       type: string
+                    images:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          url:
+                            type: string
         "500":
           description: Erro interno do servidor
 
@@ -48,6 +57,11 @@ paths:
                   format: float
                 description:
                   type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+
       responses:
         "201":
           description: Produto criado com sucesso
@@ -67,6 +81,15 @@ paths:
                     format: float
                   description:
                     type: string
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
         "400":
           description: Erro de validação
         "500":
@@ -103,6 +126,15 @@ paths:
                     format: float
                   description:
                     type: string
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
         "404":
           description: Produto não encontrado
         "500":
@@ -135,6 +167,10 @@ paths:
                   format: float
                 description:
                   type: string
+                images:
+                  type: array
+                  items:
+                    type: string
       responses:
         "201":
           description: Produto atualizado com sucesso
@@ -154,6 +190,15 @@ paths:
                     format: float
                   description:
                     type: string
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
         "400":
           description: Erro de validação
         "404":
@@ -211,6 +256,15 @@ paths:
                       format: float
                     description:
                       type: string
+                    images:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          url:
+                            type: string
         "400":
           description: Categoria inválida
         "500":

@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Product.hasMany(models.Image, {
+        foreignKey: "productIdB", // Definindo a chave estrangeira
+        as: "images" // Alias para facilitar as associações
+      });
     }
   }
   Product.init(
@@ -17,25 +21,25 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: true
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       category: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
       },
       price: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
+        allowNull: false
       },
-      description: DataTypes.STRING,
+      description: DataTypes.STRING
     },
     {
       sequelize,
-      modelName: "Product",
+      modelName: "Product"
     }
   );
   return Product;
