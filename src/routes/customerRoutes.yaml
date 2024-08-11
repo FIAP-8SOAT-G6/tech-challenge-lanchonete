@@ -1,7 +1,9 @@
 paths:
-  /customer/{cpf}:
+  /customers/{cpf}:
     get:
-      summary: Retorna um cliente pelo CPF
+      summary: Exibe dados de um cliente pelo CPF
+      tags:
+        - Clientes
       parameters:
         - in: path
           name: cpf
@@ -30,9 +32,11 @@ paths:
         "500":
           description: Erro interno do servidor
 
-  /customer:
+  /customers:
     post:
       summary: Cria um novo cliente
+      tags:
+        - Clientes
       requestBody:
         required: true
         content:

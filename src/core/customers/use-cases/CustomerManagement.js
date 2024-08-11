@@ -4,6 +4,7 @@ const ExistentCustomerError = require("../exceptions/ExistentCustomerError");
 const MissingPropertyError = require("../exceptions/MissingPropertyError");
 const CustomerDTO = require("../dto/CustomerDTO");
 
+
 class CustomerManagement {
   constructor(customerRepository) {
     this.customerRepository = customerRepository;

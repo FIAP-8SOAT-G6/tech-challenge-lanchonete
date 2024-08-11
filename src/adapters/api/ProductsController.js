@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../core/products/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
 const ProductDTO = require("../../core/products/dto/ProductDTO");
 
