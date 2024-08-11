@@ -1,5 +1,5 @@
 const Customer = require("../../../../core/customers/entities/Customer");
-const MissingPropertyError = require("../../../../core/customers/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
 
 const expect = require("chai").expect;
 

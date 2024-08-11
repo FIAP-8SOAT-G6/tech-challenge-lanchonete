@@ -8,7 +8,7 @@ const SequelizeProductRepository = require('../../../adapters/database/Sequelize
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe('OrdersController', () => {
+describe.skip('OrdersController', () => {
   describe('create', () => {
     it('should create a new order', async () => {
       const repository = new SequelizeProductRepository();

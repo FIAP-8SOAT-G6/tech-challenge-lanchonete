@@ -1,4 +1,4 @@
-const InvalidPropertyError = require("../../products/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 
 class Item {
   constructor({
@@ -8,29 +8,34 @@ class Item {
     productName,
     productDescription,
     quantity,
-    unitPrice,
+    unitPrice
   }) {
     this.id = id;
     this.orderId = orderId;
     this.productId = productId;
-    this.quantity = quantity;
-    this.unitPrice = unitPrice;
-    this.totalPrice = this.unitPrice * quantity;
 
     this.productName = productName;
     this.productDescription = productDescription;
+    this.unitPrice = unitPrice;
 
-    this.#validateQuantity(quantity);
+    this.setQuantity(quantity);
+
+    this.#updateTotalPrice();
   }
 
   setQuantity(quantity) {
     this.#validateQuantity(quantity);
     this.quantity = quantity;
+    this.#updateTotalPrice();
+  }
+
+  #updateTotalPrice() {
+    this.totalPrice = this.unitPrice * this.quantity;
   }
 
   #validateQuantity(quantity) {
     if (!quantity || quantity <= 0) {
-      throw new InvalidPropertyError("quantity");
+      throw new MissingPropertyError("quantity");
     }
   }
 
@@ -41,7 +46,7 @@ class Item {
       productId: this.productId,
       quantity: this.quantity,
       unitPrice: this.unitPrice,
-      totalPrice: this.totalPrice,
+      totalPrice: this.totalPrice
     };
   }
 }
