@@ -213,5 +213,14 @@ context("OrderManagement", () => {
 
       expect(updatedOrder.status).to.not.be.equals(OrderStatus.CREATED);
     });
+    it("should not change status if order has no items", async () => {
+      const order = await useCase.create();
+
+      await expect(
+        useCase.checkout(order.id)
+      ).to.be.eventually.rejectedWith(EmptyOrderError);
+      const updatedOrder = await useCase.getOrder(order.id);
+      expect(updatedOrder.status).to.be.equals(OrderStatus.CREATED);
+    });
   });
 });

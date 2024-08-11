@@ -30,7 +30,7 @@ paths:
                 customerId:
                   type: integer
                   example: 1
-              required :
+              required:
                 - customerId
       responses:
         "201":
@@ -122,6 +122,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          description: Não foi possivel adicionar item pois o pedido já foi fechado ou o produto não existe.
+        "404":
+          description: Pedido não encontrado
         "500":
           description: Erro interno do servidor
   /orders/{orderId}/items/{itemId}:
@@ -164,6 +168,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          description: Não foi possivel atualizar o item pois o pedido já foi fechado
+        "404":
+          description: Item não encontrado
         "500":
           description: Erro interno do servidor
     delete:
@@ -188,6 +196,10 @@ paths:
           description: Item removido com sucesso
           content:
             application/json: {}
+        "400":
+          description: Não foi possivel atualizar o item pois o pedido já foi fechado
+        "404":
+          description: Item não encontrado
         "500":
           description: Erro interno do servidor
 components:

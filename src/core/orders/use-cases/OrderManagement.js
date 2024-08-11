@@ -6,6 +6,7 @@ const UnexistingProductError = require("../../products/exceptions/UnexistingProd
 
 const OrderDTO = require("../dto/OrderDTO");
 const ItemDTO = require("../dto/ItemDTO");
+const ClosedOrderError = require("../exceptions/ClosedOrderError");
 
 class OrderManagement {
   constructor(orderRepository, productRepository) {
@@ -69,6 +70,9 @@ class OrderManagement {
   }
 
   async removeItem(orderId, itemId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+    order.removeItem(itemId);
     await this.orderRepository.removeItem(orderId, itemId);
   }
 

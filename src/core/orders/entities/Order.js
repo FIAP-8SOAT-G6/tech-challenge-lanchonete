@@ -7,6 +7,7 @@ const OrderStatus = require("./OrderStatus");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const EmptyOrderError = require("../exceptions/EmptyOrderError");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
+const ClosedOrderError = require("../exceptions/ClosedOrderError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
@@ -85,7 +86,7 @@ class Order {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
       const transitionValidator = statusTransitionValidator[status];
-      transitionValidator(this)
+      transitionValidator(this);
       this.#status = status;
     } else {
       throw new InvalidStatusTransitionError(
@@ -105,6 +106,9 @@ class Order {
     productName,
     productDescription
   }) {
+    if (this.getStatus() !== OrderStatus.CREATED)
+      throw new ClosedOrderError(this.getId(), this.getStatus());
+
     const item = new Item({
       id,
       productId,
@@ -122,6 +126,9 @@ class Order {
   }
 
   updateItem(itemId, updatedValues) {
+    if (this.getStatus() !== OrderStatus.CREATED)
+      throw new ClosedOrderError(this.getId(), this.getStatus());
+
     const item = this.#items.find((item) => item.getId() === itemId);
 
     if (!item) throw new UnexistingItemError(itemId);
@@ -133,8 +140,42 @@ class Order {
     return item;
   }
 
+  removeItem(itemId) {
+    if (this.getStatus() !== OrderStatus.CREATED)
+      throw new ClosedOrderError(this.getId(), this.getStatus());
+
+    const itemIndex = this.#items.findIndex((item) => item.getId() === itemId);
+    if (itemIndex < 0) throw new UnexistingItemError(itemId);
+
+    this.#items.splice(itemIndex, 1);
+  }
+
   #setItems(items) {
-    items.forEach(this.addItem.bind(this));
+    items.forEach(this.#insertIntoItems.bind(this));
+    this.#calculateTotalPrice();
+  }
+
+  #insertIntoItems(itemDTO) {
+    const {
+      id,
+      productId,
+      quantity,
+      unitPrice,
+      totalPrice,
+      productName,
+      productDescription
+    } = itemDTO;
+    const item = new Item({
+      id,
+      productId,
+      orderId: this.id,
+      quantity,
+      unitPrice,
+      totalPrice,
+      productName,
+      productDescription
+    });
+    this.#items.push(item);
   }
 
   #calculateTotalPrice() {

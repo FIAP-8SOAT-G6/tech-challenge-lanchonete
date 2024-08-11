@@ -1,9 +1,10 @@
 const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
-const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
 const EmptyOrderError = require("../../core/orders/exceptions/EmptyOrderError");
+const ClosedOrderError = require("../../core/orders/exceptions/ClosedOrderError");
+const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -58,7 +59,10 @@ class OrdersController {
       } catch (error) {
         if (error instanceof UnexistingOrderError)
           return res.status(404).json({ error: error.message });
-        if (error instanceof UnexistingProductError)
+        if (
+          error instanceof UnexistingProductError ||
+          error instanceof ClosedOrderError
+        )
           return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
@@ -70,6 +74,10 @@ class OrdersController {
         await this.useCase.removeItem(orderId, itemId);
         return res.status(204).json({});
       } catch (error) {
+        if (error instanceof UnexistingItemError)
+          return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -86,6 +94,10 @@ class OrdersController {
         );
         return res.status(200).json(updatedOrder);
       } catch (error) {
+        if (error instanceof UnexistingItemError)
+          return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
