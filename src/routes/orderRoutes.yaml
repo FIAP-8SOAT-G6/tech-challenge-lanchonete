@@ -222,6 +222,19 @@ paths:
       summary: Atualiza um item existente do pedido
       tags:
         - Pedidos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          description: ID do item no pedido
+          schema:
+            type: integer
       requestBody:
         description: Payload para atualizar um item no pedido
         required: true
@@ -235,6 +248,36 @@ paths:
                   description: Quantidade do item no pedido
               required:
                 - quantity
+      responses:
+        "200":
+          description: Exibe o pedido com o item atualizado
+          content:
+            application/json:
+              schema:
+                type: object              
+                properties:
+                  id:
+                    type: integer
+                  code: 
+                    type: string
+                  status: 
+                    type: string
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      description:
+                        type: string
+        "500":
+          description: Erro interno do servidor
     delete: 
       summary: Remove um item existente do pedido
       tags:
