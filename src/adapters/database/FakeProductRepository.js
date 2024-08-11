@@ -1,4 +1,4 @@
-const Product = require("../../core/products/entities/Product");
+const ProductDTO = require("../../core/products/dto/ProductDTO");
 
 class FakeProductRepository {
   #products = [];
@@ -13,23 +13,25 @@ class FakeProductRepository {
       price
     };
     this.#products.push(createdProduct);
-    return Promise.resolve(this.#instantiateProduct(createdProduct));
+    return Promise.resolve(this.#createProductDTO(createdProduct));
   }
 
   async findAll() {
-    return Promise.resolve(this.#products.map(this.#instantiateProduct))
+    return Promise.resolve(this.#products.map(this.#createProductDTO));
   }
 
   async findById(id) {
     const product = this.#products.find((product) => product?.id === id);
     return Promise.resolve(
-      product ? this.#instantiateProduct(product) : undefined
+      product ? this.#createProductDTO(product) : undefined
     );
   }
 
   async findByCategory(category) {
-    const products = this.#products.filter((product) => product?.category === category);
-    return Promise.resolve(products.map(this.#instantiateProduct));
+    const products = this.#products.filter(
+      (product) => product?.category === category
+    );
+    return Promise.resolve(products.map(this.#createProductDTO));
   }
 
   delete(id) {
@@ -44,23 +46,23 @@ class FakeProductRepository {
     const productIndex = this.#products.findIndex(
       (persistedProduct) => persistedProduct?.id === product.id
     );
-   
+
     this.#products[productIndex].name = product.name;
     this.#products[productIndex].category = product.category;
     this.#products[productIndex].description = product.description;
     this.#products[productIndex].price = product.price;
 
-    return this.#instantiateProduct(this.#products[productIndex]);
+    return this.#createProductDTO(this.#products[productIndex]);
   }
 
-  #instantiateProduct(databaseProduct) {
-    return new Product(
-      databaseProduct.id,
-      databaseProduct.name,
-      databaseProduct.category,
-      databaseProduct.description,
-      databaseProduct.price
-    );
+  #createProductDTO(values) {
+    return new ProductDTO({
+      id: values.id,
+      name: values.name,
+      category: values.category,
+      description: values.description,
+      price: values.price
+    });
   }
 }
 

@@ -2,6 +2,7 @@ const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
+const ItemDTO = require("../../core/orders/dto/ItemDTO");
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -50,10 +51,8 @@ class OrdersController {
       try {
         const orderId = req.params.id;
         const { productId, quantity } = req.body;
-        const order = await this.useCase.addItem(orderId, {
-          productId,
-          quantity
-        });
+        const addItemDTO = new ItemDTO({ productId, quantity });
+        const order = await this.useCase.addItem(orderId, addItemDTO);
         return res.status(201).json(order);
       } catch (error) {
         if (error instanceof UnexistingOrderError)
@@ -78,12 +77,11 @@ class OrdersController {
       try {
         const { orderId, itemId } = req.params;
         const { quantity } = req.body;
+        const updateItemDTO = new ItemDTO({ quantity });
         const updatedOrder = await this.useCase.updateItem(
           Number(orderId),
           Number(itemId),
-          {
-            quantity
-          }
+          updateItemDTO
         );
         return res.status(200).json(updatedOrder);
       } catch (error) {

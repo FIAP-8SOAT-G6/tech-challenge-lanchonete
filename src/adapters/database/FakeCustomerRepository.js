@@ -1,4 +1,4 @@
-const Customer = require("../../core/customers/entities/Customer");
+const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
 
 class FakeCustomerRepository {
   #customer = [];
@@ -12,19 +12,19 @@ class FakeCustomerRepository {
       email
     };
     this.#customer.push(newCustomer);
-    return Promise.resolve(this.#instantiateCustomer(newCustomer));
+    return Promise.resolve(this.#createCustomerDTO(newCustomer));
   }
 
   async findByCPF(cpf) {
     const customer = this.#customer.find((customer) => customer?.cpf === cpf);
-    return Promise.resolve(this.#instantiateCustomer(customer));
+    return Promise.resolve(this.#createCustomerDTO(customer));
   }
 
-  #instantiateCustomer(dbCustomer) {
+  #createCustomerDTO(dbCustomer) {
     if (!dbCustomer) return undefined;
 
     const { id, name, cpf, email } = dbCustomer;
-    return new Customer({ id, name, cpf, email });
+    return new CustomerDTO({ id, name, cpf, email });
   }
 }
 

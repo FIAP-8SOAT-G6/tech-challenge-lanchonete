@@ -6,6 +6,7 @@ const MissingPropertyError = require("../../../../core/common/exceptions/Missing
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
+const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -18,64 +19,66 @@ context("Customer Management", () => {
 
   describe("create", () => {
     it("should create a Customer with an id", async () => {
-      const customer = {
+      const customerDTO = new CustomerDTO({
         name: "Ana",
         cpf: "123.456.789-00",
         email: "test@mail.com"
-      };
+      });
 
       const customerManagementUseCase = setupUseCase();
-      const customerCreated = await customerManagementUseCase.create(customer);
+      const customerCreated = await customerManagementUseCase.create(
+        customerDTO
+      );
 
       expect(customerCreated).to.not.be.undefined;
       expect(customerCreated.id).to.be.equal(1);
     });
 
     it("should display an error message when an existing CPF is provided", async () => {
-      const customer = {
+      const customerDTO = new CustomerDTO({
         name: "Ana",
         cpf: "123.456.789-01",
         email: "test@mail.com"
-      };
+      });
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create(customer);
+      await customerManagementUseCase.create(customerDTO);
 
       await expect(
-        customerManagementUseCase.create(customer)
+        customerManagementUseCase.create(customerDTO)
       ).to.be.eventually.rejectedWith(
-        new ExistentCustomerError(customer.cpf).message
+        new ExistentCustomerError(customerDTO.cpf).message
       );
     });
   });
 
   describe("findByCPF", () => {
     it("should find customer by CPF", async () => {
-      const customer = {
+      const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-00",
+        cpf: "123.456.789-01",
         email: "test@mail.com"
-      };
+      });
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create(customer);
+      await customerManagementUseCase.create(customerDTO);
 
       const customerFound = await customerManagementUseCase.findByCPF(
-        customer.cpf
+        customerDTO.cpf
       );
 
       expect(customerFound).to.not.be.undefined;
     });
 
     it("should display an error message when it cannot find the customer", async () => {
-      const customer = {
+      const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-00",
+        cpf: "123.456.789-01",
         email: "test@mail.com"
-      };
+      });
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create(customer);
+      await customerManagementUseCase.create(customerDTO);
 
       await expect(
         customerManagementUseCase.findByCPF("123")
@@ -85,14 +88,14 @@ context("Customer Management", () => {
     });
 
     it("should display an error message when a CPF is not provided", async () => {
-      const customer = {
+      const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-00",
+        cpf: "123.456.789-01",
         email: "test@mail.com"
-      };
+      });
 
       const customerManagementUseCase = setupUseCase();
-      await customerManagementUseCase.create(customer);
+      await customerManagementUseCase.create(customerDTO);
 
       await expect(
         customerManagementUseCase.findByCPF("")
