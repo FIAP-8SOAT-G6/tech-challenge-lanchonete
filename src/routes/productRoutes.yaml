@@ -1,7 +1,9 @@
 paths:
   /products:
     get:
-      summary: Retorna todos os produtos
+      summary: Lista produtos
+      tags:
+        - Produtos
       responses:
         "200":
           description: Lista de produtos
@@ -28,6 +30,8 @@ paths:
 
     post:
       summary: Cria um novo produto
+      tags:
+        - Produtos
       requestBody:
         required: true
         content:
@@ -70,7 +74,9 @@ paths:
 
   /products/{id}:
     get:
-      summary: Retorna um produto pelo ID
+      summary: Exibe um produto pelo ID
+      tags:
+        - Produtos
       parameters:
         - in: path
           name: id
@@ -104,6 +110,8 @@ paths:
 
     put:
       summary: Atualiza um produto existente
+      tags:
+        - Produtos
       parameters:
         - in: path
           name: id
@@ -155,6 +163,8 @@ paths:
 
     delete:
       summary: Remove um produto existente
+      tags:
+        - Produtos
       parameters:
         - in: path
           name: id
@@ -170,7 +180,9 @@ paths:
 
   /category/{category}/products:
     get:
-      summary: Retorna produtos por categoria
+      summary: Lista produtos por categoria
+      tags:
+        - Produtos
       parameters:
         - in: path
           name: category
