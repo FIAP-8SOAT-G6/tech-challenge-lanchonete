@@ -34,9 +34,9 @@ class OrdersController {
       }
     });
 
-    this.router.get("/orders/:id", async (req, res) => {
+    this.router.get("/orders/:orderId", async (req, res) => {
       try {
-        const orderId = req.params.id;
+        const orderId = req.params.orderId;
         const order = await this.useCase.getOrder(orderId);
         return res.status(201).json(order);
       } catch (error) {
@@ -46,9 +46,9 @@ class OrdersController {
       }
     });
 
-    this.router.post("/orders/:id/items", async (req, res) => {
+    this.router.post("/orders/:orderId/items", async (req, res) => {
       try {
-        const orderId = req.params.id;
+        const orderId = req.params.orderId;
         const { productId, quantity } = req.body;
         const order = await this.useCase.addItem(orderId, {
           productId,
