@@ -16,5 +16,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(productManagementController.getRouter());
 app.use(ordersController.getRouter());
 app.use(customerManagementController.getRouter());
+app.get('/', (req, res) => {
+  res.redirect('/api-docs');
+});
 
 module.exports = app;
