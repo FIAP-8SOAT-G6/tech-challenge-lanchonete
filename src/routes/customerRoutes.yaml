@@ -1,5 +1,5 @@
 paths:
-  /customer/{cpf}:
+  /customers/{cpf}:
     get:
       summary: Exibe dados de um cliente pelo CPF
       tags:
@@ -32,7 +32,7 @@ paths:
         "500":
           description: Erro interno do servidor
 
-  /customer:
+  /customers:
     post:
       summary: Cria um novo cliente
       tags:
