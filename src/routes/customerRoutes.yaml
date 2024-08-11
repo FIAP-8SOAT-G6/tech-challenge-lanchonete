@@ -47,6 +47,10 @@ paths:
                   type: string 
                   description: Email do cliente
                   example: john.doe@gmail.com
+              required:
+                - name
+                - cpf
+                - email
       responses:
         "201":
           description: Cliente criado
