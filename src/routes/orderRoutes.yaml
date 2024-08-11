@@ -11,29 +11,8 @@ paths:
             application/json:
               schema:
                 type: array
-                orders: 
-                  type: object               
-                  properties:
-                    id:
-                      type: integer
-                    code: 
-                      type: string
-                    status: 
-                      type: string
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        category:
-                          type: string
-                        price:
-                          type: number
-                          format: float
-                        description:
-                          type: string
+                items:
+                  $ref: "#/components/schemas/OrderWithItems"
         "500":
           description: Erro interno do servidor
     post:
@@ -41,7 +20,7 @@ paths:
       tags:
         - Pedidos
       requestBody:
-        description: Exemplo de payload para criar um novo pedido
+        description: Payload para criação de pedido
         required: true
         content:
           application/json:
@@ -49,58 +28,23 @@ paths:
               type: object
               properties:
                 customerId:
+                  required: true
                   type: integer
-              required:
-                - orders
               example:
                 customerId: 1
       responses:
-        '201':
-          description: Order created successfully
+        "201":
+          description: Pedido criado com sucesso
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: Unique identifier for the order
-                  code:
-                    type: string
-                    description: Order code
-                  status:
-                    type: string
-                    description: Current status of the order
-                  items:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        product_id:
-                          type: string
-                        quantity:
-                          type: integer
-                  customer:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                        description: Name of the customer
-              example:
-                id: "order123"
-                code: "ORD456"
-                status: "confirmed"
-                items:
-                  - product_id: "12345"
-                    quantity: 2
-                customer:
-                  name: "John Doe"
-        '400':
+                $ref: "#/components/schemas/Order"
+        "400":
           description: Invalid input
-        '500':
-          description: Server error 
+        "500":
+          description: Server error
   /orders/{id}:
-    get: 
+    get:
       summary: Exibe um pedido pelo ID
       parameters:
         - in: path
@@ -117,32 +61,11 @@ paths:
           content:
             application/json:
               schema:
-                type: object              
-                properties:
-                  id:
-                    type: integer
-                  code: 
-                    type: string
-                  status: 
-                    type: string
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      category:
-                        type: string
-                      price:
-                        type: number
-                        format: float
-                      description:
-                        type: string
+                $ref: "#/components/schemas/OrderWithItems"
         "500":
           description: Erro interno do servidor
   /orders/{id}/items:
-    post: 
+    post:
       summary: Cria um novo item no pedido
       tags:
         - Pedidos
@@ -162,14 +85,13 @@ paths:
               type: object
               properties:
                 productId:
-                  type: string
-                  description: ID of the product
+                  type: integer
+                  description: ID do Produto
+                  example: 1
                 quantity:
                   type: integer
-                  description: Quantity of the product
-              example:
-                productId: "1"
-                quantity: 2
+                  description: Quantidade do Produto
+                  example: 2
               required:
                 - productId
                 - quantity
@@ -179,13 +101,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object              
+                type: object
                 properties:
                   id:
                     type: integer
-                  code: 
+                  code:
                     type: string
-                  status: 
+                  status:
                     type: string
                   items:
                     type: object
@@ -204,7 +126,7 @@ paths:
         "500":
           description: Erro interno do servidor
   /orders/{id}/items/{itemId}:
-    put: 
+    put:
       summary: Atualiza um item existente do pedido
       tags:
         - Pedidos
@@ -232,6 +154,7 @@ paths:
                 quantity:
                   type: integer
                   description: Quantidade do item no pedido
+                  example: 2
               required:
                 - quantity
       responses:
@@ -240,31 +163,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object              
-                properties:
-                  id:
-                    type: integer
-                  code: 
-                    type: string
-                  status: 
-                    type: string
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      category:
-                        type: string
-                      price:
-                        type: number
-                        format: float
-                      description:
-                        type: string
+                $ref: "#/components/schemas/OrderWithItems"
         "500":
           description: Erro interno do servidor
-    delete: 
+    delete:
       summary: Remove um item existente do pedido
       tags:
         - Pedidos
@@ -283,9 +185,77 @@ paths:
             type: integer
       responses:
         "204":
-          description: Exibe o status de sucesso da operação No Content
+          description: Item removido com sucesso
           content:
-            application/json:
-              {}
+            application/json: {}
         "500":
           description: Erro interno do servidor
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do Pedido
+          example: 1
+        customerId:
+          type: integer
+          description: ID do Cliente
+          example: 1
+        code:
+          type: string
+          description: Código do Pedido
+          example: 9999
+        status:
+          type: string
+          description: Status do Pedido
+          example: CREATED
+
+    OrderWithItems:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+      properties:
+        items:
+          type: array
+          description: Itens do Pedido
+          items:
+            $ref: "#/components/schemas/Item"
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: ID do Item
+        orderId:
+          type: integer
+          example: 1
+          description: ID do Pedido
+        productId:
+          type: integer
+          example: 1
+          description: ID do Produto
+        productName:
+          type: string
+          example: Hamburguer
+          description: Nome do Produto
+        productDescription:
+          type: string
+          example: Hamburguer Classico
+          description: Descrição do Produto
+        unitPrice:
+          type: number
+          format: float
+          example: 12.99
+          description: Preço Unitário
+        quantity:
+          type: integer
+          example: 2
+          description: Quantidade do Item
+        totalPrice:
+          type: number
+          format: float
+          example: 24.98
+          description: Preço Total do Item
