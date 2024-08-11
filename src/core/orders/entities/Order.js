@@ -25,8 +25,7 @@ class Order {
     this.#items = [];
 
     this.setStatus(status);
-
-    items?.forEach(this.addItem.bind(this));
+    this.#setItems(items);
   }
 
   getId() {
@@ -82,6 +81,8 @@ class Order {
       productDescription
     });
     this.#items.push(item);
+    this.#calculateTotalPrice();
+
     return item;
   }
 
@@ -92,7 +93,21 @@ class Order {
 
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
+
+    this.#calculateTotalPrice();
     return item;
+  }
+
+  #setItems(items) {
+    items.forEach(this.addItem.bind(this));
+    this.#calculateTotalPrice();
+  }
+
+  #calculateTotalPrice() {
+    this.#totalPrice = this.#items.reduce(
+      (currentSum, item) => currentSum + item.getTotalPrice(),
+      0
+    );
   }
 }
 
