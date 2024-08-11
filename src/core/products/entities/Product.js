@@ -1,5 +1,5 @@
 const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
-const InvalidPropertyError = require("../exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 const ProductCategory = require("./ProductCategory");
 
 class Product {
@@ -59,13 +59,13 @@ class Product {
 
   #validateName(name) {
     if (!name) {
-      throw new InvalidPropertyError("name");
+      throw new MissingPropertyError("name");
     }
   }
 
   #validateCategory(category) {
     if (!category) {
-      throw new InvalidPropertyError("category");
+      throw new MissingPropertyError("category");
     }
 
     if (!ProductCategory[category]) {
@@ -75,7 +75,7 @@ class Product {
 
   #validatePrice(price) {
     if (!price || price < 0) {
-      throw new InvalidPropertyError("price");
+      throw new MissingPropertyError("price");
     }
   }
 }

@@ -1,4 +1,4 @@
-const MissingPropertyError = require("../exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 
 class Customer {
   #id;

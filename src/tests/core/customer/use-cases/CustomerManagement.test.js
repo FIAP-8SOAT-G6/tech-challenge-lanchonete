@@ -2,7 +2,7 @@ const FakeCustomerRepository = require("../../../../adapters/database/FakeCustom
 const CustomerManagement = require("../../../../core/customers/use-cases/CustomerManagement");
 const ExistentCustomerError = require("../../../../core/customers/exceptions/ExistentCustomerError");
 const NonexistentCustomerError = require("../../../../core/customers/exceptions/NonexistentCustomerError");
-const MissingPropertyError = require("../../../../core/customers/exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");

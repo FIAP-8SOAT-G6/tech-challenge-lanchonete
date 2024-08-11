@@ -1,6 +1,3 @@
-const express = require('express');
-const router = express.Router();
-
 /**
  * @swagger
  * /example:
@@ -107,8 +104,3 @@ const router = express.Router();
  *         description: Server error
  * 
  */
-router.get('/example', (req, res) => {
-  res.json({ exampleField: 'Este é um exemplo' });
-});
-
-module.exports = router;
