@@ -18,10 +18,10 @@ class Order {
   #totalPrice;
   #items;
 
-  constructor({ id, code, status, totalPrice, customer, items = [] }) {
+  constructor({ id, code, status, customer, items = [] }) {
     this.#id = id;
     this.#code = code;
-    this.#totalPrice = totalPrice;
+    this.#totalPrice = 0;
     this.#items = [];
 
     this.setStatus(status);
@@ -100,7 +100,6 @@ class Order {
 
   #setItems(items) {
     items.forEach(this.addItem.bind(this));
-    this.#calculateTotalPrice();
   }
 
   #calculateTotalPrice() {
