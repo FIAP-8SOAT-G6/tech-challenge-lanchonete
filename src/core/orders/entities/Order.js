@@ -2,16 +2,38 @@
 // const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 const Item = require("./Item");
+const UnexistingItemError = require("../exceptions/UnexistingItemError");
+const OrderStatus = require("./OrderStatus");
+const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
+
+const ALLOWED_TARGET_STATUS_TRANSITIONS = {
+  [OrderStatus.CREATED]: [],
+  [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED]
+};
 
 class Order {
   constructor({ id, code, status, totalPrice, customer, items = [] }) {
     this.id = id;
     this.code = code;
-    this.status = status;
     this.totalPrice = totalPrice;
     this.items = [];
 
-    items?.forEach(this.addItem);
+    this.setStatus(status);
+
+    items?.forEach(this.addItem.bind(this));
+  }
+
+  setStatus(status) {
+    const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
+    if (!this.status || requiredStatusForTarget.includes(this.status)) {
+      this.status = status;
+    } else {
+      throw new InvalidStatusTransitionError(
+        this.status,
+        status,
+        ALLOWED_TARGET_STATUS_TRANSITIONS[status]
+      );
+    }
   }
 
   addItem({
@@ -21,7 +43,7 @@ class Order {
     unitPrice,
     totalPrice,
     productName,
-    productDescription,
+    productDescription
   }) {
     const item = new Item({
       id,
@@ -31,20 +53,17 @@ class Order {
       unitPrice,
       totalPrice,
       productName,
-      productDescription,
+      productDescription
     });
     this.items.push(item);
     return item;
   }
 
-  removeItem(itemId) {
-    this.items = this.items.filter((item) => item.id !== itemId);
-  }
-
   updateItem(itemId, updatedValues) {
-    console.log(itemId);
-    console.log(this.items);
-    const item = this.items.find((item) => { console.log(`item.id ${typeof item.id} - itemId ${typeof itemId}, comparison: ${item.id === itemId}`); return item.id === itemId} );
+    const item = this.items.find((item) => item.id === itemId);
+
+    if (!item) throw new UnexistingItemError(itemId);
+
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
     return item;
