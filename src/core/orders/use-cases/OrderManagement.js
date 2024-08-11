@@ -19,22 +19,24 @@ class OrderManagement {
       code: this.#generateCode()
     });
     const orderDTO = this.#toOrderDTO(order);
-    const createdOrder = await this.orderRepository.create(orderDTO);
+    const createdOrderDTO = await this.orderRepository.create(orderDTO);
 
-    return createdOrder;
+    return createdOrderDTO;
   }
 
   async getOrders() {
-    const orders = await this.orderRepository.findAll();
-    return orders;
+    const repositoryOrderDTOs = await this.orderRepository.findAll();
+    const orders = repositoryOrderDTOs.map(this.#toOrderEntity);
+    return orders.map(this.#toOrderDTO.bind(this));
   }
 
   async getOrder(orderId) {
-    const order = await this.orderRepository.findById(orderId);
+    const repositoryOrderDTO = await this.orderRepository.findById(orderId);
 
-    if (!order) throw new UnexistingOrderError(orderId);
+    if (!repositoryOrderDTO) throw new UnexistingOrderError(orderId);
+    const order = this.#toOrderEntity(repositoryOrderDTO);
 
-    return order;
+    return this.#toOrderDTO(order);
   }
 
   async addItem(orderId, itemDTO) {
@@ -60,7 +62,10 @@ class OrderManagement {
       this.#toItemDTO(item)
     );
 
-    return await this.orderRepository.findById(orderId);
+    const updatedOrderDTO = await this.orderRepository.findById(orderId);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+
+    return this.#toOrderDTO(updatedOrder);
   }
 
   async removeItem(orderId, itemId) {
@@ -75,7 +80,11 @@ class OrderManagement {
 
     const updatedItem = order.updateItem(itemId, itemDTO);
     await this.orderRepository.updateItem(itemId, this.#toItemDTO(updatedItem));
-    return await this.orderRepository.findById(orderId);
+
+    const updatedOrderDTO = await this.orderRepository.findById(orderId);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+
+    return this.#toOrderDTO(updatedOrder);
   }
 
   #generateCode() {

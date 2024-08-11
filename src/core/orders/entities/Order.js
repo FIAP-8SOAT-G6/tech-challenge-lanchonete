@@ -18,15 +18,34 @@ class Order {
   #totalPrice;
   #items;
 
-  constructor({ id, code, status, totalPrice, customer, items = [] }) {
+  constructor({ id, code, status, customer, items = [] }) {
     this.#id = id;
     this.#code = code;
-    this.#totalPrice = totalPrice;
+    this.#totalPrice = 0;
     this.#items = [];
 
     this.setStatus(status);
+    this.#setItems(items);
+  }
 
-    items?.forEach(this.addItem.bind(this));
+  getId() {
+    return this.#id;
+  }
+
+  getCode() {
+    return this.#code;
+  }
+
+  getStatus() {
+    return this.#status;
+  }
+
+  getTotalPrice() {
+    return this.#totalPrice;
+  }
+
+  getItems() {
+    return this.#items;
   }
 
   getId() {
@@ -82,6 +101,8 @@ class Order {
       productDescription
     });
     this.#items.push(item);
+    this.#calculateTotalPrice();
+
     return item;
   }
 
@@ -92,7 +113,20 @@ class Order {
 
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
+
+    this.#calculateTotalPrice();
     return item;
+  }
+
+  #setItems(items) {
+    items.forEach(this.addItem.bind(this));
+  }
+
+  #calculateTotalPrice() {
+    this.#totalPrice = this.#items.reduce(
+      (currentSum, item) => currentSum + item.getTotalPrice(),
+      0
+    );
   }
 }
 

@@ -11,14 +11,13 @@ context("Order", () => {
       const order = new Order({
         id: "1",
         code: "CODE123",
-        status: OrderStatus.CREATED,
-        totalPrice: 100.0
+        status: OrderStatus.CREATED
       });
 
       expect(order.getId()).to.be.equals("1");
       expect(order.getCode()).to.be.equals("CODE123");
       expect(order.getStatus()).to.be.equals(OrderStatus.CREATED);
-      expect(order.getTotalPrice()).to.be.equals(100.0);
+      expect(order.getTotalPrice()).to.be.equals(0);
       expect(order.getItems()).to.be.empty;
     });
   });
@@ -29,8 +28,7 @@ context("Order", () => {
           new Order({
             id: "1",
             code: "CODE123",
-            status: OrderStatus.CREATED,
-            totalPrice: 100.0
+            status: OrderStatus.CREATED
           })
       ).to.not.throw(InvalidStatusTransitionError);
     });
@@ -76,6 +74,9 @@ context("Order", () => {
       };
       order.addItem(item);
       expect(order.getItems().length).to.be.at.least(1);
+      expect(order.getTotalPrice()).to.be.equals(
+        item.quantity * item.unitPrice
+      );
     });
   });
   describe("updateItem", () => {
@@ -104,6 +105,9 @@ context("Order", () => {
       const updatedItem = order.updateItem("item1", updateValues);
       expect(updatedItem.getQuantity()).to.be.equals(2);
       expect(updatedItem.getTotalPrice()).to.be.equals(
+        updateValues.quantity * updatedItem.getUnitPrice()
+      );
+      expect(order.getTotalPrice()).to.be.equals(
         updateValues.quantity * updatedItem.getUnitPrice()
       );
     });
