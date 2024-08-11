@@ -1,7 +1,7 @@
 const Customer = require("../entities/Customer");
 const NonexistentCustomerError = require("../exceptions/NonexistentCustomerError");
 const ExistentCustomerError = require("../exceptions/ExistentCustomerError");
-const MissingPropertyError = require("../exceptions/MissingPropertyError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 const CustomerDTO = require("../dto/CustomerDTO");
 
 
