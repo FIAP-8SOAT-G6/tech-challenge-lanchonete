@@ -2,13 +2,26 @@
 // const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 const Item = require("./Item");
-const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const OrderStatus = require("./OrderStatus");
+
+const UnexistingItemError = require("../exceptions/UnexistingItemError");
+const EmptyOrderError = require("../exceptions/EmptyOrderError");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
-  [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED]
+  [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED],
+  [OrderStatus.PAYED]: [OrderStatus.PENDING_PAYMENT]
+};
+
+const statusTransitionValidator = {
+  [OrderStatus.CREATED]: function (order) {},
+  [OrderStatus.PENDING_PAYMENT]: function (order) {
+    if (order.getItems().length === 0) {
+      throw new EmptyOrderError();
+    }
+  },
+  [OrderStatus.PAYED]: function (order) {}
 };
 
 class Order {
@@ -71,6 +84,8 @@ class Order {
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
+      const transitionValidator = statusTransitionValidator[status];
+      transitionValidator(this)
       this.#status = status;
     } else {
       throw new InvalidStatusTransitionError(

@@ -64,6 +64,25 @@ paths:
                 $ref: "#/components/schemas/OrderWithItems"
         "500":
           description: Erro interno do servidor
+  /orders/{orderId}/checkout:
+    post:
+      summary: Finaliza um pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Pedido finalizado
+        "400":
+          description: Não foi possivel finalizar o pedido pois está vazio.
+        "500":
+          description: Erro interno do servidor
   /orders/{orderId}/items:
     post:
       summary: Cria um novo item no pedido

@@ -3,6 +3,7 @@ const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrd
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
+const EmptyOrderError = require("../../core/orders/exceptions/EmptyOrderError");
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -85,6 +86,18 @@ class OrdersController {
         );
         return res.status(200).json(updatedOrder);
       } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.post("/orders/:orderId/checkout", async (req, res) => {
+      try {
+        const orderId = req.params.orderId;
+        await this.useCase.checkout(orderId);
+        return res.status(200).json({});
+      } catch (error) {
+        if (error instanceof EmptyOrderError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });

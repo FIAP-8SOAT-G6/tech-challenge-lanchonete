@@ -4,6 +4,7 @@ const Order = require("../../../../core/orders/entities/Order");
 const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
 const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
 const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
+const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 
 context("Order", () => {
   describe("validations", () => {
@@ -32,23 +33,50 @@ context("Order", () => {
           })
       ).to.not.throw(InvalidStatusTransitionError);
     });
-    it("should allow to change from status `CREATED` to `PENDING_PAYMENT`", () => {
+    it("should allow to change from status `CREATED` to `PENDING_PAYMENT` if there are items", () => {
       const order = new Order({
         id: "1",
         code: "CODE123",
         status: OrderStatus.CREATED,
         totalPrice: 100.0
       });
+      order.addItem({
+        id: "1",
+        productId: "1",
+        quantity: 1,
+        unitPrice: 12.99,
+        productName: "Hamburguer",
+        productDescription: "Classic Hamburguer"
+      });
       expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.not.throw(
         InvalidStatusTransitionError
       );
     });
-    it("should allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
+    it("should not allow to change from status `CREATED` to `PENDING_PAYMENT` if there are no items", () => {
       const order = new Order({
         id: "1",
         code: "CODE123",
         status: OrderStatus.CREATED,
         totalPrice: 100.0
+      });
+      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.throw(
+        EmptyOrderError
+      );
+    });
+    it("should not allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
+      const order = new Order({
+        id: "1",
+        code: "CODE123",
+        status: OrderStatus.CREATED,
+        totalPrice: 100.0
+      });
+      order.addItem({
+        id: "1",
+        productId: "1",
+        quantity: 1,
+        unitPrice: 12.99,
+        productName: "Hamburguer",
+        productDescription: "Classic Hamburguer"
       });
       order.setStatus(OrderStatus.PENDING_PAYMENT);
       expect(() => order.setStatus(OrderStatus.CREATED)).to.throw(

@@ -70,13 +70,11 @@ class SequelizeOrderRepository {
     await item.update(itemDTO);
   }
 
-  async update(orderDTO) {
-    const { code, status, customer } = order;
-    const createdOrder = await SequelizeOrder.create({
-      code,
-      status
-    });
-    return this.#createOrderDTO(createdOrder);
+  async updateOrder(orderDTO) {
+    const { id, code, status } = orderDTO;
+    const order = await SequelizeOrder.findByPk(id);
+    const updatedOrder = order.update({ code, status });
+    return this.#createOrderDTO(updatedOrder);
   }
 
   #createOrderDTO(databaseOrder) {

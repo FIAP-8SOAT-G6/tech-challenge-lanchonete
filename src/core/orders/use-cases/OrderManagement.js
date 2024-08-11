@@ -87,6 +87,18 @@ class OrderManagement {
     return this.#toOrderDTO(updatedOrder);
   }
 
+  async checkout(orderId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+
+    order.setStatus(OrderStatus.PENDING_PAYMENT);
+
+    // Fake Checkout: Pagamento não implementado - Mudando para pago
+    order.setStatus(OrderStatus.PAYED);
+
+    await this.orderRepository.updateOrder(this.#toOrderDTO(order));
+  }
+
   #generateCode() {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }

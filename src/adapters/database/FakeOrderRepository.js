@@ -61,6 +61,15 @@ class FakeOrderRepository {
     };
   }
 
+  async updateOrder(orderDTO) {
+    const { id } = orderDTO;
+    const orderIndex = this.#orders.findIndex((order) => order.id === id);
+    this.#orders[orderIndex] = {
+      ...this.#orders[orderIndex],
+      ...orderDTO
+    };
+  }
+
   #createOrderDTO(databaseOrder) {
     return new OrderDTO({
       id: databaseOrder.id,
