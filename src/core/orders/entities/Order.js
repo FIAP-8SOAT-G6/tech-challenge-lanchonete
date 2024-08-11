@@ -101,11 +101,8 @@ class Order {
       productDescription
     });
     this.#items.push(item);
-<<<<<<< HEAD
     this.#calculateTotalPrice();
 
-=======
->>>>>>> 0f1fbaa0574cbddbf60f0469fd3acb94662d633b
     return item;
   }
 
