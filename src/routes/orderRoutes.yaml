@@ -38,38 +38,24 @@ paths:
           description: Erro interno do servidor
     post:
       summary: Cria um novo pedido
-      description: Creates a new order with the specified items.
       tags:
         - Pedidos
       requestBody:
-        description: Payload to create a new order
+        description: Exemplo de payload para criar um novo pedido
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                orders:
-                  type: object
-                  properties:
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          product_id:
-                            type: string
-                            description: ID of the product
-                          quantity:
-                            type: integer
-                            description: Quantity of the product
-                      example:
-                        - product_id: "12345"
-                          quantity: 2
+                customerId:
+                  type: integer
               required:
                 - orders
+              example:
+                customerId: 1
       responses:
-        '200':
+        '201':
           description: Order created successfully
           content:
             application/json:
@@ -182,8 +168,8 @@ paths:
                   type: integer
                   description: Quantity of the product
               example:
-                - productId: "1"
-                  quantity: 2
+                productId: "1"
+                quantity: 2
               required:
                 - productId
                 - quantity
@@ -222,6 +208,19 @@ paths:
       summary: Atualiza um item existente do pedido
       tags:
         - Pedidos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          description: ID do item no pedido
+          schema:
+            type: integer
       requestBody:
         description: Payload para atualizar um item no pedido
         required: true
@@ -235,7 +234,58 @@ paths:
                   description: Quantidade do item no pedido
               required:
                 - quantity
+      responses:
+        "200":
+          description: Exibe o pedido com o item atualizado
+          content:
+            application/json:
+              schema:
+                type: object              
+                properties:
+                  id:
+                    type: integer
+                  code: 
+                    type: string
+                  status: 
+                    type: string
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      category:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      description:
+                        type: string
+        "500":
+          description: Erro interno do servidor
     delete: 
       summary: Remove um item existente do pedido
       tags:
         - Pedidos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          description: ID do item no pedido
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Exibe o status de sucesso da operação No Content
+          content:
+            application/json:
+              {}
+        "500":
+          description: Erro interno do servidor

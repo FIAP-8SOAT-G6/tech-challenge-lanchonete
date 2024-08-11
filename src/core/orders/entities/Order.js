@@ -48,6 +48,26 @@ class Order {
     return this.#items;
   }
 
+  getId() {
+    return this.#id;
+  }
+
+  getCode() {
+    return this.#code;
+  }
+
+  getStatus() {
+    return this.#status;
+  }
+
+  getTotalPrice() {
+    return this.#totalPrice;
+  }
+
+  getItems() {
+    return this.#items;
+  }
+
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
@@ -81,8 +101,11 @@ class Order {
       productDescription
     });
     this.#items.push(item);
+<<<<<<< HEAD
     this.#calculateTotalPrice();
 
+=======
+>>>>>>> 0f1fbaa0574cbddbf60f0469fd3acb94662d633b
     return item;
   }
 
