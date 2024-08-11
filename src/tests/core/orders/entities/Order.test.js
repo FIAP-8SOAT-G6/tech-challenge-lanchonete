@@ -15,11 +15,11 @@ context("Order", () => {
         totalPrice: 100.0
       });
 
-      expect(order).to.have.property("id").that.equals("1");
-      expect(order).to.have.property("code").that.equals("CODE123");
-      expect(order).to.have.property("status").that.equals(OrderStatus.CREATED);
-      expect(order).to.have.property("totalPrice").that.equals(100.0);
-      expect(order).to.have.property("items").that.is.an("array").that.is.empty;
+      expect(order.getId()).to.be.equals("1");
+      expect(order.getCode()).to.be.equals("CODE123");
+      expect(order.getStatus()).to.be.equals(OrderStatus.CREATED);
+      expect(order.getTotalPrice()).to.be.equals(100.0);
+      expect(order.getItems()).to.be.empty;
     });
   });
   describe("setStatus", () => {
@@ -75,7 +75,7 @@ context("Order", () => {
         quantity: 1
       };
       order.addItem(item);
-      expect(order.items.length).to.be.at.least(1);
+      expect(order.getItems().length).to.be.at.least(1);
     });
   });
   describe("updateItem", () => {
@@ -102,9 +102,9 @@ context("Order", () => {
       };
 
       const updatedItem = order.updateItem("item1", updateValues);
-      expect(updatedItem.quantity).to.be.equals(2);
-      expect(updatedItem.totalPrice).to.be.equals(
-        updateValues.quantity * updatedItem.unitPrice
+      expect(updatedItem.getQuantity()).to.be.equals(2);
+      expect(updatedItem.getTotalPrice()).to.be.equals(
+        updateValues.quantity * updatedItem.getUnitPrice()
       );
     });
     it("should throw an error when updating unexisting item", () => {

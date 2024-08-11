@@ -1,6 +1,15 @@
 const InvalidPropertyError = require("../../products/exceptions/MissingPropertyError");
 
 class Item {
+  #id;
+  #orderId;
+  #productId;
+  #productName;
+  #productDescription;
+  #quantity;
+  #unitPrice;
+  #totalPrice;
+
   constructor({
     id,
     orderId,
@@ -10,27 +19,59 @@ class Item {
     quantity,
     unitPrice
   }) {
-    this.id = id;
-    this.orderId = orderId;
-    this.productId = productId;
+    this.#id = id;
+    this.#orderId = orderId;
+    this.#productId = productId;
 
-    this.productName = productName;
-    this.productDescription = productDescription;
-    this.unitPrice = unitPrice;
+    this.#productName = productName;
+    this.#productDescription = productDescription;
+    this.#unitPrice = unitPrice;
 
     this.setQuantity(quantity);
 
     this.#updateTotalPrice();
   }
 
+  getId() {
+    return this.#id;
+  }
+
+  getOrderId() {
+    return this.#orderId;
+  }
+
+  getProductId() {
+    return this.#productId;
+  }
+
+  getProductName() {
+    return this.#productName;
+  }
+
+  getProductDescription() {
+    return this.#productDescription;
+  }
+
+  getQuantity() {
+    return this.#quantity;
+  }
+
+  getUnitPrice() {
+    return this.#unitPrice;
+  }
+
+  getTotalPrice() {
+    return this.#totalPrice;
+  }
+
   setQuantity(quantity) {
     this.#validateQuantity(quantity);
-    this.quantity = quantity;
+    this.#quantity = quantity;
     this.#updateTotalPrice();
   }
 
   #updateTotalPrice() {
-    this.totalPrice = this.unitPrice * this.quantity;
+    this.#totalPrice = this.#unitPrice * this.#quantity;
   }
 
   #validateQuantity(quantity) {

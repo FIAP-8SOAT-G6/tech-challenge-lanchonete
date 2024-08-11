@@ -12,24 +12,50 @@ const ALLOWED_TARGET_STATUS_TRANSITIONS = {
 };
 
 class Order {
+  #id;
+  #code;
+  #status;
+  #totalPrice;
+  #items;
+
   constructor({ id, code, status, totalPrice, customer, items = [] }) {
-    this.id = id;
-    this.code = code;
-    this.totalPrice = totalPrice;
-    this.items = [];
+    this.#id = id;
+    this.#code = code;
+    this.#totalPrice = totalPrice;
+    this.#items = [];
 
     this.setStatus(status);
 
     items?.forEach(this.addItem.bind(this));
   }
 
+  getId() {
+    return this.#id;
+  }
+
+  getCode() {
+    return this.#code;
+  }
+
+  getStatus() {
+    return this.#status;
+  }
+
+  getTotalPrice() {
+    return this.#totalPrice;
+  }
+
+  getItems() {
+    return this.#items;
+  }
+
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
-    if (!this.status || requiredStatusForTarget.includes(this.status)) {
-      this.status = status;
+    if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
+      this.#status = status;
     } else {
       throw new InvalidStatusTransitionError(
-        this.status,
+        this.#status,
         status,
         ALLOWED_TARGET_STATUS_TRANSITIONS[status]
       );
@@ -55,12 +81,12 @@ class Order {
       productName,
       productDescription
     });
-    this.items.push(item);
+    this.#items.push(item);
     return item;
   }
 
   updateItem(itemId, updatedValues) {
-    const item = this.items.find((item) => item.id === itemId);
+    const item = this.#items.find((item) => item.getId() === itemId);
 
     if (!item) throw new UnexistingItemError(itemId);
 
