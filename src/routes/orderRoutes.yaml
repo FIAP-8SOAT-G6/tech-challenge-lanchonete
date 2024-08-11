@@ -29,9 +29,11 @@ paths:
               properties:
                 customerId:
                   type: integer
-                  example: 1
-              required :
-                - customerId
+                  description: ID of the customer
+            required:
+              - customerId
+            example:
+              customerId: 9
       responses:
         "201":
           description: Pedido criado com sucesso

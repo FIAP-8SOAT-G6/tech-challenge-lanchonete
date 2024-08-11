@@ -4,6 +4,7 @@
 const Item = require("./Item");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const OrderStatus = require("./OrderStatus");
+const Customer = require("../../customers/entities/Customer");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
@@ -24,6 +25,15 @@ class Order {
     this.#totalPrice = 0;
     this.#items = [];
 
+    // constructor({ id, code, status, totalPrice, CustomerId, customer, items = [], createdAt }) {
+      // this.id = id;
+      // this.code = code;
+      // this.totalPrice = totalPrice;
+      // this.items = [];
+      // this.createdAt = createdAt;
+      // this.CustomerId = CustomerId;
+      // this.customer = null;
+    this.setCustomer(customer);
     this.setStatus(status);
     this.#setItems(items);
   }
@@ -68,6 +78,12 @@ class Order {
     return this.#items;
   }
 
+  setCustomer(customerAttributes) {
+    if (customerAttributes && Object.keys(customerAttributes).length !== 0) {
+      this.customer = new Customer(customerAttributes);
+    }
+  }
+
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
@@ -104,6 +120,14 @@ class Order {
     this.#calculateTotalPrice();
 
     return item;
+  }
+
+  removeItem(itemId) {
+    this.items = this.items.filter((item) => item.id !== itemId);
+  }
+
+  getElapsedTime() {
+    return Date.now() - this.createdAt.getTime();
   }
 
   updateItem(itemId, updatedValues) {

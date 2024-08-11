@@ -13,10 +13,12 @@ class OrderManagement {
     this.productRepository = productRepository;
   }
 
-  async create() {
+  async create(orderAttributes) {
+    const { customerId } = orderAttributes
     const order = new Order({
       status: OrderStatus.CREATED,
-      code: this.#generateCode()
+      code: this.#generateCode(),
+      CustomerId: customerId,
     });
     const orderDTO = this.#toOrderDTO(order);
     const createdOrderDTO = await this.orderRepository.create(orderDTO);

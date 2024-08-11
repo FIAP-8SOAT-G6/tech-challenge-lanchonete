@@ -19,7 +19,8 @@ class OrdersController {
   initializeRoutes() {
     this.router.post("/orders", async (req, res) => {
       try {
-        const order = await this.useCase.create();
+        const { customerId } = req.body
+        const order = await this.useCase.create({ customerId });
         return res.status(201).json(order);
       } catch (error) {
         return res.status(500).json({ error: error.message });

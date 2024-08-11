@@ -2,6 +2,7 @@ const ItemDTO = require("../../core/orders/dto/ItemDTO");
 const OrderDTO = require("../../core/orders/dto/OrderDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 const order = require("../../infrastructure/database/models/order");
+const SequelizeCustomerRepository = require("./SequelizeCustomerRepository");
 
 const {
   Order: SequelizeOrder,
@@ -11,8 +12,16 @@ const {
 
 class SequelizeOrderRepository {
   async create(orderAttributes) {
-    const { status, code } = orderAttributes;
-    const createdOrder = await SequelizeOrder.create({ status, code });
+    const { status, code, CustomerId } = orderAttributes;
+
+    const repository = new SequelizeCustomerRepository()
+    const customer = await repository.findById(CustomerId);
+    const { id, cpf, name, email } = customer;
+
+    const createdOrder = await SequelizeOrder.create({ status, code, CustomerId });
+    
+    // return this.#instantiateOrder(createdOrder, { id, cpf, name, email });
+    
     return this.#createOrderDTO(createdOrder);
   }
 
@@ -37,7 +46,13 @@ class SequelizeOrderRepository {
         }
       ]
     });
+
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
+
+    // TODO voltar aqui
+    //return orders?.length === 0
+    //  ? undefined
+    //  : orders.map(this.#instantiateOrder).sort((a, b) => a.createdAt - b.createdAt);
   }
 
   async createItem(order, itemDTO) {
@@ -100,6 +115,55 @@ class SequelizeOrderRepository {
       )
     });
   }
+
+  // #instantiateOrder(orderAttributes, customerAttributes = {}) {
+  //   const order = new Order({
+  //     id: orderAttributes.id,
+  //     status: orderAttributes.status,
+  //     code: orderAttributes.code,
+  //     totalPrice: orderAttributes.totalPrice,
+  //     createdAt: orderAttributes.createdAt,
+  //     CustomerId: orderAttributes.CustomerId,
+  //   });
+// 
+  //   if (customerAttributes && Object.keys(customerAttributes).length !== 0) {
+  //     order.setCustomer(customerAttributes);
+  //   }
+  //   // const customerAttributes = orderAttributes.Customer?
+  //   // orderAttributes.Customer?.id && order.setCustomer(orderAttributes.Customer.id);
+  //   orderAttributes.Items?.forEach((item) => {
+  //     const {
+  //       id,
+  //       OrderId: orderId,
+  //       ProductId: productId,
+  //       quantity,
+  //       unitPrice,
+  //     } = item;
+  //     order.addItem({
+  //       id,
+  //       orderId,
+  //       productId,
+  //       quantity,
+  //       unitPrice,
+  //       productName: item.Product?.name,
+  //       productDescription: item.Product?.description,
+  //     });
+  //   });
+// 
+  //   // TODO: Add to a decorator + test (wait for DTO disussion)
+  //   const minutes = Math.floor(order.getElapsedTime() / 60000);
+  //   let response = 0
+// 
+  //   if (minutes < 60) {
+  //     response = `${minutes} minute${minutes === 1 ? '' : 's'}`;
+  //   } else {
+  //     const hours = Math.floor(minutes / 60);
+  //     response = `${hours} hour${hours === 1 ? '' : 's'}`;
+  //   }
+// 
+  //   order["elapsedTime"] = response;
+  //   return order;
+  // }
 }
 
 module.exports = SequelizeOrderRepository;
