@@ -12,7 +12,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OrderWithItems"
+                  $ref: "#/components/schemas/Order"
         "500":
           description: Erro interno do servidor
     post:
@@ -62,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderWithItems"
+                $ref: "#/components/schemas/Order"
         "500":
           description: Erro interno do servidor
   /orders/{orderId}/checkout:
@@ -122,7 +122,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderWithItems"
+                $ref: "#/components/schemas/Order"
         "400":
           description: Não foi possivel adicionar item pois o pedido já foi fechado ou o produto não existe.
         "404":
@@ -168,7 +168,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderWithItems"
+                $ref: "#/components/schemas/Order"
         "400":
           description: Não foi possivel atualizar o item pois o pedido já foi fechado
         "404":
@@ -218,7 +218,8 @@ components:
           example: 1501767
         customerId:
           type: integer
-          description: ID do Cliente
+          nullable: true
+          description: ID do Cliente ou null para clientes não identificados
           example: 1
         code:
           type: string
@@ -226,12 +227,7 @@ components:
           example: 9999
         status:
           $ref: "#/components/schemas/OrderStatus"
-          example: CREATED
-
-    OrderWithItems:
-      allOf:
-        - $ref: "#/components/schemas/Order"
-      properties:
+          example: CREATED 
         items:
           type: array
           description: Itens do Pedido
