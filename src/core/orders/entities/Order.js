@@ -1,10 +1,10 @@
 const Item = require("./Item");
 const OrderStatus = require("./OrderStatus");
 
-const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const EmptyOrderError = require("../exceptions/EmptyOrderError");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 const ClosedOrderError = require("../exceptions/ClosedOrderError");
+const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
@@ -134,6 +134,7 @@ class Order {
   }
 
   getElapsedTime() {
+    if (!this.#createdAt) return 0;
     return Date.now() - this.#createdAt.getTime();
   }
 
@@ -143,7 +144,12 @@ class Order {
 
     const item = this.#items.find((item) => item.getId() === itemId);
 
-    if (!item) throw new UnexistingItemError(itemId);
+    if (!item)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Item,
+        "id",
+        itemId
+      );
 
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
@@ -157,7 +163,12 @@ class Order {
       throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const itemIndex = this.#items.findIndex((item) => item.getId() === itemId);
-    if (itemIndex < 0) throw new UnexistingItemError(itemId);
+    if (itemIndex < 0)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Item,
+        "id",
+        itemId
+      );
 
     this.#items.splice(itemIndex, 1);
   }
@@ -191,10 +202,9 @@ class Order {
   }
 
   #calculateTotalPrice() {
-    this.#totalPrice = this.#items.reduce(
-      (currentSum, item) => currentSum + item.getTotalPrice(),
-      0
-    );
+    this.#totalPrice = this.#items
+      .reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0)
+      .toFixed(2);
   }
 }
 

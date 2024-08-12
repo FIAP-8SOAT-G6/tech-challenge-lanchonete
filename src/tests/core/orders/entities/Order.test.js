@@ -1,11 +1,13 @@
 const chai = require("chai");
 const expect = chai.expect;
+
 const Order = require("../../../../core/orders/entities/Order");
 const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+
 const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
-const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
 const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 const ClosedOrderError = require("../../../../core/orders/exceptions/ClosedOrderError");
+const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 
 context("Order", () => {
   describe("validations", () => {
@@ -19,7 +21,7 @@ context("Order", () => {
       expect(order.getId()).to.be.equals("1");
       expect(order.getCode()).to.be.equals("CODE123");
       expect(order.getStatus()).to.be.equals(OrderStatus.CREATED);
-      expect(order.getTotalPrice()).to.be.equals(0);
+      expect(Number(order.getTotalPrice())).to.be.equals(0);
       expect(order.getItems()).to.be.empty;
     });
   });
@@ -103,7 +105,7 @@ context("Order", () => {
       };
       order.addItem(item);
       expect(order.getItems().length).to.be.at.least(1);
-      expect(order.getTotalPrice()).to.be.equals(
+      expect(Number(order.getTotalPrice())).to.be.equals(
         item.quantity * item.unitPrice
       );
     });
@@ -164,8 +166,8 @@ context("Order", () => {
       expect(updatedItem.getTotalPrice()).to.be.equals(
         updateValues.quantity * updatedItem.getUnitPrice()
       );
-      expect(order.getTotalPrice()).to.be.equals(
-        updateValues.quantity * updatedItem.getUnitPrice()
+      expect(Number(order.getTotalPrice())).to.be.equals(
+        updateValues.quantity * Number(updatedItem.getUnitPrice())
       );
     });
     it("should throw an error when updating unexisting item", () => {
@@ -181,7 +183,7 @@ context("Order", () => {
       const updateValues = { quantity: 3 };
 
       expect(() => order.updateItem(unexistingId, updateValues)).to.throw(
-        new UnexistingItemError(unexistingId).message
+        ResourceNotFoundError
       );
     });
     it("should throw an error when status is not `CREATED`", () => {
@@ -238,7 +240,7 @@ context("Order", () => {
       const unexistingId = -1;
 
       expect(() => order.removeItem(unexistingId)).to.throw(
-        new UnexistingItemError(unexistingId).message
+        ResourceNotFoundError
       );
     });
     it("should throw an error when status is not `CREATED`", () => {

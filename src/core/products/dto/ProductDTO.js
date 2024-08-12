@@ -4,7 +4,7 @@ class ProductDTO {
     this.name = name;
     this.category = category;
     this.description = description;
-    this.price = price;
+    this.price = Number(price);
   }
 }
 
