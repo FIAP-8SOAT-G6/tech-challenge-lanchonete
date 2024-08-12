@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
+const UnexistingCustomerError = require("../../core/orders/exceptions/UnexistingCustomerError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
 const OrderDTO = require('../../core/orders/dto/OrderDTO');
@@ -24,6 +25,8 @@ class OrdersController {
         const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error) {
+        if (error instanceof UnexistingCustomerError)
+          return res.status(404).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
