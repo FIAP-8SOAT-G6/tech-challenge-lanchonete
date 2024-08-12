@@ -22,25 +22,25 @@ class SequelizeProductRepository {
   }
 
   async findAll() {
-    const products = await SequelizeProduct.findAll();
-    return products.map(this.#createProductDTO);
+    return await this.#findAllProducts();
   }
 
   async findById(id) {
     const product = await SequelizeProduct.findByPk(id);
-    const images = await SequelizeImage.findAll({
-      where: { ProductId: id }
-    });
+    const images = await this.#findImagesByProductId(id);
     if (images?.length > 0) product.images = images;
     return product ? this.#createProductDTO(product) : undefined;
   }
 
   async findByCategory(category) {
-    const products = await SequelizeProduct.findAll({
-      where: { category }
-    });
+    return await this.#findAllProducts({ where: { category } });
+  }
 
-    return products.map(this.#createProductDTO);
+  async #findImagesByProductId(productId) {
+    const images = await SequelizeImage.findAll({
+      where: { ProductId: productId }
+    });
+    return images;
   }
 
   async update(productDTO) {
@@ -67,6 +67,19 @@ class SequelizeProductRepository {
     if (!product) return;
     await product.destroy();
     await this.#deleteImages(id);
+  }
+
+  async #findAllProducts(conditions) {
+    const products = await SequelizeProduct.findAll(conditions);
+
+    return await Promise.all(
+      products.map(async (product) => {
+        const images = await this.#findImagesByProductId(product.id);
+        if (images?.length > 0) product.images = images;
+
+        return this.#createProductDTO(product);
+      })
+    );
   }
 
   async #addImages({ productId, images }) {
