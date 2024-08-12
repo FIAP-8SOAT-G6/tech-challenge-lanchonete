@@ -26,7 +26,7 @@ class OrdersController {
         return res.status(201).json(order);
       } catch (error) {
         if (error instanceof UnexistingCustomerError)
-          return res.status(404).json({ error: error.message });
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
