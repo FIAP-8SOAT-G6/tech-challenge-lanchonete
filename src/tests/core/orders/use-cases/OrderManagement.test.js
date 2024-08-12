@@ -76,6 +76,18 @@ context("OrderManagement", () => {
       expect(createdOrder.code).to.not.be.undefined;
       expect(createdOrder.elapsedTime).to.not.be.undefined;
     });
+    it("should not throw an error when creating order with anonymous customer", async () => {
+      const anonymousCustomerId = null;
+      const orderDTO = new OrderDTO({ customerId: anonymousCustomerId });
+
+      const createOrderPromise = useCase.create(orderDTO);
+      await expect(createOrderPromise).to.not.be.eventually.rejectedWith(
+        ResourceNotFoundError
+      );
+      const createdOrder = await createOrderPromise;
+      expect(createdOrder).to.not.be.undefined;
+      expect(createdOrder.customerId).to.be.null;
+    });
     it("should throw an error when creating order with unexisting customer", async () => {
       const unexistingCustomerId = -1;
       const orderDTO = new OrderDTO({ customerId: unexistingCustomerId });

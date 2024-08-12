@@ -14,20 +14,16 @@ class OrderManagement {
   }
 
   async create(orderDTO) {
-    const customerDTO = await this.customerRepository.findById(
-      orderDTO.customerId
-    );
-    if (!customerDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Customer,
-        "id",
-        orderDTO.customerId
-      );
+    const { customerId } = orderDTO;
+    console.log(typeof customerId);
+
+    if (!this.#isCustomerAnonymous(customerId))
+      await this.#validateCustomerExists(customerId);
 
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
-      customerId: customerDTO.id
+      customerId: customerId
     });
     const createdOrderDTO = await this.orderRepository.create(
       this.#toOrderDTO(order)
@@ -136,6 +132,20 @@ class OrderManagement {
     order.setStatus(OrderStatus.PAYED);
 
     await this.orderRepository.updateOrder(this.#toOrderDTO(order));
+  }
+
+  #isCustomerAnonymous(customerId) {
+    return customerId === null;
+  }
+
+  async #validateCustomerExists(customerId) {
+    const customerDTO = await this.customerRepository.findById(customerId);
+    if (!customerDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Customer,
+        "id",
+        customerId
+      );
   }
 
   #generateCode() {

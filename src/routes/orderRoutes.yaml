@@ -29,7 +29,8 @@ paths:
               properties:
                 customerId:
                   type: integer
-                  description: ID do Cliente
+                  nullable: true 
+                  description: ID do cliente ou 'null' para clientes não identificados
               required:
                 - customerId
       responses:
