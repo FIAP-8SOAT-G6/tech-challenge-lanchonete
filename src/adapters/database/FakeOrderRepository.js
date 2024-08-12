@@ -6,12 +6,14 @@ class FakeOrderRepository {
   #items = [];
 
   async create(orderDTO) {
-    const { status, code } = orderDTO;
+    const { status, code, customerId } = orderDTO;
     const order = {
       id: this.#orders.length + 1,
       status,
       code,
-      items: []
+      items: [],
+      createdAt: new Date(),
+      customerId
     };
     this.#orders.push(order);
     return this.#createOrderDTO(order);
@@ -74,7 +76,9 @@ class FakeOrderRepository {
     return new OrderDTO({
       id: databaseOrder.id,
       code: databaseOrder.code,
+      createdAt: databaseOrder.createdAt,
       status: databaseOrder.status,
+      customerId: databaseOrder.customerId,
       totalPrice: databaseOrder.totalPrice,
       items: databaseOrder.items.map(
         (databaseItem) =>

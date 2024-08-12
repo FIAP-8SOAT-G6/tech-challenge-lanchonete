@@ -14,9 +14,9 @@ class ItemDTO {
     this.productId = productId;
     this.productName = productName;
     this.productDescription = productDescription;
-    this.quantity = quantity;
-    this.unitPrice = unitPrice;
-    this.totalPrice = totalPrice;
+    this.quantity = Number(quantity);
+    this.unitPrice = Number(unitPrice);
+    this.totalPrice = Number(totalPrice);
   }
 }
 

@@ -2,7 +2,7 @@ const Product = require("../entities/Product");
 const ProductDTO = require("../dto/ProductDTO");
 const ProductCategory = require("../entities/ProductCategory");
 const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
-const UnexistingProductError = require("../exceptions/UnexistingProductError");
+const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
 
 class ProductManagement {
   constructor(productRepository) {
@@ -21,7 +21,12 @@ class ProductManagement {
 
   async findById(id) {
     const product = await this.productRepository.findById(id);
-    if (!product) throw new UnexistingProductError(id);
+    if (!product)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Product,
+        "id",
+        id
+      );
     return product;
   }
 
@@ -34,7 +39,12 @@ class ProductManagement {
   async update(productDTO) {
     const { id } = productDTO;
     const currentProductDTO = await this.productRepository.findById(id);
-    if (!currentProductDTO) throw new UnexistingProductError(id);
+    if (!currentProductDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Product,
+        "id",
+        id
+      );
 
     const product = this.#toProductEntity(currentProductDTO);
     product.setName(productDTO.name);
