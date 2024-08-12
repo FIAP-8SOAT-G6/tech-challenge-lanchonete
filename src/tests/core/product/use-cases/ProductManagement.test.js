@@ -2,11 +2,11 @@ const FakeProductRepository = require("../../../../adapters/database/FakeProduct
 const ProductCategory = require("../../../../core/products/entities/ProductCategory");
 const InvalidCategoryError = require("../../../../core/products/exceptions/InvalidCategoryError");
 const ProductManagement = require("../../../../core/products/use-cases/ProductManagement");
-const UnexistingProductError = require("../../../../core/products/exceptions/UnexistingProductError");
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 const ProductDTO = require("../../../../core/products/dto/ProductDTO");
+const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -55,9 +55,7 @@ context("ProductManagement", () => {
 
       await expect(
         productManagementUseCase.findById(unexistingId)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingProductError(unexistingId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 
@@ -197,7 +195,7 @@ context("ProductManagement", () => {
         productManagementUseCase.update(unexistingProductDTO);
 
       await expect(updatePromise).to.be.eventually.rejectedWith(
-        new UnexistingProductError(unexistingProductDTO.id).message
+        ResourceNotFoundError
       );
     });
   });
@@ -220,9 +218,7 @@ context("ProductManagement", () => {
 
       await expect(
         productManagementUseCase.findById(createdProductDTO.id)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingProductError(createdProductDTO.id).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
 
     it("should throw error  when Product does not exist", async () => {
@@ -233,9 +229,7 @@ context("ProductManagement", () => {
 
       await expect(
         productManagementUseCase.findById(idNonexisting)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingProductError(idNonexisting).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });

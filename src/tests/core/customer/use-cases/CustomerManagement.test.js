@@ -1,7 +1,7 @@
 const FakeCustomerRepository = require("../../../../adapters/database/FakeCustomerRepository");
 const CustomerManagement = require("../../../../core/customers/use-cases/CustomerManagement");
-const ExistentCustomerError = require("../../../../core/customers/exceptions/ExistentCustomerError");
-const NonexistentCustomerError = require("../../../../core/customers/exceptions/NonexistentCustomerError");
+const ResourceAlreadyExistsError = require("../../../../core/common/exceptions/ResourceAlreadyExistsError");
+const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
 
 const chai = require("chai");
@@ -46,9 +46,7 @@ context("Customer Management", () => {
 
       await expect(
         customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(
-        new ExistentCustomerError(customerDTO.cpf).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceAlreadyExistsError);
     });
   });
 
@@ -82,9 +80,7 @@ context("Customer Management", () => {
 
       await expect(
         customerManagementUseCase.findByCPF("123")
-      ).to.be.eventually.rejectedWith(
-        new NonexistentCustomerError("123").message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
 
     it("should display an error message when a CPF is not provided", async () => {

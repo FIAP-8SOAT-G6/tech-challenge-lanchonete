@@ -1,8 +1,10 @@
 const { Router } = require("express");
+
+const ProductDTO = require("../../core/products/dto/ProductDTO");
+
 const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError");
 const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
-const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
-const ProductDTO = require("../../core/products/dto/ProductDTO");
+const ResourceNotFoundError = require("../../core/common/exceptions/ResourceNotFoundError");
 
 class ProductsController {
   constructor(productManagementUseCase) {
@@ -32,7 +34,7 @@ class ProductsController {
         const products = await this.useCase.findById(id);
         return res.status(200).json(products);
       } catch (error) {
-        if (error instanceof UnexistingProductError) {
+        if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });
@@ -75,7 +77,7 @@ class ProductsController {
         const product = await this.useCase.update(productDTO);
         return res.status(201).json(product);
       } catch (error) {
-        if (error instanceof UnexistingProductError) {
+        if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
         if (

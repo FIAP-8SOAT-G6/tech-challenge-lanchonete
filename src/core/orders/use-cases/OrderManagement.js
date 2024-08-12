@@ -1,9 +1,7 @@
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 
-const UnexistingCustomerError = require("../exceptions/UnexistingCustomerError");
-const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
-const UnexistingProductError = require("../../products/exceptions/UnexistingProductError");
+const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
 
 const OrderDTO = require("../dto/OrderDTO");
 const ItemDTO = require("../dto/ItemDTO");
@@ -16,16 +14,27 @@ class OrderManagement {
   }
 
   async create(orderDTO) {
-    const customerDTO = await this.customerRepository.findById(orderDTO.customerId);
-    if (!customerDTO) throw new UnexistingCustomerError(orderDTO.customerId);
+    const customerDTO = await this.customerRepository.findById(
+      orderDTO.customerId
+    );
+    if (!customerDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Customer,
+        "id",
+        orderDTO.customerId
+      );
 
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
-      customerId: customerDTO.id,
+      customerId: customerDTO.id
     });
-    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
-    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id);
+    const createdOrderDTO = await this.orderRepository.create(
+      this.#toOrderDTO(order)
+    );
+    const completeOrderDTO = await this.orderRepository.findById(
+      createdOrderDTO.id
+    );
     const completeOrder = this.#toOrderEntity(completeOrderDTO);
 
     return this.#toOrderDTO(completeOrder);
@@ -40,7 +49,12 @@ class OrderManagement {
   async getOrder(orderId) {
     const repositoryOrderDTO = await this.orderRepository.findById(orderId);
 
-    if (!repositoryOrderDTO) throw new UnexistingOrderError(orderId);
+    if (!repositoryOrderDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Order,
+        "id",
+        orderId
+      );
     const order = this.#toOrderEntity(repositoryOrderDTO);
 
     return this.#toOrderDTO(order);
@@ -54,8 +68,18 @@ class OrderManagement {
       this.orderRepository.findById(orderId)
     ]);
 
-    if (!orderDTO) throw new UnexistingOrderError(orderId);
-    if (!productDTO) throw new UnexistingProductError(productId);
+    if (!orderDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Order,
+        "id",
+        orderId
+      );
+    if (!productDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Product,
+        "id",
+        productId
+      );
 
     const order = this.#toOrderEntity(orderDTO);
     const item = order.addItem({
@@ -85,7 +109,12 @@ class OrderManagement {
   async updateItem(orderId, itemId, itemDTO) {
     const orderDTO = await this.orderRepository.findById(orderId);
 
-    if (!orderDTO) throw new UnexistingOrderError(orderId);
+    if (!orderDTO)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Order,
+        "id",
+        orderId
+      );
     const order = this.#toOrderEntity(orderDTO);
 
     const updatedItem = order.updateItem(itemId, itemDTO);

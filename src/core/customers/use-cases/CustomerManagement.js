@@ -1,9 +1,9 @@
 const Customer = require("../entities/Customer");
-const NonexistentCustomerError = require("../exceptions/NonexistentCustomerError");
-const ExistentCustomerError = require("../exceptions/ExistentCustomerError");
-const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 const CustomerDTO = require("../dto/CustomerDTO");
 
+const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
+const ResourceAlreadyExistsError = require("../../common/exceptions/ResourceAlreadyExistsError");
+const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 
 class CustomerManagement {
   constructor(customerRepository) {
@@ -20,7 +20,12 @@ class CustomerManagement {
     if (!cpf) throw new MissingPropertyError("cpf");
 
     const customer = await this.customerRepository.findByCPF(cpf);
-    if (!customer) throw new NonexistentCustomerError(cpf);
+    if (!customer)
+      throw new ResourceNotFoundError(
+        ResourceNotFoundError.Resources.Customer,
+        "cpf",
+        cpf
+      );
 
     return customer;
   }
@@ -31,7 +36,11 @@ class CustomerManagement {
     );
 
     if (validateCustomerExistence) {
-      throw new ExistentCustomerError(cpf);
+      throw new ResourceAlreadyExistsError(
+        ResourceAlreadyExistsError.Resources.Customer,
+        "cpf",
+        cpf
+      );
     }
   }
 

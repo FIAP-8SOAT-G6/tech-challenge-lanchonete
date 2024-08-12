@@ -1,8 +1,9 @@
 const { Router } = require("express");
-const ExistentCustomerError = require("../../core/customers/exceptions/ExistentCustomerError");
-const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
-const NonexistentCustomerError = require("../../core/customers/exceptions/NonexistentCustomerError");
 const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
+
+const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
+const ResourceNotFoundError = require("../../core/common/exceptions/ResourceNotFoundError");
+const ResourceAlreadyExistsError = require("../../core/common/exceptions/ResourceAlreadyExistsError");
 
 class CustomerController {
   constructor(customerManagementUseCase) {
@@ -23,7 +24,7 @@ class CustomerController {
         const customerFound = await this.useCase.findByCPF(cpf);
         return res.status(200).json(customerFound);
       } catch (error) {
-        if (error instanceof NonexistentCustomerError) {
+        if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });
@@ -44,7 +45,7 @@ class CustomerController {
       } catch (error) {
         if (
           error instanceof MissingPropertyError ||
-          error instanceof ExistentCustomerError
+          error instanceof ResourceAlreadyExistsError
         ) {
           return res.status(400).json({ message: error.message });
         }

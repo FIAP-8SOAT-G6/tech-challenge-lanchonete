@@ -1,11 +1,13 @@
 const chai = require("chai");
 const expect = chai.expect;
+
 const Order = require("../../../../core/orders/entities/Order");
 const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+
 const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
-const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
 const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 const ClosedOrderError = require("../../../../core/orders/exceptions/ClosedOrderError");
+const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 
 context("Order", () => {
   describe("validations", () => {
@@ -181,7 +183,7 @@ context("Order", () => {
       const updateValues = { quantity: 3 };
 
       expect(() => order.updateItem(unexistingId, updateValues)).to.throw(
-        new UnexistingItemError(unexistingId).message
+        ResourceNotFoundError
       );
     });
     it("should throw an error when status is not `CREATED`", () => {
@@ -238,7 +240,7 @@ context("Order", () => {
       const unexistingId = -1;
 
       expect(() => order.removeItem(unexistingId)).to.throw(
-        new UnexistingItemError(unexistingId).message
+        ResourceNotFoundError
       );
     });
     it("should throw an error when status is not `CREATED`", () => {

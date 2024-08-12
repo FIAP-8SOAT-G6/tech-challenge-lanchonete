@@ -8,16 +8,13 @@ const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
 const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
 
-const UnexistingOrderError = require("../../../../core/orders/exceptions/UnexistingOrderError");
-const UnexistingItemError = require("../../../../core/orders/exceptions/UnexistingItemError");
-const UnexistingProductError = require("../../../../core/products/exceptions/UnexistingProductError");
+const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 
 const ProductDTO = require("../../../../core/products/dto/ProductDTO");
 const ItemDTO = require("../../../../core/orders/dto/ItemDTO");
 const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
 const OrderDTO = require("../../../../core/orders/dto/OrderDTO");
-const UnexistingCustomerError = require("../../../../core/orders/exceptions/UnexistingCustomerError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -83,7 +80,7 @@ context("OrderManagement", () => {
       const unexistingCustomerId = -1;
       const orderDTO = new OrderDTO({ customerId: unexistingCustomerId });
       await expect(useCase.create(orderDTO)).to.be.eventually.rejectedWith(
-        UnexistingCustomerError
+        ResourceNotFoundError
       );
     });
   });
@@ -113,9 +110,7 @@ context("OrderManagement", () => {
       const unexistingOrderId = -1;
       await expect(
         useCase.getOrder(unexistingOrderId)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingOrderError(unexistingOrderId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
   describe("addItem", () => {
@@ -152,9 +147,7 @@ context("OrderManagement", () => {
       });
       await expect(
         useCase.addItem(unexistingOrderId, itemDTO)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingOrderError(unexistingOrderId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
     it("should throw error when product does not exist", async () => {
       const unexistingProductId = -1;
@@ -167,9 +160,7 @@ context("OrderManagement", () => {
       });
       await expect(
         useCase.addItem(order.id, itemDTO)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingProductError(unexistingProductId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
   describe("removeItem", () => {
@@ -226,9 +217,7 @@ context("OrderManagement", () => {
       });
       await expect(
         useCase.updateItem(unexistingOrderId, itemId, updateItemDTO)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingOrderError(unexistingOrderId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
     it("should throw error when item does not exist", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
@@ -238,9 +227,7 @@ context("OrderManagement", () => {
       const updateItemDTO = new ItemDTO({ quantity: 3 });
       await expect(
         useCase.updateItem(order.id, unexistingItemId, updateItemDTO)
-      ).to.be.eventually.rejectedWith(
-        new UnexistingItemError(unexistingItemId).message
-      );
+      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
   describe("checkout", () => {
