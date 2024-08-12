@@ -27,6 +27,9 @@ Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o com
 
 Ao acessar a URL `http://localhost:8080/`, você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
 
+#### Executando os testes
+Execute `npm run test` para rodar os testes unitários da aplicação
+
 ## Tarefas
 
 As tarefas estão descritas em projetos da organização do GitHub.
@@ -51,6 +54,9 @@ As tarefas estão descritas em projetos da organização do GitHub.
 - `src/core` - Objetos do domínio da solução. Não devem depender de objetos que são criados fora dessa camada, devendo utilizar interfaces (`ports`) e injeção de dependência para execução da aplicação.
 - `src/core/<domain>/entities` - Entidades do domínio conforme identificado através dos exercícios de Domain-Driven Design.
 - `src/core/<domain>/use-cases` - Processos de negócio que foram identificados dentro do domínio; executados através da orquestração das entidades e das `ports`.
+- `src/core/<domain>/exceptions` - Exceções lançadas pelos processos de negócio e entidades;
+- `src/core/<domain>/dto` - Objetos para transferência de dados entre as camadas da aplicação;
+- `src/infrastructure` - Configurações de infraestrutura como banco de dados e documentação
 - `src/tests` - Testes do projeto.
 - `app.js` - Ponto de entrada da aplicação, onde os objetos são instanciados com suas respectivas dependências e a aplicação começa a ser executada.
 
