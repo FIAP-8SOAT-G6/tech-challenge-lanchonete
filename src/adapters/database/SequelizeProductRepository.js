@@ -1,8 +1,7 @@
 const ProductDTO = require("../../core/products/dto/ProductDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 
-const { Product: SequelizeProduct } = sequelize.models;
-const { Image: SequelizeImage } = sequelize.models;
+const { Product: SequelizeProduct, Image: SequelizeImage } = sequelize.models;
 
 class SequelizeProductRepository {
   async create(productDTO) {
@@ -14,13 +13,9 @@ class SequelizeProductRepository {
       price
     });
 
-    await images?.forEach(async (image) => {
-      const createdImage = await SequelizeImage.create({
-        productId: createdProduct.id,
-        url: image.url
-      });
-
-      await createdProduct.images.push(createdImage);
+    createdProduct.images = await this.#addImages({
+      productId: createdProduct.id,
+      images
     });
 
     return this.#createProductDTO(createdProduct);
@@ -33,13 +28,18 @@ class SequelizeProductRepository {
 
   async findById(id) {
     const product = await SequelizeProduct.findByPk(id);
+    const images = await SequelizeImage.findAll({
+      where: { ProductId: id }
+    });
+    if (images?.length > 0) product.images = images;
     return product ? this.#createProductDTO(product) : undefined;
   }
 
   async findByCategory(category) {
     const products = await SequelizeProduct.findAll({
-      where: { category: category }
+      where: { category }
     });
+
     return products.map(this.#createProductDTO);
   }
 
@@ -49,9 +49,16 @@ class SequelizeProductRepository {
       name: productDTO.name,
       category: productDTO.category,
       description: productDTO.description,
-      price: productDTO.price,
-      images: productDTO.images
+      price: productDTO.price
     });
+
+    await this.#deleteImages(productDTO.id);
+
+    updatedProduct.images = await this.#addImages({
+      productId: productDTO.id,
+      images: productDTO?.images
+    });
+
     return this.#createProductDTO(updatedProduct);
   }
 
@@ -59,6 +66,34 @@ class SequelizeProductRepository {
     const product = await SequelizeProduct.findByPk(id);
     if (!product) return;
     await product.destroy();
+    await this.#deleteImages(id);
+  }
+
+  async #addImages({ productId, images }) {
+    if (!images) return;
+
+    const newImages = await Promise.all(
+      images.map((image) =>
+        SequelizeImage.create({
+          ProductId: productId,
+          url: image.url
+        })
+      )
+    );
+
+    return newImages;
+  }
+
+  async #deleteImages(productId) {
+    const dbImages = await SequelizeImage.findAll({
+      where: { ProductId: productId }
+    });
+
+    if (dbImages.length > 0) {
+      for (const image of dbImages) {
+        await image.destroy();
+      }
+    }
   }
 
   #createProductDTO(values) {

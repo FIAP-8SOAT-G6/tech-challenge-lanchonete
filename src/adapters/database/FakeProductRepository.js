@@ -1,5 +1,4 @@
 const ProductDTO = require("../../core/products/dto/ProductDTO");
-//const Image = require("../../core/products/entities/Image");
 class FakeProductRepository {
   #products = [];
   #images = [];
@@ -25,11 +24,15 @@ class FakeProductRepository {
   }
 
   async findAll() {
-    return Promise.resolve(this.#products.map(this.#createProductDTO));
+    return Promise.resolve(this.#findImagesByProductId(this.#products));
   }
 
   async findById(id) {
     const product = this.#products.find((product) => product?.id === id);
+    const images = this.#images.filter((image) => image?.productId === id);
+
+    if (images?.length > 0) product.images = images;
+
     return Promise.resolve(
       product ? this.#createProductDTO(product) : undefined
     );
@@ -39,15 +42,8 @@ class FakeProductRepository {
     const products = this.#products.filter(
       (product) => product?.category === category
     );
-    return Promise.resolve(products.map(this.#createProductDTO));
-  }
 
-  #addImages({ productId, images }) {
-    images?.map((image) => {
-      image.id = this.#images?.length + 1;
-      image.productId = productId;
-      this.#images.push(image);
-    });
+    return Promise.resolve(this.#findImagesByProductId(products));
   }
 
   update(product) {
@@ -59,7 +55,12 @@ class FakeProductRepository {
     this.#products[productIndex].category = product.category;
     this.#products[productIndex].description = product.description;
     this.#products[productIndex].price = product.price;
-    this.#products[productIndex].images = product.images;
+
+    this.#deleteImages(product.id);
+    this.#products[productIndex].images = this.#addImages({
+      productId: product.id,
+      images: product?.images
+    });
 
     return this.#createProductDTO(this.#products[productIndex]);
   }
@@ -70,6 +71,32 @@ class FakeProductRepository {
     );
     delete this.#products[productIndex];
     return Promise.resolve();
+  }
+
+  #findImagesByProductId(products) {
+    return products.map((product) => {
+      const images = this.#images.filter(
+        (image) => image?.productId === product.id
+      );
+      if (images?.length > 0) product.images = images;
+      return this.#createProductDTO(product);
+    });
+  }
+
+  #addImages({ productId, images }) {
+    if (!images || images?.length === 0) return;
+
+    return images?.map((image) => {
+      image.id = this.#images?.length + 1;
+      image.productId = productId;
+      this.#images.push(image);
+    });
+  }
+
+  #deleteImages(productId) {
+    this.#images = this.#images.filter(
+      (image) => image?.productId !== productId
+    );
   }
 
   #createProductDTO(values) {

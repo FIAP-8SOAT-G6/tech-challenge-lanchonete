@@ -65,13 +65,14 @@ class ProductsController {
     this.router.put("/products/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const { name, description, category, price } = req.body;
+        const { name, description, category, price, images } = req.body;
         const productDTO = new ProductDTO({
           id,
           name,
           category,
           description,
-          price
+          price,
+          images
         });
         const product = await this.useCase.update(productDTO);
         return res.status(201).json(product);

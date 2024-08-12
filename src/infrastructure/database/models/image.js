@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Image.belongsTo(models.Product, {
-        foreignKey: "productIdA", // Definindo a chave estrangeira
-        as: "product" // Alias para facilitar as associações
+      Image.hasOne(models.Product, {
+        as: "Product",
+        foreignKey: "ProductId"
       });
     }
   }
@@ -21,16 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
         autoIncrement: true
-      },
-      productId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Products", // Nome da tabela referenciada
-          key: "id" // Chave referenciada
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL"
       },
       url: DataTypes.STRING
     },

@@ -41,19 +41,11 @@ class ProductManagement {
     product.setCategory(productDTO.category);
     product.setDescription(productDTO.description);
     product.setPrice(productDTO.price);
-    //TODO
-    //product.setImages(productDTO.images);
+    product.setImages(productDTO.images);
 
     const updatedProductDTO = this.#toProductDTO(product);
     return await this.productRepository.update(updatedProductDTO);
   }
-
-  //TODO
-  // async updateImages({ productId, images }) {
-  //   product.setImages(images);
-
-  //   return await this.productRepository;
-  // }
 
   async delete(id) {
     await this.productRepository.delete(id);
