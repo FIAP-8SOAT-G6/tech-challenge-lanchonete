@@ -15,7 +15,6 @@ class OrderManagement {
 
   async create(orderDTO) {
     const { customerId } = orderDTO;
-    console.log(typeof customerId);
 
     if (!this.#isCustomerAnonymous(customerId))
       await this.#validateCustomerExists(customerId);
