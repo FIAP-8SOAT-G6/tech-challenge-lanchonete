@@ -1,6 +1,7 @@
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 
+const UnexistingCustomerError = require("../exceptions/UnexistingCustomerError");
 const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../products/exceptions/UnexistingProductError");
 
@@ -8,22 +9,24 @@ const OrderDTO = require("../dto/OrderDTO");
 const ItemDTO = require("../dto/ItemDTO");
 
 class OrderManagement {
-  constructor(orderRepository, productRepository) {
+  constructor(orderRepository, productRepository, customerRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
+    this.customerRepository = customerRepository;
   }
 
-  async create(orderAttributes) {
-    const { customerId } = orderAttributes
+  async create(orderDTO) {
+    const customerDTO = await this.customerRepository.findById(orderDTO.customerId);
+    if (!customerDTO) throw new UnexistingCustomerError(orderDTO.customerId);
+
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
-      CustomerId: customerId,
+      customerId: customerDTO.id,
     });
-    const orderDTO = this.#toOrderDTO(order);
-    const createdOrderDTO = await this.orderRepository.create(orderDTO);
-
-    return createdOrderDTO;
+    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
+    
+    return await this.orderRepository.findById(createdOrderDTO.id);
   }
 
   async getOrders() {
@@ -97,7 +100,7 @@ class OrderManagement {
     return new Order({
       id: orderDTO.id,
       code: orderDTO.code,
-      // customer: orderDTO.customer,
+      customerId: orderDTO.customerId,
       status: orderDTO.status,
       totalPrice: orderDTO.status,
       items: orderDTO.items
@@ -110,7 +113,8 @@ class OrderManagement {
       code: orderEntity.getCode(),
       status: orderEntity.getStatus(),
       totalPrice: orderEntity.getTotalPrice(),
-      items: orderEntity.getItems().map(this.#toItemDTO)
+      items: orderEntity.getItems().map(this.#toItemDTO),
+      customerId: orderEntity.getCustomerId()
     });
   }
 

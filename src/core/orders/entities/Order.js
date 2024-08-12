@@ -18,22 +18,14 @@ class Order {
   #status;
   #totalPrice;
   #items;
+  #customerId;
 
-  constructor({ id, code, status, customer, items = [] }) {
+  constructor({ id, code, status, customerId, items = [] }) {
     this.#id = id;
     this.#code = code;
     this.#totalPrice = 0;
     this.#items = [];
-
-    // constructor({ id, code, status, totalPrice, CustomerId, customer, items = [], createdAt }) {
-      // this.id = id;
-      // this.code = code;
-      // this.totalPrice = totalPrice;
-      // this.items = [];
-      // this.createdAt = createdAt;
-      // this.CustomerId = CustomerId;
-      // this.customer = null;
-    this.setCustomer(customer);
+    this.#customerId = customerId;
     this.setStatus(status);
     this.#setItems(items);
   }
@@ -76,6 +68,10 @@ class Order {
 
   getItems() {
     return this.#items;
+  }
+
+  getCustomerId() {
+    return this.#customerId;
   }
 
   setCustomer(customerAttributes) {

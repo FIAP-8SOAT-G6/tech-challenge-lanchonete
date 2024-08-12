@@ -3,6 +3,7 @@ const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrd
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
+const OrderDTO = require('../../core/orders/dto/OrderDTO');
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -19,8 +20,8 @@ class OrdersController {
   initializeRoutes() {
     this.router.post("/orders", async (req, res) => {
       try {
-        const { customerId } = req.body
-        const order = await this.useCase.create({ customerId });
+        const orderDTO = new OrderDTO({ customerId: req.body.customerId });
+        const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error) {
         return res.status(500).json({ error: error.message });
