@@ -1,4 +1,3 @@
-const Image = require("./Image");
 const InvalidCategoryError = require("../exceptions/InvalidCategoryError");
 const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 const ProductCategory = require("./ProductCategory");
@@ -65,8 +64,7 @@ class Product {
   }
 
   setImages(images) {
-    this.#images =
-      images?.map((url) => new Image({ productId: this.id, url })) || [];
+    this.#images = images?.map((url) => ({ productId: this.id, url })) || [];
   }
 
   #validateName(name) {

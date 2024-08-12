@@ -20,11 +20,12 @@ class FakeProductRepository {
 
     createdProduct.images.push(...this.#images);
 
-    return Promise.resolve(this.#createProductDTO(createdProduct));
+    return this.#createProductDTO(createdProduct);
   }
 
   async findAll() {
-    return Promise.resolve(this.#findImagesByProductId(this.#products));
+    const products = await this.#findProductWithImage(this.#products);
+    return Promise.resolve(products?.map(this.#createProductDTO));
   }
 
   async findById(id) {
@@ -39,11 +40,13 @@ class FakeProductRepository {
   }
 
   async findByCategory(category) {
-    const products = this.#products.filter(
+    const productsByCategory = this.#products.filter(
       (product) => product?.category === category
     );
 
-    return Promise.resolve(this.#findImagesByProductId(products));
+    const products = this.#findProductWithImage(productsByCategory);
+
+    return Promise.resolve(products?.map(this.#createProductDTO));
   }
 
   update(product) {
@@ -73,13 +76,13 @@ class FakeProductRepository {
     return Promise.resolve();
   }
 
-  #findImagesByProductId(products) {
+  #findProductWithImage(products) {
     return products.map((product) => {
       const images = this.#images.filter(
         (image) => image?.productId === product.id
       );
       if (images?.length > 0) product.images = images;
-      return this.#createProductDTO(product);
+      return product;
     });
   }
 
