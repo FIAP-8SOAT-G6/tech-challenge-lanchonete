@@ -10,15 +10,22 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael, @anadezuo e @Ro
 
 - Ter a instalação do `docker` localmente.
 
-Para executar o projeto, deve ser realizado o seguinte comando:
+#### Executando o Docker
+
+Para executar o projeto, deve ser realizado um dos seguintes comandos:
 
 - `docker-compose up --build`
+- `docker compose up --build`
 
 \*_A flag `--build` é adicionada para garantir que a imagem esteja atualizada com as últimas modificações locais._
 
 Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o comando
 
 - `docker-compose down`
+
+#### Acessando as APIs
+
+Ao acessar a URL `http://localhost:8080/`, você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
 
 ## Tarefas
 
