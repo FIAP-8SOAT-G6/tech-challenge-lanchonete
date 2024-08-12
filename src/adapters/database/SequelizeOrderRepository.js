@@ -43,15 +43,11 @@ class SequelizeOrderRepository {
         {
           model: SequelizeCustomer
         }
-      ]
+      ], 
+      order: [['createdAt', 'DESC']]
     });
 
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
-
-    // TODO voltar aqui
-    //return orders?.length === 0
-    //  ? undefined
-    //  : orders.map(this.#instantiateOrder).sort((a, b) => a.createdAt - b.createdAt);
   }
 
   async createItem(order, itemDTO) {
