@@ -9,10 +9,7 @@
     "test": "mocha 'src/tests/**/*.js' --recursive",
     "coverage": "nyc --reporter=text npm run test",
     "docker-compose:up:dev": "docker-compose -f docker-compose.dev.yml up --build",
-    "docker-compose:down:dev": "docker-compose -f docker-compose.dev.yml down",
-    "docker-compose:up:prod": "docker-compose -f docker-compose.prod.yml up --build",
-    "docker-compose:down:prod": "docker-compose -f docker-compose.prod.yml down",
-    "docker-compose up --build": "docker-compose -f docker-compose.prod.yml up --build"
+    "docker-compose:down:dev": "docker-compose -f docker-compose.dev.yml down"
   },
   "author": "",
   "license": "ISC",

@@ -1,74 +1,154 @@
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
+
+const UnexistingCustomerError = require("../exceptions/UnexistingCustomerError");
 const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../products/exceptions/UnexistingProductError");
 
+const OrderDTO = require("../dto/OrderDTO");
+const ItemDTO = require("../dto/ItemDTO");
+const ClosedOrderError = require("../exceptions/ClosedOrderError");
+
 class OrderManagement {
-  constructor(orderRepository, productRepository) {
+  constructor(orderRepository, productRepository, customerRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
+    this.customerRepository = customerRepository;
   }
 
-  async create() {
+  async create(orderDTO) {
+    const customerDTO = await this.customerRepository.findById(orderDTO.customerId);
+    if (!customerDTO) throw new UnexistingCustomerError(orderDTO.customerId);
+
     const order = new Order({
       status: OrderStatus.CREATED,
-      code: this.#generateCode()
+      code: this.#generateCode(),
+      customerId: customerDTO.id,
     });
-    const createdOrder = await this.orderRepository.create(order);
+    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
+    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id);
+    const completeOrder = this.#toOrderEntity(completeOrderDTO);
 
-    return createdOrder;
+    return this.#toOrderDTO(completeOrder);
   }
 
   async getOrders() {
-    const orders = await this.orderRepository.findAll();
-    return orders;
+    const repositoryOrderDTOs = await this.orderRepository.findAll();
+    const orders = repositoryOrderDTOs.map(this.#toOrderEntity);
+    return orders.map(this.#toOrderDTO.bind(this));
   }
 
   async getOrder(orderId) {
-    const order = await this.orderRepository.findById(orderId);
+    const repositoryOrderDTO = await this.orderRepository.findById(orderId);
 
-    if (!order) throw new UnexistingOrderError(orderId);
+    if (!repositoryOrderDTO) throw new UnexistingOrderError(orderId);
+    const order = this.#toOrderEntity(repositoryOrderDTO);
 
-    return order;
+    return this.#toOrderDTO(order);
   }
 
-  async addItem(orderId, itemAttributes) {
-    const { productId, quantity } = itemAttributes;
-    const [product, order] = await Promise.all([
+  async addItem(orderId, itemDTO) {
+    const { productId, quantity } = itemDTO;
+
+    const [productDTO, orderDTO] = await Promise.all([
       this.productRepository.findById(productId),
       this.orderRepository.findById(orderId)
     ]);
 
-    if (!order) throw new UnexistingOrderError(orderId);
-    if (!product) throw new UnexistingProductError(productId);
+    if (!orderDTO) throw new UnexistingOrderError(orderId);
+    if (!productDTO) throw new UnexistingProductError(productId);
 
+    const order = this.#toOrderEntity(orderDTO);
     const item = order.addItem({
-      productId: product.id,
+      productId: productDTO.id,
       quantity,
-      unitPrice: product.price
+      unitPrice: productDTO.price
     });
 
-    await this.orderRepository.createItem(order, item);
+    await this.orderRepository.createItem(
+      this.#toOrderDTO(order),
+      this.#toItemDTO(item)
+    );
 
-    return await this.orderRepository.findById(orderId);
+    const updatedOrderDTO = await this.orderRepository.findById(orderId);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+
+    return this.#toOrderDTO(updatedOrder);
   }
 
   async removeItem(orderId, itemId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+    order.removeItem(itemId);
     await this.orderRepository.removeItem(orderId, itemId);
   }
 
-  async updateItem(orderId, itemId, updatedItemValues) {
-    const order = await this.orderRepository.findById(orderId);
+  async updateItem(orderId, itemId, itemDTO) {
+    const orderDTO = await this.orderRepository.findById(orderId);
 
-    if (!order) throw new UnexistingOrderError(orderId);
+    if (!orderDTO) throw new UnexistingOrderError(orderId);
+    const order = this.#toOrderEntity(orderDTO);
 
-    const updatedItem = order.updateItem(itemId, updatedItemValues);
-    await this.orderRepository.updateItem(itemId, updatedItem);
-    return await this.orderRepository.findById(orderId);
+    const updatedItem = order.updateItem(itemId, itemDTO);
+    await this.orderRepository.updateItem(itemId, this.#toItemDTO(updatedItem));
+
+    const updatedOrderDTO = await this.orderRepository.findById(orderId);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+
+    return this.#toOrderDTO(updatedOrder);
+  }
+
+  async checkout(orderId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+
+    order.setStatus(OrderStatus.PENDING_PAYMENT);
+
+    // Fake Checkout: Pagamento não implementado - Mudando para pago
+    order.setStatus(OrderStatus.PAYED);
+
+    await this.orderRepository.updateOrder(this.#toOrderDTO(order));
   }
 
   #generateCode() {
     return Math.floor(1000 + Math.random() * 9000).toString();
+  }
+
+  #toOrderEntity(orderDTO) {
+    return new Order({
+      id: orderDTO.id,
+      createdAt: orderDTO.createdAt,
+      code: orderDTO.code,
+      customerId: orderDTO.customerId,
+      status: orderDTO.status,
+      totalPrice: orderDTO.status,
+      items: orderDTO.items
+    });
+  }
+
+  #toOrderDTO(orderEntity) {
+    return new OrderDTO({
+      id: orderEntity.getId(),
+      elapsedTime: orderEntity.getElapsedTime(),
+      code: orderEntity.getCode(),
+      status: orderEntity.getStatus(),
+      totalPrice: orderEntity.getTotalPrice(),
+      items: orderEntity.getItems().map(this.#toItemDTO),
+      customerId: orderEntity.getCustomerId()
+    });
+  }
+
+  #toItemDTO(itemEntity) {
+    return new ItemDTO({
+      id: itemEntity.getId(),
+      orderId: itemEntity.getOrderId(),
+      productId: itemEntity.getProductId(),
+      productName: itemEntity.getProductName(),
+      productDescription: itemEntity.getProductDescription(),
+      quantity: itemEntity.getQuantity(),
+      unitPrice: itemEntity.getUnitPrice(),
+      totalPrice: itemEntity.getTotalPrice()
+    });
   }
 }
 

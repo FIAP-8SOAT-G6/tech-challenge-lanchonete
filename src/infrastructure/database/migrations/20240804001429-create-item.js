@@ -13,10 +13,10 @@ module.exports = {
         type: Sequelize.NUMBER
       },
       unitPrice: {
-        type: Sequelize.NUMBER
+        type: Sequelize.DECIMAL(10, 2)
       },
       totalPrice: {
-        type: Sequelize.NUMBER
+        type: Sequelize.DECIMAL(10, 2)
       },
       createdAt: {
         allowNull: false,

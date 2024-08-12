@@ -1,0 +1,283 @@
+paths:
+  /orders:
+    get:
+      summary: Lista todos os pedidos
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderWithItems"
+        "500":
+          description: Erro interno do servidor
+    post:
+      summary: Cria um novo pedido
+      tags:
+        - Pedidos
+      requestBody:
+        description: Payload para criação de pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerId:
+                  type: integer
+                  description: ID do Cliente
+              required:
+                - customerId
+      responses:
+        "201":
+          description: Pedido criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Payload inválido
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}:
+    get:
+      summary: Exibe um pedido pelo ID
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Pedido com ID informado foi encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}/checkout:
+    post:
+      summary: Finaliza um pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Pedido finalizado
+        "400":
+          description: Não foi possivel finalizar o pedido pois está vazio.
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}/items:
+    post:
+      summary: Cria um novo item no pedido
+      tags:
+        - Pedidos
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      requestBody:
+        description: Payload para criar um item no pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: integer
+                  description: ID do Produto
+                  example: 1
+                quantity:
+                  type: integer
+                  minimum: 1
+                  description: Quantidade do Produto
+                  example: 2
+              required:
+                - productId
+                - quantity
+      responses:
+        "201":
+          description: Exibe o pedido com o item criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          description: Não foi possivel adicionar item pois o pedido já foi fechado ou o produto não existe.
+        "404":
+          description: Pedido não encontrado
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}/items/{itemId}:
+    put:
+      summary: Atualiza um item existente do pedido
+      tags:
+        - Pedidos
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          description: ID do item do pedido
+          schema:
+            type: integer
+      requestBody:
+        description: Payload para atualizar um item no pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+                  description: Quantidade do item no pedido
+                  example: 2
+              required:
+                - quantity
+      responses:
+        "200":
+          description: Exibe o pedido com o item atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          description: Não foi possivel atualizar o item pois o pedido já foi fechado
+        "404":
+          description: Item não encontrado
+        "500":
+          description: Erro interno do servidor
+    delete:
+      summary: Remove um item existente do pedido
+      tags:
+        - Pedidos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          description: ID do item no pedido
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Item removido com sucesso
+          content:
+            application/json: {}
+        "400":
+          description: Não foi possivel atualizar o item pois o pedido já foi fechado
+        "404":
+          description: Item não encontrado
+        "500":
+          description: Erro interno do servidor
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do Pedido
+          example: 1
+        elapsedTime: 
+          type: integer
+          description: Tempo desde a criação do pedido em milisegundos
+          example: 1501767
+        customerId:
+          type: integer
+          description: ID do Cliente
+          example: 1
+        code:
+          type: string
+          description: Código do Pedido
+          example: 9999
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+          example: CREATED
+
+    OrderWithItems:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+      properties:
+        items:
+          type: array
+          description: Itens do Pedido
+          items:
+            $ref: "#/components/schemas/Item"
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: ID do Item
+        orderId:
+          type: integer
+          example: 1
+          description: ID do Pedido
+        productId:
+          type: integer
+          example: 1
+          description: ID do Produto
+        productName:
+          type: string
+          example: Hamburguer
+          description: Nome do Produto
+        productDescription:
+          type: string
+          example: Hamburguer Classico
+          description: Descrição do Produto
+        unitPrice:
+          type: number
+          format: float
+          example: 12.99
+          description: Preço Unitário
+        quantity:
+          type: integer
+          example: 2
+          description: Quantidade do Item
+        totalPrice:
+          type: number
+          format: float
+          example: 24.98
+          description: Preço Total do Item
+
+    OrderStatus:
+      type: string
+      description: Status do Pedido
+      enum:
+        - CREATED
+        - PENDING_PAYMENT

@@ -1,46 +1,46 @@
-const Product = require("../../core/products/entities/Product");
+const ProductDTO = require("../../core/products/dto/ProductDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 
 const { Product: SequelizeProduct } = sequelize.models;
 
 class SequelizeProductRepository {
-  async create(product) {
-    const { name, category, description, price } = product;
+  async create(productDTO) {
+    const { name, category, description, price } = productDTO;
     const createdProduct = await SequelizeProduct.create({
       name,
       category,
       description,
       price
     });
-    return this.#instantiateProduct(createdProduct);
+    return this.#createProductDTO(createdProduct);
   }
 
   async findAll() {
     const products = await SequelizeProduct.findAll();
-    return products.map(this.#instantiateProduct);
+    return products.map(this.#createProductDTO);
   }
 
   async findById(id) {
     const product = await SequelizeProduct.findByPk(id);
-    return product ? this.#instantiateProduct(product) : undefined;
+    return product ? this.#createProductDTO(product) : undefined;
   }
 
   async findByCategory(category) {
     const products = await SequelizeProduct.findAll({
       where: { category: category }
     });
-    return products.map(this.#instantiateProduct);
+    return products.map(this.#createProductDTO);
   }
 
-  async update(product) {
-    const dbProduct = await SequelizeProduct.findByPk(product.id);
+  async update(productDTO) {
+    const dbProduct = await SequelizeProduct.findByPk(productDTO.id);
     const updatedProduct = await dbProduct.update({
-      name: product.name,
-      category: product.category,
-      description: product.description,
-      price: product.price
+      name: productDTO.name,
+      category: productDTO.category,
+      description: productDTO.description,
+      price: productDTO.price
     });
-    return this.#instantiateProduct(updatedProduct);
+    return this.#createProductDTO(updatedProduct);
   }
 
   async delete(id) {
@@ -49,14 +49,14 @@ class SequelizeProductRepository {
     await product.destroy();
   }
 
-  #instantiateProduct(databaseProduct) {
-    return new Product(
-      databaseProduct.id,
-      databaseProduct.name,
-      databaseProduct.category,
-      databaseProduct.description,
-      databaseProduct.price
-    );
+  #createProductDTO(values) {
+    return new ProductDTO({
+      id: values.id,
+      name: values.name,
+      category: values.category,
+      description: values.description,
+      price: values.price
+    });
   }
 }
 

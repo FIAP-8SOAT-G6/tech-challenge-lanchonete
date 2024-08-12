@@ -1,7 +1,9 @@
 paths:
-  /customer/{cpf}:
+  /customers/{cpf}:
     get:
-      summary: Retorna um cliente pelo CPF
+      summary: Exibe dados de um cliente pelo CPF
+      tags:
+        - Clientes
       parameters:
         - in: path
           name: cpf
@@ -15,24 +17,17 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  cpf:
-                    type: string
-                  email:
-                    type: string
+                $ref: "#/components/schemas/Customer"
         "404":
           description: Cliente não encontrado
         "500":
           description: Erro interno do servidor
 
-  /customer:
+  /customers:
     post:
       summary: Cria um novo cliente
+      tags:
+        - Clientes
       requestBody:
         required: true
         content:
@@ -42,14 +37,49 @@ paths:
               properties:
                 name:
                   type: string
+                  description: Nome do cliente
+                  example: John Doe
                 cpf:
                   type: string
+                  description: CPF do cliente sem formatação
+                  example: "11111111111"
                 email:
-                  type: string
+                  type: string 
+                  description: Email do cliente
+                  example: john.doe@gmail.com
+              required:
+                - name
+                - cpf
+                - email
       responses:
         "201":
           description: Cliente criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
         "400":
           description: Erro na validação dos dados do cliente
         "500":
           description: Erro interno do servidor
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do Cliente
+          example: 1
+        name:
+          type: string
+          description: Nome do cliente
+          example: John Doe
+        cpf:
+          type: string
+          description: CPF do cliente sem formatação
+          example: "11111111111"
+        email:
+          type: string 
+          description: Email do cliente
+          example: john.doe@gmail.com

@@ -1,32 +1,36 @@
-const Customer = require("../../core/customers/entities/Customer");
+const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 
 const { Customer: SequelizeCustomer } = sequelize.models;
 
 class SequelizeCustomerRepository {
-  async create(customer) {
-    const { name, cpf, email } = customer;
+  async create(customerDTO) {
+    const { name, cpf, email } = customerDTO;
     const newCustomer = await SequelizeCustomer.create({
       name,
       cpf,
       email
     });
-
-    return this.#instantiateCustomer(newCustomer);
+    return this.#createCustomerDTO(newCustomer);
   }
 
   async findByCPF(cpf) {
-    const customers = await SequelizeCustomer.findOne({
+    const customer = await SequelizeCustomer.findOne({
       where: { cpf: cpf }
     });
-    return this.#instantiateCustomer(customers);
+    return this.#createCustomerDTO(customer);
   }
 
-  #instantiateCustomer(dbCustomer) {
+  async findById(id) {
+    const customer = await SequelizeCustomer.findByPk(id);
+    return this.#createCustomerDTO(customer);
+  }
+
+  #createCustomerDTO(dbCustomer) {
     if (!dbCustomer) return undefined;
 
     const { id, name, cpf, email } = dbCustomer;
-    return new Customer({ id, name, cpf, email });
+    return new CustomerDTO({ id, name, cpf, email });
   }
 }
 

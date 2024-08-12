@@ -2,6 +2,7 @@ const { Router } = require("express");
 const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError");
 const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
+const ProductDTO = require("../../core/products/dto/ProductDTO");
 
 class ProductsController {
   constructor(productManagementUseCase) {
@@ -41,12 +42,13 @@ class ProductsController {
     this.router.post("/products", async (req, res) => {
       try {
         const { name, description, category, price } = req.body;
-        const product = await this.useCase.create({
+        const productDTO = new ProductDTO({
           name,
           description,
           category,
           price
         });
+        const product = await this.useCase.create(productDTO);
         return res.status(201).json(product);
       } catch (error) {
         if (
@@ -63,12 +65,14 @@ class ProductsController {
       try {
         const id = req.params.id;
         const { name, description, category, price } = req.body;
-        const product = await this.useCase.update(id, {
+        const productDTO = new ProductDTO({
+          id,
           name,
-          description,
           category,
+          description,
           price
         });
+        const product = await this.useCase.update(productDTO);
         return res.status(201).json(product);
       } catch (error) {
         if (error instanceof UnexistingProductError) {

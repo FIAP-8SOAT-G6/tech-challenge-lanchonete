@@ -1,18 +1,21 @@
-const Order = require("../../core/orders/entities/Order");
+const ItemDTO = require("../../core/orders/dto/ItemDTO");
+const OrderDTO = require("../../core/orders/dto/OrderDTO");
 const { sequelize } = require("../../infrastructure/database/models");
 const order = require("../../infrastructure/database/models/order");
 
 const {
   Order: SequelizeOrder,
   Item: SequelizeItem,
-  Product: SequelizeProduct,
+  Product: SequelizeProduct, 
+  Customer: SequelizeCustomer
 } = sequelize.models;
 
 class SequelizeOrderRepository {
-  async create(orderAttributes) {
-    const { status, code } = orderAttributes;
-    const createdOrder = await SequelizeOrder.create({ status, code });
-    return this.#instantiateOrder(createdOrder);
+  async create(orderDTO) {
+    const { status, code, customerId } = orderDTO; 
+    const createdOrder = await SequelizeOrder.create({ status, code, CustomerId: customerId });
+       
+    return this.#createOrderDTO(createdOrder);
   }
 
   async findById(id) {
@@ -20,11 +23,14 @@ class SequelizeOrderRepository {
       include: [
         {
           model: SequelizeItem,
-          include: [SequelizeProduct],
+          include: [SequelizeProduct]
         },
-      ],
+        { 
+          model: SequelizeCustomer
+        }
+      ]
     });
-    return order ? this.#instantiateOrder(order) : undefined;
+    return order ? this.#createOrderDTO(order) : undefined;
   }
 
   async findAll() {
@@ -32,16 +38,19 @@ class SequelizeOrderRepository {
       include: [
         {
           model: SequelizeItem,
-          include: [SequelizeProduct],
-        },
-      ],
+          include: [SequelizeProduct]
+        }, 
+        {
+          model: SequelizeCustomer
+        }
+      ], 
+      order: [['createdAt', 'DESC']]
     });
-    return orders?.length === 0
-      ? undefined
-      : orders.map(this.#instantiateOrder);
+
+    return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
-  async createItem(order, item) {
+  async createItem(order, itemDTO) {
     const orderModel = await SequelizeOrder.findByPk(order.id);
     const {
       id,
@@ -49,15 +58,15 @@ class SequelizeOrderRepository {
       productId: ProductId,
       quantity,
       unitPrice,
-      totalPrice,
-    } = item.getAttributes();
+      totalPrice
+    } = itemDTO;
     await orderModel.createItem({
       id,
       OrderId,
       ProductId,
       quantity,
       unitPrice,
-      totalPrice,
+      totalPrice
     });
   }
 
@@ -66,47 +75,41 @@ class SequelizeOrderRepository {
     await order.removeItem(itemId);
   }
 
-  async updateItem(itemId, updatedItem) {
-    const itemAttributes = updatedItem.getAttributes();
+  async updateItem(itemId, itemDTO) {
     const item = await SequelizeItem.findByPk(itemId);
-    await item.update(itemAttributes);
+    await item.update(itemDTO);
   }
 
-  async update(order) {
-    const { code, status, customer } = order;
-    const createdOrder = await SequelizeOrder.create({
-      code,
-      status,
-    });
-    return this.#instantiateOrder(createdOrder);
+  async updateOrder(orderDTO) {
+    const { id, code, status } = orderDTO;
+    const order = await SequelizeOrder.findByPk(id);
+    const updatedOrder = order.update({ code, status });
+    return this.#createOrderDTO(updatedOrder);
   }
 
-  #instantiateOrder(orderAttributes) {
-    const order = new Order({
-      id: orderAttributes.id,
-      status: orderAttributes.status,
-      code: orderAttributes.code,
-      totalPrice: orderAttributes.totalPrice
+  #createOrderDTO(databaseOrder) {
+    return new OrderDTO({
+      id: databaseOrder.id,
+      createdAt: databaseOrder.createdAt,
+      code: databaseOrder.code,
+      status: databaseOrder.status,
+      totalPrice: databaseOrder.totalPrice,
+      customerId: databaseOrder.CustomerId,
+      customerName: databaseOrder.Customer?.name,
+      items: databaseOrder.Items?.map(
+        (databaseItem) =>
+          new ItemDTO({
+            id: databaseItem.id,
+            orderId: databaseItem.OrderId,
+            productId: databaseItem.ProductId,
+            quantity: databaseItem.quantity,
+            unitPrice: databaseItem.unitPrice,
+            totalPrice: databaseItem.totalPrice,
+            productName: databaseItem.Product?.name,
+            productDescription: databaseItem.Product?.description
+          })
+      )
     });
-    orderAttributes.Items?.forEach((item) => {
-      const {
-        id,
-        OrderId: orderId,
-        ProductId: productId,
-        quantity,
-        unitPrice,
-      } = item;
-      order.addItem({
-        id,
-        orderId,
-        productId,
-        quantity,
-        unitPrice,
-        productName: item.Product?.name,
-        productDescription: item.Product?.description,
-      });
-    });
-    return order;
   }
 }
 
