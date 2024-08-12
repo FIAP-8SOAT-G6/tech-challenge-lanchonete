@@ -7,6 +7,7 @@ const UnexistingProductError = require("../../products/exceptions/UnexistingProd
 
 const OrderDTO = require("../dto/OrderDTO");
 const ItemDTO = require("../dto/ItemDTO");
+const ClosedOrderError = require("../exceptions/ClosedOrderError");
 
 class OrderManagement {
   constructor(orderRepository, productRepository, customerRepository) {
@@ -76,6 +77,9 @@ class OrderManagement {
   }
 
   async removeItem(orderId, itemId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+    order.removeItem(itemId);
     await this.orderRepository.removeItem(orderId, itemId);
   }
 
@@ -92,6 +96,18 @@ class OrderManagement {
     const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
 
     return this.#toOrderDTO(updatedOrder);
+  }
+
+  async checkout(orderId) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    const order = this.#toOrderEntity(orderDTO);
+
+    order.setStatus(OrderStatus.PENDING_PAYMENT);
+
+    // Fake Checkout: Pagamento não implementado - Mudando para pago
+    order.setStatus(OrderStatus.PAYED);
+
+    await this.orderRepository.updateOrder(this.#toOrderDTO(order));
   }
 
   #generateCode() {
