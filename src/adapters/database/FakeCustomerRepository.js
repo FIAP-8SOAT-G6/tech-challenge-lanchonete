@@ -20,6 +20,11 @@ class FakeCustomerRepository {
     return Promise.resolve(this.#createCustomerDTO(customer));
   }
 
+  async findById(id) {
+    const customer = this.#customer.find((customer) => customer.id === id);
+    return Promise.resolve(this.#createCustomerDTO(customer));
+  }
+
   #createCustomerDTO(dbCustomer) {
     if (!dbCustomer) return undefined;
 

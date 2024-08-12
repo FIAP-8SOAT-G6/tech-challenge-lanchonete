@@ -11,7 +11,8 @@ class FakeOrderRepository {
       id: this.#orders.length + 1,
       status,
       code,
-      items: []
+      items: [],
+      createdAt: new Date()
     };
     this.#orders.push(order);
     return this.#createOrderDTO(order);
@@ -74,6 +75,7 @@ class FakeOrderRepository {
     return new OrderDTO({
       id: databaseOrder.id,
       code: databaseOrder.code,
+      createdAt: databaseOrder.createdAt,
       status: databaseOrder.status,
       totalPrice: databaseOrder.totalPrice,
       items: databaseOrder.items.map(

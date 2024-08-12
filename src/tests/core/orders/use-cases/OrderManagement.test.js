@@ -1,5 +1,6 @@
 const FakeProductRepository = require("../../../../adapters/database/FakeProductRepository");
 const FakeOrderRepository = require("../../../../adapters/database/FakeOrderRepository");
+const FakeCustomerRepository = require("../../../../adapters/database/FakeCustomerRepository");
 
 const OrderManagement = require("../../../../core/orders/use-cases/OrderManagement");
 
@@ -14,12 +15,19 @@ const UnexistingProductError = require("../../../../core/products/exceptions/Une
 const ProductDTO = require("../../../../core/products/dto/ProductDTO");
 const ItemDTO = require("../../../../core/orders/dto/ItemDTO");
 const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
+const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
+const OrderDTO = require("../../../../core/orders/dto/OrderDTO");
+const UnexistingCustomerError = require("../../../../core/orders/exceptions/UnexistingCustomerError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-function setupUseCase(orderRepository, productRepository) {
-  return new OrderManagement(orderRepository, productRepository);
+function setupUseCase(orderRepository, productRepository, customerRepository) {
+  return new OrderManagement(
+    orderRepository,
+    productRepository,
+    customerRepository
+  );
 }
 
 function setupOrderRepository() {
@@ -30,6 +38,10 @@ function setupProductRepository() {
   return new FakeProductRepository();
 }
 
+function setupCustomerRepository() {
+  return new FakeCustomerRepository();
+}
+
 const PRODUCT_DTO = new ProductDTO({
   name: "Hamburguer",
   category: "Lanche",
@@ -37,26 +49,49 @@ const PRODUCT_DTO = new ProductDTO({
   price: 12.99
 });
 
-let useCase, orderRepository, productRepository;
+const CUSTOMER_DTO = new CustomerDTO({
+  name: "John Doe",
+  cpf: "11111111111",
+  email: "john.doe@gmail.com"
+});
+
+let useCase, orderRepository, productRepository, customerRepository;
 context("OrderManagement", () => {
   beforeEach(() => {
     orderRepository = setupOrderRepository();
     productRepository = setupProductRepository();
-    useCase = setupUseCase(orderRepository, productRepository);
+    customerRepository = setupCustomerRepository();
+    useCase = setupUseCase(
+      orderRepository,
+      productRepository,
+      customerRepository
+    );
   });
 
   describe("create", () => {
     it("should create order with status 'CREATED'", async () => {
-      const createdOrder = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const createdOrder = await useCase.create(orderDTO);
       expect(createdOrder).to.not.be.undefined;
       expect(createdOrder.id).to.not.be.undefined;
       expect(createdOrder.status).to.be.equals(OrderStatus.CREATED);
       expect(createdOrder.code).to.not.be.undefined;
+      expect(createdOrder.elapsedTime).to.not.be.undefined;
+    });
+    it("should throw an error when creating order with unexisting customer", async () => {
+      const unexistingCustomerId = -1;
+      const orderDTO = new OrderDTO({ customerId: unexistingCustomerId });
+      await expect(useCase.create(orderDTO)).to.be.eventually.rejectedWith(
+        UnexistingCustomerError
+      );
     });
   });
   describe("getOrders", () => {
     it("should return all orders", async () => {
-      await Promise.all([useCase.create(), useCase.create()]);
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      await Promise.all([useCase.create(orderDTO), useCase.create(orderDTO)]);
       const orders = await useCase.getOrders();
       expect(orders).to.not.be.undefined;
       expect(orders.length).to.be.equals(2);
@@ -64,7 +99,9 @@ context("OrderManagement", () => {
   });
   describe("getOrder", () => {
     it("should return requested order", async () => {
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const requestedOrder = await useCase.getOrder(order.id);
 
       expect(requestedOrder).to.not.be.undefined;
@@ -84,7 +121,9 @@ context("OrderManagement", () => {
   describe("addItem", () => {
     it("should add item to order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
@@ -119,7 +158,9 @@ context("OrderManagement", () => {
     });
     it("should throw error when product does not exist", async () => {
       const unexistingProductId = -1;
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: unexistingProductId,
         quantity: 2
@@ -134,7 +175,9 @@ context("OrderManagement", () => {
   describe("removeItem", () => {
     it("should remove item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
@@ -152,7 +195,9 @@ context("OrderManagement", () => {
   describe("updateItem", () => {
     it("should update item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
@@ -186,7 +231,9 @@ context("OrderManagement", () => {
       );
     });
     it("should throw error when item does not exist", async () => {
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const unexistingItemId = -1;
       const updateItemDTO = new ItemDTO({ quantity: 3 });
       await expect(
@@ -199,7 +246,9 @@ context("OrderManagement", () => {
   describe("checkout", () => {
     it("should change status if order has items", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
@@ -214,11 +263,13 @@ context("OrderManagement", () => {
       expect(updatedOrder.status).to.not.be.equals(OrderStatus.CREATED);
     });
     it("should not change status if order has no items", async () => {
-      const order = await useCase.create();
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
 
-      await expect(
-        useCase.checkout(order.id)
-      ).to.be.eventually.rejectedWith(EmptyOrderError);
+      await expect(useCase.checkout(order.id)).to.be.eventually.rejectedWith(
+        EmptyOrderError
+      );
       const updatedOrder = await useCase.getOrder(order.id);
       expect(updatedOrder.status).to.be.equals(OrderStatus.CREATED);
     });

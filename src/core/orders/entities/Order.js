@@ -134,6 +134,7 @@ class Order {
   }
 
   getElapsedTime() {
+    if (!this.#createdAt) return 0;
     return Date.now() - this.#createdAt.getTime();
   }
 

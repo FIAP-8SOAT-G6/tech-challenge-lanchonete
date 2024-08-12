@@ -7,7 +7,6 @@ const UnexistingProductError = require("../../products/exceptions/UnexistingProd
 
 const OrderDTO = require("../dto/OrderDTO");
 const ItemDTO = require("../dto/ItemDTO");
-const ClosedOrderError = require("../exceptions/ClosedOrderError");
 
 class OrderManagement {
   constructor(orderRepository, productRepository, customerRepository) {
