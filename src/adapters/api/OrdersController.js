@@ -1,10 +1,14 @@
 const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
-const ItemDTO = require("../../core/orders/dto/ItemDTO");
+
 const EmptyOrderError = require("../../core/orders/exceptions/EmptyOrderError");
 const ClosedOrderError = require("../../core/orders/exceptions/ClosedOrderError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
+const UnexistingCustomerError = require("../../core/orders/exceptions/UnexistingCustomerError");
+
+const ItemDTO = require("../../core/orders/dto/ItemDTO");
+const OrderDTO = require('../../core/orders/dto/OrderDTO');
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -21,9 +25,12 @@ class OrdersController {
   initializeRoutes() {
     this.router.post("/orders", async (req, res) => {
       try {
-        const order = await this.useCase.create();
+        const orderDTO = new OrderDTO({ customerId: req.body.customerId });
+        const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error) {
+        if (error instanceof UnexistingCustomerError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });

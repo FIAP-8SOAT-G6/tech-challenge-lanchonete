@@ -1,6 +1,7 @@
 const Order = require("../entities/Order");
 const OrderStatus = require("../entities/OrderStatus");
 
+const UnexistingCustomerError = require("../exceptions/UnexistingCustomerError");
 const UnexistingOrderError = require("../exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../products/exceptions/UnexistingProductError");
 
@@ -9,20 +10,26 @@ const ItemDTO = require("../dto/ItemDTO");
 const ClosedOrderError = require("../exceptions/ClosedOrderError");
 
 class OrderManagement {
-  constructor(orderRepository, productRepository) {
+  constructor(orderRepository, productRepository, customerRepository) {
     this.orderRepository = orderRepository;
     this.productRepository = productRepository;
+    this.customerRepository = customerRepository;
   }
 
-  async create() {
+  async create(orderDTO) {
+    const customerDTO = await this.customerRepository.findById(orderDTO.customerId);
+    if (!customerDTO) throw new UnexistingCustomerError(orderDTO.customerId);
+
     const order = new Order({
       status: OrderStatus.CREATED,
-      code: this.#generateCode()
+      code: this.#generateCode(),
+      customerId: customerDTO.id,
     });
-    const orderDTO = this.#toOrderDTO(order);
-    const createdOrderDTO = await this.orderRepository.create(orderDTO);
+    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
+    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id);
+    const completeOrder = this.#toOrderEntity(completeOrderDTO);
 
-    return createdOrderDTO;
+    return this.#toOrderDTO(completeOrder);
   }
 
   async getOrders() {
@@ -110,8 +117,9 @@ class OrderManagement {
   #toOrderEntity(orderDTO) {
     return new Order({
       id: orderDTO.id,
+      createdAt: orderDTO.createdAt,
       code: orderDTO.code,
-      // customer: orderDTO.customer,
+      customerId: orderDTO.customerId,
       status: orderDTO.status,
       totalPrice: orderDTO.status,
       items: orderDTO.items
@@ -121,10 +129,12 @@ class OrderManagement {
   #toOrderDTO(orderEntity) {
     return new OrderDTO({
       id: orderEntity.getId(),
+      elapsedTime: orderEntity.getElapsedTime(),
       code: orderEntity.getCode(),
       status: orderEntity.getStatus(),
       totalPrice: orderEntity.getTotalPrice(),
-      items: orderEntity.getItems().map(this.#toItemDTO)
+      items: orderEntity.getItems().map(this.#toItemDTO),
+      customerId: orderEntity.getCustomerId()
     });
   }
 
