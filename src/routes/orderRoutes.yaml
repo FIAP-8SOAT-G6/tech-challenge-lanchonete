@@ -181,7 +181,7 @@ paths:
         - Pedidos
       parameters:
         - in: path
-          name: id
+          name: orderId
           required: true
           description: ID do pedido
           schema:

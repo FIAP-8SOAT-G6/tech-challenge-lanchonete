@@ -202,10 +202,9 @@ class Order {
   }
 
   #calculateTotalPrice() {
-    this.#totalPrice = this.#items.reduce(
-      (currentSum, item) => currentSum + item.getTotalPrice(),
-      0
-    );
+    this.#totalPrice = this.#items
+      .reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0)
+      .toFixed(2);
   }
 }
 

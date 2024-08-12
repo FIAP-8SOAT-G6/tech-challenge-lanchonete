@@ -75,7 +75,7 @@ class OrdersController {
     this.router.delete("/orders/:orderId/items/:itemId", async (req, res) => {
       try {
         const { orderId, itemId } = req.params;
-        await this.useCase.removeItem(orderId, itemId);
+        await this.useCase.removeItem(Number(orderId), Number(itemId));
         return res.status(204).json({});
       } catch (error) {
         if (error instanceof ResourceNotFoundError)
