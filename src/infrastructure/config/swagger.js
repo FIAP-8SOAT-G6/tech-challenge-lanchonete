@@ -27,11 +27,8 @@ const swaggerOptions = {
   },
   apis: ["./src/routes/*.yaml"]
 };
-// console.log('Swagger Options:', swaggerOptions);
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
-// console.log(swaggerDocs)
 
 module.exports = {
   swaggerUi,

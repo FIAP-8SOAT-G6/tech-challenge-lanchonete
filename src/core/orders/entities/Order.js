@@ -1,6 +1,3 @@
-// TODO: extrair os erros de forma que possam ser reutilizados.
-// const InvalidPropertyError = require("../exceptions/MissingPropertyError");
-
 const Item = require("./Item");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
