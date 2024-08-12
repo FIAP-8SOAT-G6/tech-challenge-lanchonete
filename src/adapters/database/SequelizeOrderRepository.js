@@ -89,7 +89,7 @@ class SequelizeOrderRepository {
     return this.#createOrderDTO(createdOrder);
   }
 
-  #createOrderDTO(databaseOrder) {   
+  #createOrderDTO(databaseOrder) {
     return new OrderDTO({
       id: databaseOrder.id,
       createdAt: databaseOrder.createdAt,
