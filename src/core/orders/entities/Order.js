@@ -1,10 +1,7 @@
-// TODO: extrair os erros de forma que possam ser reutilizados.
-// const InvalidPropertyError = require("../exceptions/MissingPropertyError");
-
 const Item = require("./Item");
+const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const OrderStatus = require("./OrderStatus");
-const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
@@ -13,17 +10,20 @@ const ALLOWED_TARGET_STATUS_TRANSITIONS = {
 
 class Order {
   #id;
+  #createdAt;
   #code;
   #status;
   #totalPrice;
   #items;
+  #customerId;
 
-  constructor({ id, code, status, customer, items = [] }) {
+  constructor({ id, createdAt, code, status, customerId, items = [] }) {
     this.#id = id;
+    this.#createdAt = createdAt;
     this.#code = code;
     this.#totalPrice = 0;
     this.#items = [];
-
+    this.#customerId = customerId;
     this.setStatus(status);
     this.#setItems(items);
   }
@@ -68,6 +68,10 @@ class Order {
     return this.#items;
   }
 
+  getCustomerId() {
+    return this.#customerId;
+  }
+
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
@@ -104,6 +108,14 @@ class Order {
     this.#calculateTotalPrice();
 
     return item;
+  }
+
+  removeItem(itemId) {
+    this.items = this.items.filter((item) => item.id !== itemId);
+  }
+
+  getElapsedTime() {
+    return Date.now() - this.#createdAt.getTime();
   }
 
   updateItem(itemId, updatedValues) {

@@ -19,7 +19,8 @@ module.exports = class ControllerFactory {
     return new OrdersController(
       new OrderManagement(
         new SequelizeOrderRepository(),
-        new SequelizeProductRepository()
+        new SequelizeProductRepository(), 
+        new SequelizeCustomerRepository()
       )
     );
   }

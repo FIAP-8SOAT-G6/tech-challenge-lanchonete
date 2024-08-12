@@ -21,6 +21,11 @@ class SequelizeCustomerRepository {
     return this.#createCustomerDTO(customer);
   }
 
+  async findById(id) {
+    const customer = await SequelizeCustomer.findByPk(id);
+    return this.#createCustomerDTO(customer);
+  }
+
   #createCustomerDTO(dbCustomer) {
     if (!dbCustomer) return undefined;
 
