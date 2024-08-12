@@ -1,22 +1,22 @@
-    FROM --platform=linux/amd64 node:lts-alpine
+FROM node:lts-alpine
 
-    RUN adduser -D lanchonete-api
+RUN adduser -D lanchonete-api
 
-    ARG PORT_SERVER=8080
-    ENV PORT $PORT_SERVER
+ARG PORT_SERVER=8080
+ENV PORT $PORT_SERVER
 
-    EXPOSE $PORT
+EXPOSE $PORT
 
-    RUN mkdir -p /home/node/app && chown -R lanchonete-api /home/node/app
+RUN mkdir -p /home/node/app && chown -R lanchonete-api /home/node/app
 
-    WORKDIR /home/node/app
+WORKDIR /home/node/app
 
-    COPY package*.json ./
+COPY package*.json ./
 
-    RUN npm ci
+RUN npm ci
 
-    USER lanchonete-api
-  
-    COPY . .
+USER lanchonete-api
 
-    CMD [ "node", "src/index.js" ]
+COPY . .
+
+CMD [ "node", "src/index.js" ]
