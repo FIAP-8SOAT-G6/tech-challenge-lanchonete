@@ -60,4 +60,6 @@ As tarefas estão descritas em projetos da organização do GitHub.
 - `src/tests` - Testes do projeto.
 - `app.js` - Ponto de entrada da aplicação, onde os objetos são instanciados com suas respectivas dependências e a aplicação começa a ser executada.
 
+**OBS:** O arquivo `.env` foi compartilhado neste repositório para fins didáticos e facilidade nos testes, sendo esta uma má prática em ambientes de desenvolvimento real.
+
 ![Estrutura do Projeto](assets/ProjectStructure.png)
