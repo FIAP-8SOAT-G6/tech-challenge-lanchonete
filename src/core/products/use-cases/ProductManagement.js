@@ -51,6 +51,7 @@ class ProductManagement {
     product.setCategory(productDTO.category);
     product.setDescription(productDTO.description);
     product.setPrice(productDTO.price);
+    product.setImages(productDTO.images);
 
     const updatedProductDTO = this.#toProductDTO(product);
     return await this.productRepository.update(updatedProductDTO);
@@ -66,18 +67,20 @@ class ProductManagement {
       name: productEntity.getName(),
       category: productEntity.getCategory(),
       description: productEntity.getDescription(),
-      price: productEntity.getPrice()
+      price: productEntity.getPrice(),
+      images: productEntity.getImages()
     });
   }
 
   #toProductEntity(productDTO) {
-    return new Product(
-      productDTO.id,
-      productDTO.name,
-      productDTO.category,
-      productDTO.description,
-      productDTO.price
-    );
+    return new Product({
+      id: productDTO.id,
+      name: productDTO.name,
+      category: productDTO.category,
+      description: productDTO.description,
+      price: productDTO.price,
+      images: productDTO.images
+    });
   }
 }
 
