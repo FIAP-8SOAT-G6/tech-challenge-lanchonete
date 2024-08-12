@@ -21,7 +21,7 @@ context("Order", () => {
       expect(order.getId()).to.be.equals("1");
       expect(order.getCode()).to.be.equals("CODE123");
       expect(order.getStatus()).to.be.equals(OrderStatus.CREATED);
-      expect(order.getTotalPrice()).to.be.equals(0);
+      expect(Number(order.getTotalPrice())).to.be.equals(0);
       expect(order.getItems()).to.be.empty;
     });
   });
@@ -105,7 +105,7 @@ context("Order", () => {
       };
       order.addItem(item);
       expect(order.getItems().length).to.be.at.least(1);
-      expect(order.getTotalPrice()).to.be.equals(
+      expect(Number(order.getTotalPrice())).to.be.equals(
         item.quantity * item.unitPrice
       );
     });
@@ -166,8 +166,8 @@ context("Order", () => {
       expect(updatedItem.getTotalPrice()).to.be.equals(
         updateValues.quantity * updatedItem.getUnitPrice()
       );
-      expect(order.getTotalPrice()).to.be.equals(
-        updateValues.quantity * updatedItem.getUnitPrice()
+      expect(Number(order.getTotalPrice())).to.be.equals(
+        updateValues.quantity * Number(updatedItem.getUnitPrice())
       );
     });
     it("should throw an error when updating unexisting item", () => {
