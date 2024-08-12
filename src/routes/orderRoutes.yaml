@@ -29,7 +29,7 @@ paths:
               properties:
                 customerId:
                   type: integer
-                  nullable: true 
+                  nullable: true
                   description: ID do cliente ou 'null' para clientes não identificados
               required:
                 - customerId
@@ -212,7 +212,7 @@ components:
           type: integer
           description: ID do Pedido
           example: 1
-        elapsedTime: 
+        elapsedTime:
           type: integer
           description: Tempo desde a criação do pedido em milisegundos
           example: 1501767
@@ -227,7 +227,7 @@ components:
           example: 9999
         status:
           $ref: "#/components/schemas/OrderStatus"
-          example: CREATED 
+          example: CREATED
         items:
           type: array
           description: Itens do Pedido
@@ -278,3 +278,7 @@ components:
       enum:
         - CREATED
         - PENDING_PAYMENT
+        - PAYED
+        - RECEIVED
+        - PREPARING
+        - FINISHED
