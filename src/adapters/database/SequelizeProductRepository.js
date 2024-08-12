@@ -23,7 +23,7 @@ class SequelizeProductRepository {
 
   async findAll() {
     const products = await this.#findAllProducts();
-    return products ? products?.map(this.#createProductDTO) : undefined;
+    return products ? products?.map(this.#createProductDTO) : [];
   }
 
   async findById(id) {
@@ -36,7 +36,7 @@ class SequelizeProductRepository {
   async findByCategory(category) {
     const products = await this.#findAllProducts({ where: { category } });
 
-    return products ? products?.map(this.#createProductDTO) : undefined;
+    return products ? products?.map(this.#createProductDTO) : [];
   }
 
   async #findAllProducts(conditions) {
