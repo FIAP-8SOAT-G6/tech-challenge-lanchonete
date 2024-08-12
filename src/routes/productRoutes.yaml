@@ -39,6 +39,12 @@ paths:
                 description:
                   type: string
                   example: "Hamburguer Classico"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    description: Lista de url de imagens
+                    example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
               required:
                 - name
                 - category
@@ -74,7 +80,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product" 
+                $ref: "#/components/schemas/Product"
         "404":
           description: Produto não encontrado
         "500":
@@ -111,6 +117,12 @@ paths:
                 description:
                   type: string
                   example: "Hamburguer Classico"
+                images:
+                  type: array
+                  items:
+                    type: string
+                    description: Lista de url de imagens
+                    example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
               required:
                 - name
                 - category
@@ -123,7 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product" 
+                $ref: "#/components/schemas/Product"
         "400":
           description: Erro de validação
         "404":
@@ -166,7 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product" 
+                $ref: "#/components/schemas/Product"
         "400":
           description: Categoria inválida
         "500":
@@ -204,8 +216,16 @@ components:
             properties:
               id:
                 type: integer
+                description: Identificador único da imagem
+                example: 1
+              productId:
+                type: integer
+                description: Código do produto em que a imagem está associada
+                example: 1
               url:
                 type: string
+                description: Lista de url de imagens
+                example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
 
     ProductCategory:
       type: string
