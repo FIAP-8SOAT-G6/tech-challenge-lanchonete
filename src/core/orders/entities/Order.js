@@ -2,10 +2,9 @@
 // const InvalidPropertyError = require("../exceptions/MissingPropertyError");
 
 const Item = require("./Item");
+const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 const UnexistingItemError = require("../exceptions/UnexistingItemError");
 const OrderStatus = require("./OrderStatus");
-const Customer = require("../../customers/entities/Customer");
-const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
@@ -14,14 +13,16 @@ const ALLOWED_TARGET_STATUS_TRANSITIONS = {
 
 class Order {
   #id;
+  #createdAt;
   #code;
   #status;
   #totalPrice;
   #items;
   #customerId;
 
-  constructor({ id, code, status, customerId, items = [] }) {
+  constructor({ id, createdAt, code, status, customerId, items = [] }) {
     this.#id = id;
+    this.#createdAt = createdAt;
     this.#code = code;
     this.#totalPrice = 0;
     this.#items = [];
@@ -74,12 +75,6 @@ class Order {
     return this.#customerId;
   }
 
-  setCustomer(customerAttributes) {
-    if (customerAttributes && Object.keys(customerAttributes).length !== 0) {
-      this.customer = new Customer(customerAttributes);
-    }
-  }
-
   setStatus(status) {
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
     if (!this.#status || requiredStatusForTarget.includes(this.#status)) {
@@ -123,7 +118,7 @@ class Order {
   }
 
   getElapsedTime() {
-    return Date.now() - this.createdAt.getTime();
+    return Date.now() - this.#createdAt.getTime();
   }
 
   updateItem(itemId, updatedValues) {

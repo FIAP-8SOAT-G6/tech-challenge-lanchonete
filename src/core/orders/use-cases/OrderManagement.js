@@ -25,8 +25,10 @@ class OrderManagement {
       customerId: customerDTO.id,
     });
     const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
-    
-    return await this.orderRepository.findById(createdOrderDTO.id);
+    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id);
+    const completeOrder = this.#toOrderEntity(completeOrderDTO);
+
+    return this.#toOrderDTO(completeOrder);
   }
 
   async getOrders() {
@@ -99,6 +101,7 @@ class OrderManagement {
   #toOrderEntity(orderDTO) {
     return new Order({
       id: orderDTO.id,
+      createdAt: orderDTO.createdAt,
       code: orderDTO.code,
       customerId: orderDTO.customerId,
       status: orderDTO.status,
@@ -110,6 +113,7 @@ class OrderManagement {
   #toOrderDTO(orderEntity) {
     return new OrderDTO({
       id: orderEntity.getId(),
+      elapsedTime: orderEntity.getElapsedTime(),
       code: orderEntity.getCode(),
       status: orderEntity.getStatus(),
       totalPrice: orderEntity.getTotalPrice(),

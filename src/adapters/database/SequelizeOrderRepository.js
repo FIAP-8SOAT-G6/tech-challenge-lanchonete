@@ -96,6 +96,7 @@ class SequelizeOrderRepository {
   #createOrderDTO(databaseOrder) {   
     return new OrderDTO({
       id: databaseOrder.id,
+      createdAt: databaseOrder.createdAt,
       code: databaseOrder.code,
       status: databaseOrder.status,
       totalPrice: databaseOrder.totalPrice,
