@@ -1,8 +1,14 @@
 const { Router } = require("express");
 const UnexistingOrderError = require("../../core/orders/exceptions/UnexistingOrderError");
 const UnexistingProductError = require("../../core/products/exceptions/UnexistingProductError");
+
+const EmptyOrderError = require("../../core/orders/exceptions/EmptyOrderError");
+const ClosedOrderError = require("../../core/orders/exceptions/ClosedOrderError");
 const UnexistingItemError = require("../../core/orders/exceptions/UnexistingItemError");
+const UnexistingCustomerError = require("../../core/orders/exceptions/UnexistingCustomerError");
+
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
+const OrderDTO = require('../../core/orders/dto/OrderDTO');
 
 class OrdersController {
   constructor(orderUseCase) {
@@ -19,9 +25,12 @@ class OrdersController {
   initializeRoutes() {
     this.router.post("/orders", async (req, res) => {
       try {
-        const order = await this.useCase.create();
+        const orderDTO = new OrderDTO({ customerId: req.body.customerId });
+        const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error) {
+        if (error instanceof UnexistingCustomerError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -35,9 +44,9 @@ class OrdersController {
       }
     });
 
-    this.router.get("/orders/:id", async (req, res) => {
+    this.router.get("/orders/:orderId", async (req, res) => {
       try {
-        const orderId = req.params.id;
+        const orderId = req.params.orderId;
         const order = await this.useCase.getOrder(orderId);
         return res.status(201).json(order);
       } catch (error) {
@@ -47,9 +56,9 @@ class OrdersController {
       }
     });
 
-    this.router.post("/orders/:id/items", async (req, res) => {
+    this.router.post("/orders/:orderId/items", async (req, res) => {
       try {
-        const orderId = req.params.id;
+        const orderId = req.params.orderId;
         const { productId, quantity } = req.body;
         const addItemDTO = new ItemDTO({ productId, quantity });
         const order = await this.useCase.addItem(orderId, addItemDTO);
@@ -57,7 +66,10 @@ class OrdersController {
       } catch (error) {
         if (error instanceof UnexistingOrderError)
           return res.status(404).json({ error: error.message });
-        if (error instanceof UnexistingProductError)
+        if (
+          error instanceof UnexistingProductError ||
+          error instanceof ClosedOrderError
+        )
           return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
@@ -69,6 +81,10 @@ class OrdersController {
         await this.useCase.removeItem(orderId, itemId);
         return res.status(204).json({});
       } catch (error) {
+        if (error instanceof UnexistingItemError)
+          return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -85,6 +101,22 @@ class OrdersController {
         );
         return res.status(200).json(updatedOrder);
       } catch (error) {
+        if (error instanceof UnexistingItemError)
+          return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError)
+          return res.status(400).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.post("/orders/:orderId/checkout", async (req, res) => {
+      try {
+        const orderId = req.params.orderId;
+        await this.useCase.checkout(orderId);
+        return res.status(200).json({});
+      } catch (error) {
+        if (error instanceof EmptyOrderError)
+          return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });

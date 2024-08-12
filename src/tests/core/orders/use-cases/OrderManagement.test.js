@@ -13,6 +13,7 @@ const UnexistingProductError = require("../../../../core/products/exceptions/Une
 
 const ProductDTO = require("../../../../core/products/dto/ProductDTO");
 const ItemDTO = require("../../../../core/orders/dto/ItemDTO");
+const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -193,6 +194,33 @@ context("OrderManagement", () => {
       ).to.be.eventually.rejectedWith(
         new UnexistingItemError(unexistingItemId).message
       );
+    });
+  });
+  describe("checkout", () => {
+    it("should change status if order has items", async () => {
+      const product = await productRepository.create(PRODUCT_DTO);
+      const order = await useCase.create();
+      const itemDTO = new ItemDTO({
+        productId: product.id,
+        quantity: 2
+      });
+      await useCase.addItem(order.id, itemDTO);
+
+      await expect(
+        useCase.checkout(order.id)
+      ).to.not.be.eventually.rejectedWith(EmptyOrderError);
+      const updatedOrder = await useCase.getOrder(order.id);
+
+      expect(updatedOrder.status).to.not.be.equals(OrderStatus.CREATED);
+    });
+    it("should not change status if order has no items", async () => {
+      const order = await useCase.create();
+
+      await expect(
+        useCase.checkout(order.id)
+      ).to.be.eventually.rejectedWith(EmptyOrderError);
+      const updatedOrder = await useCase.getOrder(order.id);
+      expect(updatedOrder.status).to.be.equals(OrderStatus.CREATED);
     });
   });
 });

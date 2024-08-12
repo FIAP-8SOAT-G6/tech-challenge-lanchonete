@@ -10,16 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Order.hasMany(models.Item);
+      Order.belongsTo(models.Customer);
     }
   }
   Order.init(
     {
       code: DataTypes.STRING,
-      status: DataTypes.STRING,
-      totalPrice: {
-        type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0
-      }
+      status: DataTypes.STRING
     },
     {
       sequelize,

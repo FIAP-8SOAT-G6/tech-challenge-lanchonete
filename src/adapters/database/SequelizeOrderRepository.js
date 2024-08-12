@@ -6,13 +6,15 @@ const order = require("../../infrastructure/database/models/order");
 const {
   Order: SequelizeOrder,
   Item: SequelizeItem,
-  Product: SequelizeProduct
+  Product: SequelizeProduct, 
+  Customer: SequelizeCustomer
 } = sequelize.models;
 
 class SequelizeOrderRepository {
-  async create(orderAttributes) {
-    const { status, code } = orderAttributes;
-    const createdOrder = await SequelizeOrder.create({ status, code });
+  async create(orderDTO) {
+    const { status, code, customerId } = orderDTO; 
+    const createdOrder = await SequelizeOrder.create({ status, code, CustomerId: customerId });
+       
     return this.#createOrderDTO(createdOrder);
   }
 
@@ -22,6 +24,9 @@ class SequelizeOrderRepository {
         {
           model: SequelizeItem,
           include: [SequelizeProduct]
+        },
+        { 
+          model: SequelizeCustomer
         }
       ]
     });
@@ -34,9 +39,14 @@ class SequelizeOrderRepository {
         {
           model: SequelizeItem,
           include: [SequelizeProduct]
+        }, 
+        {
+          model: SequelizeCustomer
         }
-      ]
+      ], 
+      order: [['createdAt', 'DESC']]
     });
+
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
@@ -70,21 +80,22 @@ class SequelizeOrderRepository {
     await item.update(itemDTO);
   }
 
-  async update(orderDTO) {
-    const { code, status, customer } = order;
-    const createdOrder = await SequelizeOrder.create({
-      code,
-      status
-    });
-    return this.#createOrderDTO(createdOrder);
+  async updateOrder(orderDTO) {
+    const { id, code, status } = orderDTO;
+    const order = await SequelizeOrder.findByPk(id);
+    const updatedOrder = order.update({ code, status });
+    return this.#createOrderDTO(updatedOrder);
   }
 
   #createOrderDTO(databaseOrder) {
     return new OrderDTO({
       id: databaseOrder.id,
+      createdAt: databaseOrder.createdAt,
       code: databaseOrder.code,
       status: databaseOrder.status,
       totalPrice: databaseOrder.totalPrice,
+      customerId: databaseOrder.CustomerId,
+      customerName: databaseOrder.Customer?.name,
       items: databaseOrder.Items?.map(
         (databaseItem) =>
           new ItemDTO({

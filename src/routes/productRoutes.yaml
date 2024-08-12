@@ -12,28 +12,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    category:
-                      type: string
-                    price:
-                      type: number
-                      format: float
-                    description:
-                      type: string
-                    images:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          url:
-                            type: string
+                  $ref: "#/components/schemas/Product"
         "500":
           description: Erro interno do servidor
 
@@ -50,46 +29,28 @@ paths:
               properties:
                 name:
                   type: string
+                  example: Hamburguer
                 category:
-                  type: string
+                  $ref: "#/components/schemas/ProductCategory"
                 price:
                   type: number
                   format: float
+                  example: 12.99
                 description:
                   type: string
-                images:
-                  type: array
-                  items:
-                    type: string
-
+                  example: "Hamburguer Classico"
+              required:
+                - name
+                - category
+                - price
+                - description
       responses:
         "201":
           description: Produto criado com sucesso
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  category:
-                    type: string
-                  price:
-                    type: number
-                    format: float
-                  description:
-                    type: string
-                  images:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        url:
-                          type: string
+                $ref: "#/components/schemas/Product"
         "400":
           description: Erro de validação
         "500":
@@ -113,28 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  category:
-                    type: string
-                  price:
-                    type: number
-                    format: float
-                  description:
-                    type: string
-                  images:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        url:
-                          type: string
+                $ref: "#/components/schemas/Product" 
         "404":
           description: Produto não encontrado
         "500":
@@ -160,45 +100,30 @@ paths:
               properties:
                 name:
                   type: string
+                  example: Hamburguer
                 category:
-                  type: string
+                  $ref: "#/components/schemas/ProductCategory"
+                  example: "Lanche"
                 price:
                   type: number
                   format: float
+                  example: 12.99
                 description:
                   type: string
-                images:
-                  type: array
-                  items:
-                    type: string
+                  example: "Hamburguer Classico"
+              required:
+                - name
+                - category
+                - price
+                - description
+
       responses:
         "201":
           description: Produto atualizado com sucesso
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  category:
-                    type: string
-                  price:
-                    type: number
-                    format: float
-                  description:
-                    type: string
-                  images:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        url:
-                          type: string
+                $ref: "#/components/schemas/Product" 
         "400":
           description: Erro de validação
         "404":
@@ -232,7 +157,7 @@ paths:
         - in: path
           name: category
           schema:
-            type: string
+            $ref: "#/components/schemas/ProductCategory"
           required: true
           description: Categoria do produto
       responses:
@@ -241,31 +166,52 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    category:
-                      type: string
-                    price:
-                      type: number
-                      format: float
-                    description:
-                      type: string
-                    images:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          url:
-                            type: string
+                $ref: "#/components/schemas/Product" 
         "400":
           description: Categoria inválida
         "500":
           description: Erro interno do servidor
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do produto
+          example: 1
+        name:
+          type: string
+          description: Nome do produto
+          example: Hamburguer
+        category:
+          $ref: "#/components/schemas/ProductCategory"
+          example: Lanche
+        price:
+          type: number
+          format: float
+          description: Preço do produto
+          example: 12.99
+        description:
+          type: string
+          description: Descrição do produto
+          example: Hamburguer Classico
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              url:
+                type: string
+
+    ProductCategory:
+      type: string
+      description: Categoria do produto
+      enum:
+        - "Lanche"
+        - "Acompanhamento"
+        - "Bebida"
+        - "Sobremesa"

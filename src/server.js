@@ -12,7 +12,6 @@ const ordersController = ControllerFactory.makeOrdersController();
 
 app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(productManagementController.getRouter());
 app.use(ordersController.getRouter());
 app.use(customerManagementController.getRouter());
