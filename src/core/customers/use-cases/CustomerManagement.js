@@ -17,8 +17,8 @@ class CustomerManagement {
     const customer = this.#toCustomerEntity(customerDTO);
     const cpf = customer.getCpf();
     const email = customer.getEmail();
-    await this.validateCustomerExistence(cpf);
     await this.validateCustomerData(cpf, email);
+    await this.validateCustomerExistence(cpf);
     return await this.customerRepository.create(this.#toCustomerDTO(customer));
   }
 
@@ -56,6 +56,7 @@ class CustomerManagement {
   }
 
   async assertCPFValidity(cpf) {
+    console.log("erro cpf");
     if (!this.cpfValidator.isValid(cpf)) {
       throw new InvalidAttributeError("cpf", cpf);
     }

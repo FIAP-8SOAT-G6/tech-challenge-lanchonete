@@ -4,6 +4,7 @@ const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
 const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
 const ResourceNotFoundError = require("../../core/common/exceptions/ResourceNotFoundError");
 const ResourceAlreadyExistsError = require("../../core/common/exceptions/ResourceAlreadyExistsError");
+const InvalidAttributeError = require("../../core/common/exceptions/InvalidAttributeError");
 
 class CustomerController {
   constructor(customerManagementUseCase) {
@@ -45,7 +46,8 @@ class CustomerController {
       } catch (error) {
         if (
           error instanceof MissingPropertyError ||
-          error instanceof ResourceAlreadyExistsError
+          error instanceof ResourceAlreadyExistsError ||
+          error instanceof InvalidAttributeError
         ) {
           return res.status(400).json({ message: error.message });
         }
