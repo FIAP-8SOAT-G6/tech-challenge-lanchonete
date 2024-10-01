@@ -4,15 +4,21 @@ const CustomerDTO = require("../dto/CustomerDTO");
 const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
 const ResourceAlreadyExistsError = require("../../common/exceptions/ResourceAlreadyExistsError");
 const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
+const InvalidAttributeError = require("../../common/exceptions/InvalidAttributeError");
 
 class CustomerManagement {
-  constructor(customerRepository) {
+  constructor(customerRepository, cpfValidator, emailValidator) {
     this.customerRepository = customerRepository;
+    this.cpfValidator = cpfValidator;
+    this.emailValidator = emailValidator;
   }
 
   async create(customerDTO) {
     const customer = this.#toCustomerEntity(customerDTO);
-    await this.validateCustomerExistence(customer.getCpf());
+    const cpf = customer.getCpf();
+    const email = customer.getEmail();
+    await this.validateCustomerExistence(cpf);
+    await this.validateCustomerData(cpf, email);
     return await this.customerRepository.create(this.#toCustomerDTO(customer));
   }
 
@@ -41,6 +47,23 @@ class CustomerManagement {
         "cpf",
         cpf
       );
+    }
+  }
+
+  async validateCustomerData(cpf, email) {
+    await this.assertCPFValidity(cpf);
+    await this.assertEmailValidity(email);
+  }
+
+  async assertCPFValidity(cpf) {
+    if (!this.cpfValidator.isValid(cpf)) {
+      throw new InvalidAttributeError("cpf", cpf);
+    }
+  }
+
+  async assertEmailValidity(email) {
+    if (!this.emailValidator.isValid(email)) {
+      throw new InvalidAttributeError("email", email);
     }
   }
 
