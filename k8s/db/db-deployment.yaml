@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lanchonete-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lanchonete-db
+  template:
+    metadata:
+      labels:
+        app: lanchonete-db
+    spec:
+      containers:
+        - name: lanchonete-db
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: lanchonete-db-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: lanchonete-db-data
+          image: postgres:latest
+      volumes:
+        - name: lanchonete-db-data
+          persistentVolumeClaim:
+            claimName: lanchonete-db-volume-claim
