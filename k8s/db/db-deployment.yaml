@@ -18,7 +18,7 @@ spec:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: lanchonete-db-secret
+                name: lanchonete-db-config
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: lanchonete-db-data
