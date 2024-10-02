@@ -1,5 +1,5 @@
 const { cpf } = require("cpf-cnpj-validator");
-const CPFValidator = require("../../../core/common/validators/CPFValidator");
+const CPFValidator = require("../../../core/customers/ports/validators/CPFValidator");
 
 class CPFValidatorAdapter extends CPFValidator {
   isValid(cpfValue) {

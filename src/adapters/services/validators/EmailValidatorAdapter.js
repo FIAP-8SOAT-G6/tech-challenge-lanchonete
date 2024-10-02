@@ -1,5 +1,5 @@
 const validator = require("validator");
-const EmailValidator = require("../../../core/common/validators/EmailValidator");
+const EmailValidator = require("../../../core/customers/ports/validators/EmailValidator");
 
 class EmailValidatorAdapter extends EmailValidator {
   isValid(email) {

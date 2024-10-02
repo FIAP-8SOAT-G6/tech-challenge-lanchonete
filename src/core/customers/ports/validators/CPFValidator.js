@@ -1,3 +1,5 @@
+//Interface
+
 class CPFValidator {
   isValid(cpf) {}
 }
