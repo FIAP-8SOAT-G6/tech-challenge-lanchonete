@@ -10,8 +10,8 @@ const SequelizeCustomerRepository = require("../../adapters/database/SequelizeCu
 const SequelizeOrderRepository = require("../../adapters/database/SequelizeOrderRepository");
 const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
 
-const CPFValidatorAdapter = require("../services/validators/CPFValidatorAdapter");
-const EmailValidatorAdapter = require("../services/validators/EmailValidatorAdapter");
+const CPFValidatorAdapter = require("../../adapters/services/validators/CPFValidatorAdapter");
+const EmailValidatorAdapter = require("../../adapters/services/validators/EmailValidatorAdapter");
 
 module.exports = class ControllerFactory {
   static makeProductManagementController() {

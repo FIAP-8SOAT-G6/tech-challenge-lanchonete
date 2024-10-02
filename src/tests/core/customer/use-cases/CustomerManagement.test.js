@@ -6,8 +6,8 @@ const FakeCustomerRepository = require("../../../../adapters/database/FakeCustom
 const CustomerManagement = require("../../../../core/customers/use-cases/CustomerManagement");
 const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
 
-const CpfValidatorAdapter = require("../../../../infrastructure/services/validators/CPFValidatorAdapter");
-const EmailValidatorAdapter = require("../../../../infrastructure/services/validators/EmailValidatorAdapter");
+const CpfValidatorAdapter = require("../../../../adapters/services/validators/CPFValidatorAdapter");
+const EmailValidatorAdapter = require("../../../../adapters/services/validators/EmailValidatorAdapter");
 
 const ResourceAlreadyExistsError = require("../../../../core/common/exceptions/ResourceAlreadyExistsError");
 const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
