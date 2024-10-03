@@ -2,13 +2,30 @@ const { sequelize } = require("./infrastructure/database/models");
 const app = require("./server");
 const PORT_SERVER = process.env.PORT_SERVER || 3000;
 
+function configureHealthRoutes(app) {
+  app.get("/health/liveness", async function (_, res) {
+    return res.statusCode(200).json({});
+  });
+
+  app.get("/health/readiness", async function (_, res) {
+    try {
+      await sequelize.authenticate();
+      return res.statusCode(200).json({});
+    } catch (error) {
+      return res.statusCode(500).json({});
+    }
+  });
+}
+
 async function init() {
-  await sequelize.authenticate()
+  await sequelize.authenticate();
   await sequelize.sync();
 
   const server = app.listen(PORT_SERVER, () => {
     console.log(`Server running on port ${PORT_SERVER}`),
-      console.log(`Documentação da API disponível em http://localhost:${PORT_SERVER}/api-docs`)
+      console.log(
+        `Documentação da API disponível em http://localhost:${PORT_SERVER}/api-docs`
+      );
   });
 
   process.on("SIGINT", function onSigint() {
@@ -38,4 +55,5 @@ async function init() {
   }
 }
 
+configureHealthRoutes(app);
 init();
