@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: lanchonete-api-container
-          image: vitorrafael/lanchonete-api
+          image: vitorrafael/lanchonete-api:latest
           env:
             - name: POSTGRES_HOST
               value: "lanchonete-db"
@@ -40,20 +40,20 @@ spec:
           ports:
             - containerPort: 8080
           # @To-Do: Implementar Probes e limitar os recursos
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   periodSeconds: 10
-          #   failureThreshold: 3
-          #   initialDelaySeconds: 20
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 80
-          #   periodSeconds: 10
-          #   failureThreshold: 5
-          #   initialDelaySeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 5
+            initialDelaySeconds: 3
           # resources:
           #   requests:
           #     cpu: 1m
