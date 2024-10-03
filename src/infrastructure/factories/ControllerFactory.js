@@ -1,12 +1,17 @@
+const CustomerController = require("../../adapters/api/CustomerController");
 const OrdersController = require("../../adapters/api/OrdersController");
 const ProductsController = require("../../adapters/api/ProductsController");
-const ProductManagement = require("../../core/products/use-cases/ProductManagement");
-const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
-const SequelizeOrderRepository = require("../../adapters/database/SequelizeOrderRepository");
-const OrderManagement = require("../../core/orders/use-cases/OrderManagement");
-const CustomerController = require("../../adapters/api/CustomerController");
+
 const CustomerManagement = require("../../core/customers/use-cases/CustomerManagement");
+const OrderManagement = require("../../core/orders/use-cases/OrderManagement");
+const ProductManagement = require("../../core/products/use-cases/ProductManagement");
+
 const SequelizeCustomerRepository = require("../../adapters/database/SequelizeCustomerRepository");
+const SequelizeOrderRepository = require("../../adapters/database/SequelizeOrderRepository");
+const SequelizeProductRepository = require("../../adapters/database/SequelizeProductRepository");
+
+const CPFValidatorAdapter = require("../../adapters/services/validators/CPFValidatorAdapter");
+const EmailValidatorAdapter = require("../../adapters/services/validators/EmailValidatorAdapter");
 
 module.exports = class ControllerFactory {
   static makeProductManagementController() {
@@ -19,7 +24,7 @@ module.exports = class ControllerFactory {
     return new OrdersController(
       new OrderManagement(
         new SequelizeOrderRepository(),
-        new SequelizeProductRepository(), 
+        new SequelizeProductRepository(),
         new SequelizeCustomerRepository()
       )
     );
@@ -27,7 +32,11 @@ module.exports = class ControllerFactory {
 
   static makeCustomerManagementController() {
     return new CustomerController(
-      new CustomerManagement(new SequelizeCustomerRepository())
+      new CustomerManagement(
+        new SequelizeCustomerRepository(),
+        new CPFValidatorAdapter(),
+        new EmailValidatorAdapter()
+      )
     );
   }
 };
