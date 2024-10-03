@@ -39,7 +39,6 @@ spec:
                   key: POSTGRES_PASSWORD
           ports:
             - containerPort: 8080
-          # @To-Do: Implementar Probes e limitar os recursos
           livenessProbe:
             httpGet:
               path: /health/liveness
@@ -54,9 +53,13 @@ spec:
             periodSeconds: 10
             failureThreshold: 5
             initialDelaySeconds: 3
-          # resources:
-          #   requests:
-          #     cpu: 1m
+          resources:
+            requests:
+              memory: "100M"
+              cpu: "250m"
+            limits:
+              memory: "200M"
+              cpu: "5000m"
   replicas: 3
   selector:
     matchLabels:
