@@ -5,4 +5,4 @@ const ProductCategory = Object.freeze({
     Sobremesa: "Sobremesa"
 });
 
-module.exports = ProductCategory;
+export default ProductCategory
