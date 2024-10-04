@@ -9,7 +9,8 @@
     "test": "mocha 'src/tests/**/*.js' --recursive",
     "coverage": "nyc --reporter=text npm run test",
     "docker-compose:up:dev": "docker-compose -f docker-compose.dev.yml up --build",
-    "docker-compose:down:dev": "docker-compose -f docker-compose.dev.yml down"
+    "docker-compose:down:dev": "docker-compose -f docker-compose.dev.yml down",
+    "format": "prettier --write ."
   },
   "author": "",
   "license": "ISC",
@@ -39,7 +40,11 @@
     "mocha": "^10.7.0",
     "nodemon": "^3.1.4",
     "nyc": "^17.0.0",
+    "prettier": "^3.3.3",
     "sequelize-cli": "^6.6.2",
     "supertest": "^7.0.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
