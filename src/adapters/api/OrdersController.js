@@ -33,6 +33,15 @@ class OrdersController {
 
     this.router.get("/orders", async (req, res) => {
       try {
+        const order = await this.useCase.getOrdersByPriority();
+        return res.status(200).json(order);
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.get("/orders/all", async (req, res) => {
+      try {
         const order = await this.useCase.getOrders();
         return res.status(200).json(order);
       } catch (error) {
@@ -103,7 +112,7 @@ class OrdersController {
       }
     });
 
-    this.router.post("/orders/:orderId/status", async (req, res) => {
+    this.router.post("/orders/:orderId/payment_status", async (req, res) => {
       try {
         const orderId = req.params.orderId;
         const { status } = req.body;

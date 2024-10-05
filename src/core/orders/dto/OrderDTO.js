@@ -1,20 +1,10 @@
 class OrderDTO {
-  constructor({
-    id,
-    createdAt,
-    code,
-    status,
-    totalPrice,
-    items,
-    customerId,
-    customerName,
-    elapsedTime
-  }) {
+  constructor({ id, createdAt, code, status, totalPrice, items, customerId, customerName, elapsedTime }) {
     this.id = id;
     this.createdAt = createdAt;
     this.code = code;
     this.status = status;
-    this.totalPrice = Number(totalPrice);
+    this.totalPrice = Number(totalPrice) || 0;
     this.items = items;
     this.customerId = customerId;
     this.customerName = customerName;

@@ -44,8 +44,26 @@ class SequelizeOrderRepository {
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
-  async createItem(order, itemDTO) {
-    const orderModel = await SequelizeOrder.findByPk(order.id);
+  async findOrdersByStatusAndSortByAscDate(status) {
+    const orders = await SequelizeOrder.findAll({
+      include: [
+        {
+          model: SequelizeItem,
+          include: [SequelizeProduct]
+        },
+        {
+          model: SequelizeCustomer
+        }
+      ],
+      where: { status },
+      order: [["createdAt", "ASC"]]
+    });
+
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
+
+  async createItem(orderId, itemDTO) {
+    const orderModel = await SequelizeOrder.findByPk(orderId);
     const { id, orderId: OrderId, productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
     await orderModel.createItem({
       id,

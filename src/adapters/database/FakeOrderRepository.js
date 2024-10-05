@@ -35,13 +35,24 @@ class FakeOrderRepository {
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
-  async createItem(orderDTO, itemDTO) {
-    const { id: OrderId } = orderDTO;
+  async findOrdersByStatusAndSortByAscDate(status) {
+    const orders = this.#orders
+      .filter((order) => order.status === status)
+      .map((order) => ({
+        ...order,
+        items: this.#items.filter((item) => item.OrderId === order.id)
+      }))
+      .sort((a, b) => b.elapsedTime - a.elapsedTime);
+
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
+
+  async createItem(orderId, itemDTO) {
     const { productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
 
     this.#items.push({
       id: this.#items.length + 1,
-      OrderId,
+      OrderId: orderId,
       ProductId,
       quantity,
       unitPrice,

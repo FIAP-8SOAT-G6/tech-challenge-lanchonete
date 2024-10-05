@@ -11,8 +11,10 @@ const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
   [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED],
   [OrderStatus.PAYED]: [OrderStatus.PENDING_PAYMENT],
-  [OrderStatus.PREPARING]: [OrderStatus.PAYED],
-  [OrderStatus.RECEIVED]: [OrderStatus.PREPARING]
+  [OrderStatus.RECEIVED]: [OrderStatus.PAYED],
+  [OrderStatus.PREPARING]: [OrderStatus.RECEIVED],
+  [OrderStatus.DONE]: [OrderStatus.PREPARING],
+  [OrderStatus.FINISHED]: [OrderStatus.DONE]
 };
 
 const statusTransitionValidator = {
@@ -23,8 +25,10 @@ const statusTransitionValidator = {
     }
   },
   [OrderStatus.PAYED]: function (order) {},
+  [OrderStatus.RECEIVED]: function (order) {},
   [OrderStatus.PREPARING]: function (order) {},
-  [OrderStatus.RECEIVED]: function (order) {}
+  [OrderStatus.DONE]: function (order) {},
+  [OrderStatus.FINISHED]: function (order) {}
 };
 
 class Order {
@@ -49,6 +53,10 @@ class Order {
 
   getId() {
     return this.#id;
+  }
+
+  getCreatedAt() {
+    return this.#createdAt;
   }
 
   getCode() {

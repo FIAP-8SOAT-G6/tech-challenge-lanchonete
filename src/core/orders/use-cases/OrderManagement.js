@@ -38,6 +38,18 @@ class OrderManagement {
     return orders.map(this.#toOrderDTO.bind(this));
   }
 
+  async getOrdersByPriority() {
+    const { DONE, PREPARING, RECEIVED } = OrderStatus;
+    const repositoryOrderDoneDTOs = await this.orderRepository.findOrdersByStatusAndSortByAscDate(DONE);
+    const repositoryOrderPreparingDTOs = await this.orderRepository.findOrdersByStatusAndSortByAscDate(PREPARING);
+    const repositoryOrderReceivedDTOs = await this.orderRepository.findOrdersByStatusAndSortByAscDate(RECEIVED);
+
+    const ordersDTOs = [...repositoryOrderDoneDTOs, ...repositoryOrderPreparingDTOs, ...repositoryOrderReceivedDTOs];
+
+    const ordersEntitys = ordersDTOs.map(this.#toOrderEntity);
+    return ordersEntitys.map(this.#toOrderDTO.bind(this));
+  }
+
   async getOrder(orderId) {
     const repositoryOrderDTO = await this.orderRepository.findById(orderId);
     this.#validateOrderExists(repositoryOrderDTO?.id, orderId);
@@ -69,7 +81,7 @@ class OrderManagement {
       unitPrice: productDTO.price
     });
 
-    await this.orderRepository.createItem(this.#toOrderDTO(order), this.#toItemDTO(item));
+    await this.orderRepository.createItem(order.getId(), this.#toItemDTO(item));
 
     const updatedOrderDTO = await this.orderRepository.findById(orderId);
     const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
@@ -153,12 +165,13 @@ class OrderManagement {
   #toOrderDTO(orderEntity) {
     return new OrderDTO({
       id: orderEntity.getId(),
-      elapsedTime: orderEntity.getElapsedTime(),
+      createdAt: orderEntity.getCreatedAt(),
       code: orderEntity.getCode(),
-      status: orderEntity.getStatus(),
       totalPrice: orderEntity.getTotalPrice(),
       items: orderEntity.getItems().map(this.#toItemDTO),
-      customerId: orderEntity.getCustomerId()
+      customerId: orderEntity.getCustomerId(),
+      status: orderEntity.getStatus(),
+      elapsedTime: orderEntity.getElapsedTime()
     });
   }
 
