@@ -1,7 +1,11 @@
 const message = "Cannot change status from &1 to &2. Allowed status are: &3";
 
-class InvalidStatusTransitionError extends Error {
-  constructor(currentStatus, targetStatus, allowedCurrentStatusForTarget) {
+export default class InvalidStatusTransitionError extends Error {
+  constructor(
+    currentStatus: string,
+    targetStatus: string,
+    allowedCurrentStatusForTarget: string[]
+  ) {
     super(
       message
         .replace("&1", currentStatus)

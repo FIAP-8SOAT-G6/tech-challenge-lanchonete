@@ -1,7 +1,7 @@
 const message = "Missing property '&1'";
 
-class MissingPropertyError extends Error {
-  constructor(property) {
+export default class MissingPropertyError extends Error {
+  constructor(property: string) {
     super(message.replace("&1", property));
   }
 }

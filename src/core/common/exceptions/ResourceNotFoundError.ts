@@ -1,9 +1,13 @@
-const message = "&1 already exists for &2 '&3'";
+const message = "&1 not found for &2 '&3'";
 
-class ResourceAlreadyExistsError extends Error {
+export default class ResourceNotFoundError extends Error {
   static Resources = {
-    Customer: "Customer"
+    Product: "Product",
+    Item: "Item",
+    Customer: "Customer",
+    Order: "Order"
   };
+
   constructor(resourceName, attributeName, attributeValue) {
     super(
       message
@@ -14,4 +18,4 @@ class ResourceAlreadyExistsError extends Error {
   }
 }
 
-module.exports = ResourceAlreadyExistsError;
+module.exports = ResourceNotFoundError;

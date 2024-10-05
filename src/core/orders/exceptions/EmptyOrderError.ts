@@ -1,6 +1,6 @@
 const message = "Cannot checkout empty order.";
 
-class EmptyOrderError extends Error {
+export default class EmptyOrderError extends Error {
   constructor() {
     super(message);
   }

@@ -1,47 +1,53 @@
-const Order = require("../entities/Order");
-const OrderStatus = require("../entities/OrderStatus");
+import Order from "../entities/Order";
+import { OrderStatus } from "../entities/OrderStatus";
 
-const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
+import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 
-const OrderDTO = require("../dto/OrderDTO");
-const ItemDTO = require("../dto/ItemDTO");
+import ItemDTO from "../dto/ItemDTO";
+import OrderDTO from "../dto/OrderDTO";
 
-class OrderManagement {
-  constructor(orderRepository, productRepository, customerRepository) {
-    this.orderRepository = orderRepository;
-    this.productRepository = productRepository;
-    this.customerRepository = customerRepository;
-  }
+import CustomerRepository from "../../ports/CustomerRepository";
+import OrderManagementPort from "../../ports/OrderManagement";
+import OrderRepository from "../../ports/OrderRepository";
+import ProductRepository from "../../ports/ProductRepository";
+import Item from "../entities/Item";
 
-  async create(orderDTO) {
+export default class OrderManagement implements OrderManagementPort {
+  constructor(
+    private orderRepository: OrderRepository,
+    private productRepository: ProductRepository,
+    private customerRepository: CustomerRepository
+  ) {}
+
+  async create(orderDTO: OrderDTO): Promise<OrderDTO> {
     const { customerId } = orderDTO;
 
-    if (!this.#isCustomerAnonymous(customerId))
-      await this.#validateCustomerExists(customerId);
+    if (!this.#isCustomerAnonymous(customerId!))
+      await this.#validateCustomerExists(customerId!);
 
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
-      customerId: customerId
+      customerId: customerId!
     });
     const createdOrderDTO = await this.orderRepository.create(
       this.#toOrderDTO(order)
     );
     const completeOrderDTO = await this.orderRepository.findById(
-      createdOrderDTO.id
+      createdOrderDTO.id!
     );
-    const completeOrder = this.#toOrderEntity(completeOrderDTO);
+    const completeOrder = this.#toOrderEntity(completeOrderDTO!);
 
     return this.#toOrderDTO(completeOrder);
   }
 
-  async getOrders() {
+  async getOrders(): Promise<OrderDTO[]> {
     const repositoryOrderDTOs = await this.orderRepository.findAll();
-    const orders = repositoryOrderDTOs.map(this.#toOrderEntity);
+    const orders = repositoryOrderDTOs!.map(this.#toOrderEntity);
     return orders.map(this.#toOrderDTO.bind(this));
   }
 
-  async getOrder(orderId) {
+  async getOrder(orderId: number): Promise<OrderDTO> {
     const repositoryOrderDTO = await this.orderRepository.findById(orderId);
 
     if (!repositoryOrderDTO)
@@ -55,7 +61,7 @@ class OrderManagement {
     return this.#toOrderDTO(order);
   }
 
-  async addItem(orderId, itemDTO) {
+  async addItem(orderId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
     const { productId, quantity } = itemDTO;
 
     const [productDTO, orderDTO] = await Promise.all([
@@ -78,9 +84,9 @@ class OrderManagement {
 
     const order = this.#toOrderEntity(orderDTO);
     const item = order.addItem({
-      productId: productDTO.id,
+      productId: productDTO.id!,
       quantity,
-      unitPrice: productDTO.price
+      unitPrice: productDTO.price!
     });
 
     await this.orderRepository.createItem(
@@ -89,19 +95,23 @@ class OrderManagement {
     );
 
     const updatedOrderDTO = await this.orderRepository.findById(orderId);
-    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO!);
 
     return this.#toOrderDTO(updatedOrder);
   }
 
-  async removeItem(orderId, itemId) {
+  async removeItem(orderId: number, itemId: number): Promise<undefined> {
     const orderDTO = await this.orderRepository.findById(orderId);
-    const order = this.#toOrderEntity(orderDTO);
+    const order = this.#toOrderEntity(orderDTO!);
     order.removeItem(itemId);
     await this.orderRepository.removeItem(orderId, itemId);
   }
 
-  async updateItem(orderId, itemId, itemDTO) {
+  async updateItem(
+    orderId: number,
+    itemId: number,
+    itemDTO: ItemDTO
+  ): Promise<OrderDTO> {
     const orderDTO = await this.orderRepository.findById(orderId);
 
     if (!orderDTO)
@@ -116,14 +126,14 @@ class OrderManagement {
     await this.orderRepository.updateItem(itemId, this.#toItemDTO(updatedItem));
 
     const updatedOrderDTO = await this.orderRepository.findById(orderId);
-    const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
+    const updatedOrder = this.#toOrderEntity(updatedOrderDTO!);
 
     return this.#toOrderDTO(updatedOrder);
   }
 
-  async checkout(orderId) {
+  async checkout(orderId: number): Promise<void> {
     const orderDTO = await this.orderRepository.findById(orderId);
-    const order = this.#toOrderEntity(orderDTO);
+    const order = this.#toOrderEntity(orderDTO!);
 
     order.setStatus(OrderStatus.PENDING_PAYMENT);
 
@@ -133,11 +143,11 @@ class OrderManagement {
     await this.orderRepository.updateOrder(this.#toOrderDTO(order));
   }
 
-  #isCustomerAnonymous(customerId) {
+  #isCustomerAnonymous(customerId: number | null) {
     return customerId === null;
   }
 
-  async #validateCustomerExists(customerId) {
+  async #validateCustomerExists(customerId: number) {
     const customerDTO = await this.customerRepository.findById(customerId);
     if (!customerDTO)
       throw new ResourceNotFoundError(
@@ -151,19 +161,19 @@ class OrderManagement {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }
 
-  #toOrderEntity(orderDTO) {
+  #toOrderEntity(orderDTO: OrderDTO) {
     return new Order({
       id: orderDTO.id,
       createdAt: orderDTO.createdAt,
-      code: orderDTO.code,
-      customerId: orderDTO.customerId,
-      status: orderDTO.status,
-      totalPrice: orderDTO.status,
+      code: orderDTO.code!,
+      customerId: orderDTO.customerId!,
+      status: orderDTO.status!,
+      totalPrice: orderDTO.totalPrice!,
       items: orderDTO.items
     });
   }
 
-  #toOrderDTO(orderEntity) {
+  #toOrderDTO(orderEntity: Order) {
     return new OrderDTO({
       id: orderEntity.getId(),
       elapsedTime: orderEntity.getElapsedTime(),
@@ -175,7 +185,7 @@ class OrderManagement {
     });
   }
 
-  #toItemDTO(itemEntity) {
+  #toItemDTO(itemEntity: Item) {
     return new ItemDTO({
       id: itemEntity.getId(),
       orderId: itemEntity.getOrderId(),
