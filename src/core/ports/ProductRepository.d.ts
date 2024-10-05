@@ -9,20 +9,7 @@ export default interface ProductRepository {
 
   findByCategory(category: string): Promise<ProductDTO[]>;
 
-  #findAllProducts(conditions?: any): Promise<ProductDTO[]>;
-
-
   update(productDTO: ProductDTO): Promise<ProductDTO>;
 
   delete(id: number);
-
-  #addImages({
-    productId,
-    images
-  }: {
-    productId: number;
-    images: string[];
-  }): Promise<string>;
-
-  #deleteImages(productId: number): Promise;
 }
