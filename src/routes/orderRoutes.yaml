@@ -82,9 +82,34 @@ paths:
           description: Pedido finalizado
         "400":
           description: Não foi possivel finalizar o pedido pois está vazio.
+        "404":
+          description: Pedido não encontrado
         "500":
           description: Erro interno do servidor
   /orders/{orderId}/status:
+    get:
+      summary: Retorna o status do pagamento do pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Status de pagamento do pedido
+          content:
+            application/json:
+              schema:
+                type: string
+                $ref: "#/components/schemas/OrderPaymentsStatus"
+        "404":
+          description: Pedido não encontrado
+        "500":
+          description: Erro interno do servidor
     post:
       summary: Permite a atualização do status do pedido
       parameters:
@@ -116,6 +141,8 @@ paths:
           description: Pedido atualizado
         "400":
           description: Não foi possivel atualizar o pedido pois está vazio ou o status informado é inválido.
+        "404":
+          description: Pedido não encontrado
         "500":
           description: Erro interno do servidor
   /orders/{orderId}/items:
@@ -316,3 +343,10 @@ components:
         - RECEIVED
         - PREPARING
         - FINISHED
+
+    OrderPaymentsStatus:
+      type: string
+      description: Status do Pagamento do Pedido
+      enum:
+        - PENDING
+        - APPROVED

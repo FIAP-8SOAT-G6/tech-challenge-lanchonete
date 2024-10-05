@@ -46,6 +46,14 @@ class OrderManagement {
     return this.#toOrderDTO(order);
   }
 
+  async getPaymentStatus(orderId) {
+    const repositoryOrderDTO = await this.orderRepository.findById(orderId);
+    this.#validateOrderExists(repositoryOrderDTO?.id, orderId);
+
+    const order = this.#toOrderEntity(repositoryOrderDTO);
+    return order.getPaymentStatus();
+  }
+
   async addItem(orderId, itemDTO) {
     const { productId, quantity } = itemDTO;
 

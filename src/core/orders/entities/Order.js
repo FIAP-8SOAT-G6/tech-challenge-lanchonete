@@ -5,6 +5,7 @@ const EmptyOrderError = require("../exceptions/EmptyOrderError");
 const InvalidStatusTransitionError = require("../exceptions/InvalidStatusTransitionError");
 const ClosedOrderError = require("../exceptions/ClosedOrderError");
 const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
+const OrderPaymentsStatus = require("./OrderPaymentsStatus");
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
@@ -68,6 +69,13 @@ class Order {
 
   getCustomerId() {
     return this.#customerId;
+  }
+
+  getPaymentStatus() {
+    if (this.#status === OrderStatus.CREATED || this.#status === OrderStatus.PENDING_PAYMENT) {
+      return OrderPaymentsStatus.PENDING;
+    }
+    return OrderPaymentsStatus.APPROVED;
   }
 
   setStatus(status) {

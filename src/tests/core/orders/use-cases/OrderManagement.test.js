@@ -15,6 +15,7 @@ const ItemDTO = require("../../../../core/orders/dto/ItemDTO");
 const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
 const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
 const OrderDTO = require("../../../../core/orders/dto/OrderDTO");
+const OrderPaymentsStatus = require("../../../../core/orders/entities/OrderPaymentsStatus");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -49,7 +50,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 });
 
 let useCase, orderRepository, productRepository, customerRepository;
-context("OrderManagement", () => {
+context("Order Management", () => {
   beforeEach(() => {
     orderRepository = setupOrderRepository();
     productRepository = setupProductRepository();
@@ -57,7 +58,7 @@ context("OrderManagement", () => {
     useCase = setupUseCase(orderRepository, productRepository, customerRepository);
   });
 
-  describe("create", () => {
+  describe("create order", () => {
     it("should create order with status 'CREATED'", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
       const orderDTO = new OrderDTO({ customerId: customer.id });
@@ -87,7 +88,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("update", () => {
+  describe("update order", () => {
     it("should update order status by id", async () => {
       const { PREPARING } = OrderStatus;
       const product = await productRepository.create(PRODUCT_DTO);
@@ -114,7 +115,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("getOrders", () => {
+  describe("get orders", () => {
     it("should return empty object when no have orders", async () => {
       const orders = await useCase.getOrders();
       expect(orders).to.not.be.undefined;
@@ -131,7 +132,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("getOrder", () => {
+  describe("get order", () => {
     it("should return requested order", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
       const orderDTO = new OrderDTO({ customerId: customer.id });
@@ -150,7 +151,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("addItem", () => {
+  describe("add item", () => {
     it("should add item to order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
@@ -197,7 +198,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("removeItem", () => {
+  describe("remove item", () => {
     it("should remove item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
@@ -218,7 +219,7 @@ context("OrderManagement", () => {
     });
   });
 
-  describe("updateItem", () => {
+  describe("update item", () => {
     it("should update item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
@@ -286,6 +287,34 @@ context("OrderManagement", () => {
       await expect(useCase.checkout(order.id)).to.be.eventually.rejectedWith(EmptyOrderError);
       const updatedOrder = await useCase.getOrder(order.id);
       expect(updatedOrder.status).to.be.equals(OrderStatus.CREATED);
+    });
+  });
+
+  describe("order payment status", () => {
+    it('should return "PENDING" while the order awaits payment', async () => {
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
+
+      const paymentStatus = await useCase.getPaymentStatus(order.id);
+      expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
+    });
+
+    it('should return "APPROVED" after payment is made', async () => {
+      const product = await productRepository.create(PRODUCT_DTO);
+      const customer = await customerRepository.create(CUSTOMER_DTO);
+      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const order = await useCase.create(orderDTO);
+
+      const itemDTO = new ItemDTO({
+        productId: product.id,
+        quantity: 2
+      });
+      await useCase.addItem(order.id, itemDTO);
+      await useCase.checkout(order.id);
+
+      const paymentStatus = await useCase.getPaymentStatus(order.id);
+      expect(paymentStatus).to.be.equals(OrderPaymentsStatus.APPROVED);
     });
   });
 });
