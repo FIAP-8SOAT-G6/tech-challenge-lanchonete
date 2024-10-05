@@ -3,6 +3,6 @@
   "printWidth": 150,
   "tabWidth": 2,
   "trailingComma": "none",
-  "arrowParens": "avoid",
+  "arrowParens": "always",
   "bracketSpacing": true
 }

@@ -84,6 +84,40 @@ paths:
           description: Não foi possivel finalizar o pedido pois está vazio.
         "500":
           description: Erro interno do servidor
+  /orders/{orderId}/status:
+    post:
+      summary: Permite a atualização do status do pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      requestBody:
+        description: Payload para atualização do status do pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Novo status do pedido
+                  $ref: "#/components/schemas/OrderStatus"
+                  example: RECEIVED
+              required:
+                - status
+      responses:
+        "200":
+          description: Pedido atualizado
+        "400":
+          description: Não foi possivel atualizar o pedido pois está vazio ou o status informado é inválido.
+        "500":
+          description: Erro interno do servidor
   /orders/{orderId}/items:
     post:
       summary: Cria um novo item no pedido

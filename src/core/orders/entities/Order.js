@@ -9,7 +9,9 @@ const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundE
 const ALLOWED_TARGET_STATUS_TRANSITIONS = {
   [OrderStatus.CREATED]: [],
   [OrderStatus.PENDING_PAYMENT]: [OrderStatus.CREATED],
-  [OrderStatus.PAYED]: [OrderStatus.PENDING_PAYMENT]
+  [OrderStatus.PAYED]: [OrderStatus.PENDING_PAYMENT],
+  [OrderStatus.PREPARING]: [OrderStatus.PAYED],
+  [OrderStatus.RECEIVED]: [OrderStatus.PREPARING]
 };
 
 const statusTransitionValidator = {
@@ -19,7 +21,9 @@ const statusTransitionValidator = {
       throw new EmptyOrderError();
     }
   },
-  [OrderStatus.PAYED]: function (order) {}
+  [OrderStatus.PAYED]: function (order) {},
+  [OrderStatus.PREPARING]: function (order) {},
+  [OrderStatus.RECEIVED]: function (order) {}
 };
 
 class Order {
@@ -62,26 +66,6 @@ class Order {
     return this.#items;
   }
 
-  getId() {
-    return this.#id;
-  }
-
-  getCode() {
-    return this.#code;
-  }
-
-  getStatus() {
-    return this.#status;
-  }
-
-  getTotalPrice() {
-    return this.#totalPrice;
-  }
-
-  getItems() {
-    return this.#items;
-  }
-
   getCustomerId() {
     return this.#customerId;
   }
@@ -93,25 +77,12 @@ class Order {
       transitionValidator(this);
       this.#status = status;
     } else {
-      throw new InvalidStatusTransitionError(
-        this.#status,
-        status,
-        ALLOWED_TARGET_STATUS_TRANSITIONS[status]
-      );
+      throw new InvalidStatusTransitionError(this.#status, status, ALLOWED_TARGET_STATUS_TRANSITIONS[status]);
     }
   }
 
-  addItem({
-    id,
-    productId,
-    quantity,
-    unitPrice,
-    totalPrice,
-    productName,
-    productDescription
-  }) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+  addItem({ id, productId, quantity, unitPrice, totalPrice, productName, productDescription }) {
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const item = new Item({
       id,
@@ -139,17 +110,11 @@ class Order {
   }
 
   updateItem(itemId, updatedValues) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const item = this.#items.find((item) => item.getId() === itemId);
 
-    if (!item)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Item,
-        "id",
-        itemId
-      );
+    if (!item) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Item, "id", itemId);
 
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
@@ -159,16 +124,10 @@ class Order {
   }
 
   removeItem(itemId) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const itemIndex = this.#items.findIndex((item) => item.getId() === itemId);
-    if (itemIndex < 0)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Item,
-        "id",
-        itemId
-      );
+    if (itemIndex < 0) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Item, "id", itemId);
 
     this.#items.splice(itemIndex, 1);
   }
@@ -179,15 +138,7 @@ class Order {
   }
 
   #insertIntoItems(itemDTO) {
-    const {
-      id,
-      productId,
-      quantity,
-      unitPrice,
-      totalPrice,
-      productName,
-      productDescription
-    } = itemDTO;
+    const { id, productId, quantity, unitPrice, totalPrice, productName, productDescription } = itemDTO;
     const item = new Item({
       id,
       productId,
@@ -202,9 +153,7 @@ class Order {
   }
 
   #calculateTotalPrice() {
-    this.#totalPrice = this.#items
-      .reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0)
-      .toFixed(2);
+    this.#totalPrice = this.#items.reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0).toFixed(2);
   }
 }
 

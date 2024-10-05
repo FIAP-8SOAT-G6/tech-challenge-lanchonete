@@ -26,8 +26,7 @@ class OrdersController {
         const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -47,8 +46,7 @@ class OrdersController {
         const order = await this.useCase.getOrder(orderId);
         return res.status(201).json(order);
       } catch (error) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -61,13 +59,8 @@ class OrdersController {
         const order = await this.useCase.addItem(orderId, addItemDTO);
         return res.status(201).json(order);
       } catch (error) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (
-          error instanceof ResourceNotFoundError ||
-          error instanceof ClosedOrderError
-        )
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError || error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -78,10 +71,8 @@ class OrdersController {
         await this.useCase.removeItem(Number(orderId), Number(itemId));
         return res.status(204).json({});
       } catch (error) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (error instanceof ClosedOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -91,17 +82,11 @@ class OrdersController {
         const { orderId, itemId } = req.params;
         const { quantity } = req.body;
         const updateItemDTO = new ItemDTO({ quantity });
-        const updatedOrder = await this.useCase.updateItem(
-          Number(orderId),
-          Number(itemId),
-          updateItemDTO
-        );
+        const updatedOrder = await this.useCase.updateItem(Number(orderId), Number(itemId), updateItemDTO);
         return res.status(200).json(updatedOrder);
       } catch (error) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (error instanceof ClosedOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -112,8 +97,19 @@ class OrdersController {
         await this.useCase.checkout(orderId);
         return res.status(200).json({});
       } catch (error) {
-        if (error instanceof EmptyOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.post("/orders/:orderId/status", async (req, res) => {
+      try {
+        const orderId = req.params.orderId;
+        const { status } = req.body;
+        await this.useCase.updateOrderStatus({ orderId, status });
+        return res.status(200).json({});
+      } catch (error) {
+        if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });

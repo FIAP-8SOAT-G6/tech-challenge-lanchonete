@@ -1,5 +1,6 @@
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
 const OrderDTO = require("../../core/orders/dto/OrderDTO");
+const OrderStatus = require("../../core/orders/entities/OrderStatus");
 
 class FakeOrderRepository {
   #orders = [];
@@ -49,9 +50,7 @@ class FakeOrderRepository {
   }
 
   async removeItem(orderId, itemId) {
-    const itemIndex = this.#items.findIndex(
-      (item) => item.OrderId === orderId && item.id === itemId
-    );
+    const itemIndex = this.#items.findIndex((item) => item.OrderId === orderId && item.id === itemId);
     this.#items.splice(itemIndex, 1);
   }
 

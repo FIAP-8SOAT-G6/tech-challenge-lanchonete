@@ -1,20 +1,14 @@
 const ItemDTO = require("../../core/orders/dto/ItemDTO");
 const OrderDTO = require("../../core/orders/dto/OrderDTO");
 const { sequelize } = require("../../infrastructure/database/models");
-const order = require("../../infrastructure/database/models/order");
 
-const {
-  Order: SequelizeOrder,
-  Item: SequelizeItem,
-  Product: SequelizeProduct, 
-  Customer: SequelizeCustomer
-} = sequelize.models;
+const { Order: SequelizeOrder, Item: SequelizeItem, Product: SequelizeProduct, Customer: SequelizeCustomer } = sequelize.models;
 
 class SequelizeOrderRepository {
   async create(orderDTO) {
-    const { status, code, customerId } = orderDTO; 
+    const { status, code, customerId } = orderDTO;
     const createdOrder = await SequelizeOrder.create({ status, code, CustomerId: customerId });
-       
+
     return this.#createOrderDTO(createdOrder);
   }
 
@@ -25,7 +19,7 @@ class SequelizeOrderRepository {
           model: SequelizeItem,
           include: [SequelizeProduct]
         },
-        { 
+        {
           model: SequelizeCustomer
         }
       ]
@@ -39,12 +33,12 @@ class SequelizeOrderRepository {
         {
           model: SequelizeItem,
           include: [SequelizeProduct]
-        }, 
+        },
         {
           model: SequelizeCustomer
         }
-      ], 
-      order: [['createdAt', 'DESC']]
+      ],
+      order: [["createdAt", "DESC"]]
     });
 
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
@@ -52,14 +46,7 @@ class SequelizeOrderRepository {
 
   async createItem(order, itemDTO) {
     const orderModel = await SequelizeOrder.findByPk(order.id);
-    const {
-      id,
-      orderId: OrderId,
-      productId: ProductId,
-      quantity,
-      unitPrice,
-      totalPrice
-    } = itemDTO;
+    const { id, orderId: OrderId, productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
     await orderModel.createItem({
       id,
       OrderId,

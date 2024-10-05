@@ -16,20 +16,15 @@ class OrderManagement {
   async create(orderDTO) {
     const { customerId } = orderDTO;
 
-    if (!this.#isCustomerAnonymous(customerId))
-      await this.#validateCustomerExists(customerId);
+    if (!this.#isCustomerAnonymous(customerId)) await this.#validateCustomerExists(customerId);
 
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
       customerId: customerId
     });
-    const createdOrderDTO = await this.orderRepository.create(
-      this.#toOrderDTO(order)
-    );
-    const completeOrderDTO = await this.orderRepository.findById(
-      createdOrderDTO.id
-    );
+    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
+    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id);
     const completeOrder = this.#toOrderEntity(completeOrderDTO);
 
     return this.#toOrderDTO(completeOrder);
@@ -37,44 +32,27 @@ class OrderManagement {
 
   async getOrders() {
     const repositoryOrderDTOs = await this.orderRepository.findAll();
+    if (!repositoryOrderDTOs) return [];
+
     const orders = repositoryOrderDTOs.map(this.#toOrderEntity);
     return orders.map(this.#toOrderDTO.bind(this));
   }
 
   async getOrder(orderId) {
     const repositoryOrderDTO = await this.orderRepository.findById(orderId);
+    this.#validateOrderExists(repositoryOrderDTO?.id, orderId);
 
-    if (!repositoryOrderDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Order,
-        "id",
-        orderId
-      );
     const order = this.#toOrderEntity(repositoryOrderDTO);
-
     return this.#toOrderDTO(order);
   }
 
   async addItem(orderId, itemDTO) {
     const { productId, quantity } = itemDTO;
 
-    const [productDTO, orderDTO] = await Promise.all([
-      this.productRepository.findById(productId),
-      this.orderRepository.findById(orderId)
-    ]);
+    const [productDTO, orderDTO] = await Promise.all([this.productRepository.findById(productId), this.orderRepository.findById(orderId)]);
 
-    if (!orderDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Order,
-        "id",
-        orderId
-      );
-    if (!productDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Product,
-        "id",
-        productId
-      );
+    this.#validateOrderExists(orderDTO?.id, orderId);
+    if (!productDTO) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Product, "id", productId);
 
     const order = this.#toOrderEntity(orderDTO);
     const item = order.addItem({
@@ -83,10 +61,7 @@ class OrderManagement {
       unitPrice: productDTO.price
     });
 
-    await this.orderRepository.createItem(
-      this.#toOrderDTO(order),
-      this.#toItemDTO(item)
-    );
+    await this.orderRepository.createItem(this.#toOrderDTO(order), this.#toItemDTO(item));
 
     const updatedOrderDTO = await this.orderRepository.findById(orderId);
     const updatedOrder = this.#toOrderEntity(updatedOrderDTO);
@@ -104,12 +79,7 @@ class OrderManagement {
   async updateItem(orderId, itemId, itemDTO) {
     const orderDTO = await this.orderRepository.findById(orderId);
 
-    if (!orderDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Order,
-        "id",
-        orderId
-      );
+    this.#validateOrderExists(orderDTO?.id, orderId);
     const order = this.#toOrderEntity(orderDTO);
 
     const updatedItem = order.updateItem(itemId, itemDTO);
@@ -123,6 +93,7 @@ class OrderManagement {
 
   async checkout(orderId) {
     const orderDTO = await this.orderRepository.findById(orderId);
+    this.#validateOrderExists(orderDTO?.id, orderId);
     const order = this.#toOrderEntity(orderDTO);
 
     order.setStatus(OrderStatus.PENDING_PAYMENT);
@@ -133,18 +104,26 @@ class OrderManagement {
     await this.orderRepository.updateOrder(this.#toOrderDTO(order));
   }
 
+  async updateOrderStatus({ orderId, status }) {
+    const orderDTO = await this.orderRepository.findById(orderId);
+    this.#validateOrderExists(orderDTO?.id, orderId);
+
+    const order = this.#toOrderEntity(orderDTO);
+    order.setStatus(status);
+    return await this.orderRepository.updateOrder(this.#toOrderDTO(order));
+  }
+
   #isCustomerAnonymous(customerId) {
     return customerId === null;
   }
 
   async #validateCustomerExists(customerId) {
     const customerDTO = await this.customerRepository.findById(customerId);
-    if (!customerDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Customer,
-        "id",
-        customerId
-      );
+    if (!customerDTO) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "id", customerId);
+  }
+
+  #validateOrderExists(orderIdFound, orderIdReceived) {
+    if (!orderIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Order, "id", orderIdReceived);
   }
 
   #generateCode() {
