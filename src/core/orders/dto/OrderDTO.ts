@@ -43,4 +43,4 @@ export default class OrderDTO {
   }
 }
 
-module.exports = OrderDTO;
+

@@ -6,4 +6,4 @@ export default class EmptyOrderError extends Error {
   }
 }
 
-module.exports = EmptyOrderError;
+

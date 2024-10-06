@@ -34,4 +34,4 @@ export default class SequelizeCustomerRepository implements CustomerRepository {
   }
 }
 
-module.exports = SequelizeCustomerRepository;
+

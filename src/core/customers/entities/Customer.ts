@@ -71,4 +71,4 @@ export default class Customer {
   }
 }
 
-module.exports = Customer;
+

@@ -15,4 +15,4 @@ export default class InvalidStatusTransitionError extends Error {
   }
 }
 
-module.exports = InvalidStatusTransitionError;
+

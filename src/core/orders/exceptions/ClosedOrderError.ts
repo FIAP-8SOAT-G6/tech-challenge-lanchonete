@@ -6,4 +6,4 @@ export default class ClosedOrderError extends Error {
   }
 }
 
-module.exports = ClosedOrderError;
+

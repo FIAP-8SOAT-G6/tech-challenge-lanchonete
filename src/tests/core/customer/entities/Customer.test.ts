@@ -1,7 +1,7 @@
-const Customer = require("../../../../core/customers/entities/Customer");
-const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
+import Customer from "../../../../core/customers/entities/Customer";
+import MissingPropertyError from "../../../../core/common/exceptions/MissingPropertyError";
 
-const expect = require("chai").expect;
+import { expect } from "chai";
 
 context("Customer", () => {
   describe("validations", () => {
@@ -9,7 +9,7 @@ context("Customer", () => {
       expect(
         () =>
           new Customer({
-            id: "123",
+            id: 123,
             name: "Ana",
             cpf: "123.456.789-00",
             email: "test@mail.com"
@@ -21,8 +21,8 @@ context("Customer", () => {
       expect(
         () =>
           new Customer({
-            id: "123",
-            name: null,
+            id: 123,
+            name: undefined as unknown as string,
             cpf: "123.456.789-00",
             email: "test@mail.com"
           })
@@ -33,9 +33,9 @@ context("Customer", () => {
       expect(
         () =>
           new Customer({
-            id: "123",
+            id: 123,
             name: "Ana",
-            cpf: null,
+            cpf:  undefined as unknown as string,
             email: "test@mail.com"
           })
       ).to.throw(new MissingPropertyError("cpf").message);
@@ -45,10 +45,10 @@ context("Customer", () => {
       expect(
         () =>
           new Customer({
-            id: "123",
+            id: 123,
             name: "Ana",
             cpf: "123.456.789-00",
-            email: undefined
+            email:  undefined as unknown as string,
           })
       ).to.throw(new MissingPropertyError("email").message);
     });

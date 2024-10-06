@@ -132,4 +132,4 @@ export default class SequelizeProductRepository implements ProductRepository {
   }
 }
 
-module.exports = SequelizeProductRepository;
+

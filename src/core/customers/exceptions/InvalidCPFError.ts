@@ -6,4 +6,4 @@ export default class InvalidCPFError extends Error {
   }
 }
 
-module.exports = InvalidCPFError;
+

@@ -12,4 +12,4 @@ export default class InvalidCategoryError extends Error {
   }
 }
 
-module.exports = InvalidCategoryError;
+

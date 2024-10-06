@@ -5,8 +5,9 @@ import MissingPropertyError from "../../core/common/exceptions/MissingPropertyEr
 import ResourceNotFoundError from "../../core/common/exceptions/ResourceNotFoundError";
 import ResourceAlreadyExistsError from "../../core/common/exceptions/ResourceAlreadyExistsError";
 import CustomerManagementPort from "../../core/ports/CustomerManagement";
+import InvalidAttributeError from "../../core/common/exceptions/InvalidAttributeError";
 
-export default class CustomerController  {
+export default class CustomerController {
   private useCase: CustomerManagementPort;
   private router: Router;
 
@@ -49,7 +50,8 @@ export default class CustomerController  {
       } catch (error: any) {
         if (
           error instanceof MissingPropertyError ||
-          error instanceof ResourceAlreadyExistsError
+          error instanceof ResourceAlreadyExistsError ||
+          error instanceof InvalidAttributeError
         ) {
           return res.status(400).json({ message: error.message });
         }
@@ -58,5 +60,3 @@ export default class CustomerController  {
     });
   }
 }
-
-module.exports = CustomerController;

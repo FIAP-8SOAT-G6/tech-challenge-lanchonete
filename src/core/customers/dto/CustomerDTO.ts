@@ -22,4 +22,4 @@ export default class CustomerDTO {
   }
 }
 
-module.exports = CustomerDTO;
+

@@ -137,4 +137,4 @@ export default class FakeProductRepository implements ProductRepository {
   }
 }
 
-module.exports = FakeProductRepository;
+

@@ -100,4 +100,4 @@ export default class Item {
   }
 }
 
-module.exports = Item;
+

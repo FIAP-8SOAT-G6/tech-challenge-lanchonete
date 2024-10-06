@@ -7,8 +7,10 @@ import OrderManagement from "../../core/orders/use-cases/OrderManagement";
 import CustomerController from "../../adapters/api/CustomerController";
 import CustomerManagement from "../../core/customers/use-cases/CustomerManagement";
 import SequelizeCustomerRepository from "../../adapters/database/SequelizeCustomerRepository";
+import EmailValidatorAdapter from "../../adapters/services/validators/EmailValidatorAdapter";
+import CPFValidatorAdapter from "../../adapters/services/validators/CPFValidatorAdapter";
 
-export default class ControllerFactory  {
+export default class ControllerFactory {
   static makeProductManagementController() {
     return new ProductsController(
       new ProductManagement(new SequelizeProductRepository())
@@ -19,7 +21,7 @@ export default class ControllerFactory  {
     return new OrdersController(
       new OrderManagement(
         new SequelizeOrderRepository(),
-        new SequelizeProductRepository(), 
+        new SequelizeProductRepository(),
         new SequelizeCustomerRepository()
       )
     );
@@ -27,7 +29,11 @@ export default class ControllerFactory  {
 
   static makeCustomerManagementController() {
     return new CustomerController(
-      new CustomerManagement(new SequelizeCustomerRepository())
+      new CustomerManagement(
+        new SequelizeCustomerRepository(),
+        new CPFValidatorAdapter(),
+        new EmailValidatorAdapter()
+      )
     );
   }
-};
+}

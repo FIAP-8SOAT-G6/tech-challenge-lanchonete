@@ -118,4 +118,4 @@ export default class FakeOrderRepository implements OrderRepository {
   }
 }
 
-module.exports = FakeOrderRepository;
+

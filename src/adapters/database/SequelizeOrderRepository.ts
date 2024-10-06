@@ -114,4 +114,4 @@ export default class SequelizeOrderRepository implements OrderRepository {
   }
 }
 
-module.exports = SequelizeOrderRepository;
+
