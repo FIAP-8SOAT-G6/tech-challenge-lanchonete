@@ -1,25 +1,31 @@
-const FakeProductRepository = require("../../../../adapters/database/FakeProductRepository");
-const FakeOrderRepository = require("../../../../adapters/database/FakeOrderRepository");
-const FakeCustomerRepository = require("../../../../adapters/database/FakeCustomerRepository");
+import FakeProductRepository from "../../../../adapters/database/FakeProductRepository";
+import FakeOrderRepository from "../../../../adapters/database/FakeOrderRepository";
+import FakeCustomerRepository from "../../../../adapters/database/FakeCustomerRepository";
 
-const OrderManagement = require("../../../../core/orders/use-cases/OrderManagement");
+import OrderManagement from "../../../../core/orders/use-cases/OrderManagement";
 
-const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
-const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+import chai, { expect } from "chai";
+import chaiAsPromised from "chai-as-promised";
+import { OrderStatus } from "../../../../core/orders/entities/OrderStatus";
 
-const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
-const ProductDTO = require("../../../../core/products/dto/ProductDTO");
-const ItemDTO = require("../../../../core/orders/dto/ItemDTO");
-const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
-const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
-const OrderDTO = require("../../../../core/orders/dto/OrderDTO");
+import ProductDTO from "../../../../core/products/dto/ProductDTO";
+import ItemDTO from "../../../../core/orders/dto/ItemDTO";
+import EmptyOrderError from "../../../../core/orders/exceptions/EmptyOrderError";
+import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
+import OrderDTO from "../../../../core/orders/dto/OrderDTO";
+import OrderRepository from "../../../../core/ports/OrderRepository";
+import ProductRepository from "../../../../core/ports/ProductRepository";
+import CustomerRepository from "../../../../core/ports/CustomerRepository";
 
 chai.use(chaiAsPromised);
-const expect = chai.expect;
 
-function setupUseCase(orderRepository, productRepository, customerRepository) {
+function setupUseCase(
+  orderRepository: OrderRepository,
+  productRepository: ProductRepository,
+  customerRepository: CustomerRepository
+) {
   return new OrderManagement(
     orderRepository,
     productRepository,
@@ -52,7 +58,10 @@ const CUSTOMER_DTO = new CustomerDTO({
   email: "john.doe@gmail.com"
 });
 
-let useCase, orderRepository, productRepository, customerRepository;
+let useCase: OrderManagement,
+  orderRepository: FakeOrderRepository,
+  productRepository: FakeProductRepository,
+  customerRepository: FakeCustomerRepository;
 context("OrderManagement", () => {
   beforeEach(() => {
     orderRepository = setupOrderRepository();
@@ -68,7 +77,7 @@ context("OrderManagement", () => {
   describe("create", () => {
     it("should create order with status 'CREATED'", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const createdOrder = await useCase.create(orderDTO);
       expect(createdOrder).to.not.be.undefined;
       expect(createdOrder.id).to.not.be.undefined;
@@ -99,7 +108,7 @@ context("OrderManagement", () => {
   describe("getOrders", () => {
     it("should return all orders", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       await Promise.all([useCase.create(orderDTO), useCase.create(orderDTO)]);
       const orders = await useCase.getOrders();
       expect(orders).to.not.be.undefined;
@@ -109,9 +118,9 @@ context("OrderManagement", () => {
   describe("getOrder", () => {
     it("should return requested order", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
-      const requestedOrder = await useCase.getOrder(order.id);
+      const requestedOrder = await useCase.getOrder(order.id!);
 
       expect(requestedOrder).to.not.be.undefined;
       expect(requestedOrder.id).to.be.equals(order.id);
@@ -129,25 +138,25 @@ context("OrderManagement", () => {
     it("should add item to order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
       });
 
-      const orderWithItems = await useCase.addItem(order.id, itemDTO);
+      const orderWithItems = await useCase.addItem(order.id!, itemDTO);
 
       expect(orderWithItems).to.not.be.undefined;
       expect(orderWithItems.items).to.not.be.undefined;
-      expect(orderWithItems.items.length).to.be.at.least(1);
+      expect(orderWithItems.items!.length).to.be.at.least(1);
 
-      const createdItem = orderWithItems.items[0];
+      const createdItem = orderWithItems.items![0];
       expect(createdItem.id).to.not.be.undefined;
       expect(createdItem.productId).to.be.equals(product.id);
       expect(createdItem.quantity).to.be.equals(2);
       expect(createdItem.totalPrice).to.be.equals(
-        createdItem.quantity * product.price
+        createdItem.quantity! * product.price!
       );
     });
     it("should throw error when order does not exist", async () => {
@@ -164,14 +173,14 @@ context("OrderManagement", () => {
     it("should throw error when product does not exist", async () => {
       const unexistingProductId = -1;
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: unexistingProductId,
         quantity: 2
       });
       await expect(
-        useCase.addItem(order.id, itemDTO)
+        useCase.addItem(order.id!, itemDTO)
       ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
@@ -179,45 +188,45 @@ context("OrderManagement", () => {
     it("should remove item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
       });
 
-      const orderWithItems = await useCase.addItem(order.id, itemDTO);
-      const item = orderWithItems.items[0];
+      const orderWithItems = await useCase.addItem(order.id!, itemDTO);
+      const item = orderWithItems.items![0];
 
-      await useCase.removeItem(orderWithItems.id, item.id);
+      await useCase.removeItem(orderWithItems.id!, item.id!);
 
-      const updatedOrder = await useCase.getOrder(orderWithItems.id);
-      expect(updatedOrder.items.length).to.be.equals(0);
+      const updatedOrder = await useCase.getOrder(orderWithItems.id!);
+      expect(updatedOrder.items!.length).to.be.equals(0);
     });
   });
   describe("updateItem", () => {
     it("should update item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
       });
-      const orderWithItems = await useCase.addItem(order.id, itemDTO);
+      const orderWithItems = await useCase.addItem(order.id!, itemDTO);
 
-      const item = orderWithItems.items[0];
+      const item = orderWithItems.items![0];
       const updateItemDTO = new ItemDTO({ quantity: 3 });
       const orderWithUpdatedItems = await useCase.updateItem(
-        order.id,
-        item.id,
+        order.id!,
+        item.id!,
         updateItemDTO
       );
 
-      const updatedItem = orderWithUpdatedItems.items[0];
+      const updatedItem = orderWithUpdatedItems.items![0];
       expect(updatedItem.quantity).to.be.equals(3);
-      expect(updatedItem.totalPrice).to.be.equals(3 * product.price);
+      expect(updatedItem.totalPrice).to.be.equals(3 * product.price!);
     });
     it("should throw error when order does not exist", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
@@ -233,12 +242,12 @@ context("OrderManagement", () => {
     });
     it("should throw error when item does not exist", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const unexistingItemId = -1;
       const updateItemDTO = new ItemDTO({ quantity: 3 });
       await expect(
-        useCase.updateItem(order.id, unexistingItemId, updateItemDTO)
+        useCase.updateItem(order.id!, unexistingItemId, updateItemDTO)
       ).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
@@ -246,30 +255,30 @@ context("OrderManagement", () => {
     it("should change status if order has items", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
       const itemDTO = new ItemDTO({
         productId: product.id,
         quantity: 2
       });
-      await useCase.addItem(order.id, itemDTO);
+      await useCase.addItem(order.id!, itemDTO);
 
       await expect(
-        useCase.checkout(order.id)
+        useCase.checkout(order.id!)
       ).to.not.be.eventually.rejectedWith(EmptyOrderError);
-      const updatedOrder = await useCase.getOrder(order.id);
+      const updatedOrder = await useCase.getOrder(order.id!);
 
       expect(updatedOrder.status).to.not.be.equals(OrderStatus.CREATED);
     });
     it("should not change status if order has no items", async () => {
       const customer = await customerRepository.create(CUSTOMER_DTO);
-      const orderDTO = new OrderDTO({ customerId: customer.id });
+      const orderDTO = new OrderDTO({ customerId: customer!.id });
       const order = await useCase.create(orderDTO);
 
-      await expect(useCase.checkout(order.id)).to.be.eventually.rejectedWith(
+      await expect(useCase.checkout(order.id!)).to.be.eventually.rejectedWith(
         EmptyOrderError
       );
-      const updatedOrder = await useCase.getOrder(order.id);
+      const updatedOrder = await useCase.getOrder(order.id!);
       expect(updatedOrder.status).to.be.equals(OrderStatus.CREATED);
     });
   });

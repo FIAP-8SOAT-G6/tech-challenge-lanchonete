@@ -18,20 +18,20 @@ export default class Product {
     price,
     images
   }: {
-    id: number;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    images: { url: string }[];
+    id?: number;
+    name?: string;
+    category?: string;
+    description?: string;
+    price?: number;
+    images?: { url: string }[];
   }) {
     this.id = id;
 
-    this.setName(name);
-    this.setCategory(category);
-    this.setDescription(description);
-    this.setPrice(price);
-    this.setImages(images);
+    this.setName(name!);
+    this.setCategory(category!);
+    this.setDescription(description!);
+    this.setPrice(price!);
+    this.setImages(images!);
   }
 
   getId() {
@@ -93,7 +93,7 @@ export default class Product {
       throw new MissingPropertyError("category");
     }
 
-    if (!(category in Object.keys(ProductCategory))) {
+    if (!Object.keys(ProductCategory).includes(category)) {
       throw new InvalidCategoryError(category);
     }
   }

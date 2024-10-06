@@ -7,7 +7,7 @@ export default class OrderDTO {
   public status?: string;
   public totalPrice?: number;
   public items?: ItemDTO[];
-  public customerId?: number;
+  public customerId?: number | null;
   public customerName?: string;
   public elapsedTime?: number;
   constructor({
@@ -27,7 +27,7 @@ export default class OrderDTO {
     status?: string;
     totalPrice?: number;
     items?: ItemDTO[];
-    customerId?: number;
+    customerId?: number | null;
     customerName?: string;
     elapsedTime?: number;
   }) {

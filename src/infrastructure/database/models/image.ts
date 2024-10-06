@@ -35,8 +35,3 @@ Image.init(
     tableName: "Image"
   }
 );
-
-Image.hasOne(Product, {
-  as: "Product",
-  foreignKey: "ProductId"
-});

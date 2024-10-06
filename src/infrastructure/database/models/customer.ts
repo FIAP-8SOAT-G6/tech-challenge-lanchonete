@@ -49,3 +49,4 @@ Customer.init(
 );
 
 Customer.hasMany(Order);
+Order.belongsTo(Customer);

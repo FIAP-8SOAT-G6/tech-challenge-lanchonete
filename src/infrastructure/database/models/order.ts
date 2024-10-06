@@ -57,6 +57,6 @@ Order.init(
   }
 );
 Order.hasMany(Item);
-Order.belongsTo(Customer);
+Item.belongsTo(Order);
 
 export default Order;

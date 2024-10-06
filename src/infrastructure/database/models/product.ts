@@ -4,8 +4,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
-  NonAttribute,
-  Optional
+  NonAttribute
 } from "sequelize";
 import { sequelize } from ".";
 import Image from "./image";
@@ -52,5 +51,9 @@ Product.init(
 );
 
 Product.hasMany(Image);
+Image.hasOne(Product, {
+  as: "Product",
+  foreignKey: "ProductId"
+});
 
 export default Product;

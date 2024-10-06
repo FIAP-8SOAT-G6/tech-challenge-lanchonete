@@ -1,9 +1,9 @@
-const Product = require("../../../../core/products/entities/Product");
-const ProductCategory = require("../../../../core/products/entities/ProductCategory");
-const InvalidCategoryError = require("../../../../core/products/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
+import Product from "../../../../core/products/entities/Product";
+import ProductCategory from "../../../../core/products/entities/ProductCategory";
+import InvalidCategoryError from "../../../../core/products/exceptions/InvalidCategoryError";
+import MissingPropertyError from "../../../../core/common/exceptions/MissingPropertyError";
 
-const expect = require("chai").expect;
+import { expect } from "chai";
 
 context("Product", () => {
   describe("validations", () => {
@@ -63,7 +63,7 @@ context("Product", () => {
             category: ProductCategory.Lanche,
             description: "Describing this product...",
             price: 12,
-            images: ["http://url1.com", "http://url2.com"]
+            images: [{ url: "http://url1.com" }, { url: "http://url2.com" }]
           })
       ).to.not.throw();
     });

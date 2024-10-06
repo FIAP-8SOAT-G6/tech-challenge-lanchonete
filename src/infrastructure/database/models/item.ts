@@ -44,5 +44,4 @@ Item.init(
   }
 );
 
-Item.belongsTo(Order);
 Item.belongsTo(Product);

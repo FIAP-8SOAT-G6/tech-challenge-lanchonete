@@ -31,7 +31,7 @@ export default class ProductManagement implements ProductManagementPort {
   }
 
   async findByCategory(category: string): Promise<ProductDTO[]> {
-    if (!(category in Object.keys(ProductCategory)))
+    if (!Object.keys(ProductCategory).includes(category))
       throw new InvalidCategoryError(category);
     const productDTOs = await this.productRepository.findByCategory(category);
     return productDTOs;

@@ -1,12 +1,12 @@
-const FakeCustomerRepository = require("../../../../adapters/database/FakeCustomerRepository");
-const CustomerManagement = require("../../../../core/customers/use-cases/CustomerManagement");
-const ResourceAlreadyExistsError = require("../../../../core/common/exceptions/ResourceAlreadyExistsError");
-const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
-const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
+import FakeCustomerRepository from "../../../../adapters/database/FakeCustomerRepository";
+import CustomerManagement from "../../../../core/customers/use-cases/CustomerManagement";
+import ResourceAlreadyExistsError from "../../../../core/common/exceptions/ResourceAlreadyExistsError";
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
+import MissingPropertyError from "../../../../core/common/exceptions/MissingPropertyError";
 
-const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
-const CustomerDTO = require("../../../../core/customers/dto/CustomerDTO");
+import chai from "chai";
+import chaiAsPromised from "chai-as-promised";
+import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -31,7 +31,7 @@ context("Customer Management", () => {
       );
 
       expect(customerCreated).to.not.be.undefined;
-      expect(customerCreated.id).to.be.equal(1);
+      expect(customerCreated!.id).to.be.equal(1);
     });
 
     it("should display an error message when an existing CPF is provided", async () => {
@@ -62,7 +62,7 @@ context("Customer Management", () => {
       await customerManagementUseCase.create(customerDTO);
 
       const customerFound = await customerManagementUseCase.findByCPF(
-        customerDTO.cpf
+        customerDTO.cpf!
       );
 
       expect(customerFound).to.not.be.undefined;

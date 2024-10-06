@@ -1,24 +1,24 @@
-const chai = require("chai");
-const expect = chai.expect;
+import { expect } from "chai";
 
-const Order = require("../../../../core/orders/entities/Order");
-const OrderStatus = require("../../../../core/orders/entities/OrderStatus");
+import Order from "../../../../core/orders/entities/Order";
+import { OrderStatus } from "../../../../core/orders/entities/OrderStatus";
 
-const InvalidStatusTransitionError = require("../../../../core/orders/exceptions/InvalidStatusTransitionError");
-const EmptyOrderError = require("../../../../core/orders/exceptions/EmptyOrderError");
-const ClosedOrderError = require("../../../../core/orders/exceptions/ClosedOrderError");
-const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
+import InvalidStatusTransitionError from "../../../../core/orders/exceptions/InvalidStatusTransitionError";
+import EmptyOrderError from "../../../../core/orders/exceptions/EmptyOrderError";
+import ClosedOrderError from "../../../../core/orders/exceptions/ClosedOrderError";
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
 context("Order", () => {
   describe("validations", () => {
     it("should create an order with the correct properties", function () {
       const order = new Order({
-        id: "1",
+        id: 1,
         code: "CODE123",
-        status: OrderStatus.CREATED
+        status: OrderStatus.CREATED,
+        customerId: 1
       });
 
-      expect(order.getId()).to.be.equals("1");
+      expect(order.getId()).to.be.equals(1);
       expect(order.getCode()).to.be.equals("CODE123");
       expect(order.getStatus()).to.be.equals(OrderStatus.CREATED);
       expect(Number(order.getTotalPrice())).to.be.equals(0);
@@ -30,22 +30,24 @@ context("Order", () => {
       expect(
         () =>
           new Order({
-            id: "1",
+            id: 1,
             code: "CODE123",
-            status: OrderStatus.CREATED
+            status: OrderStatus.CREATED,
+            customerId: 1
           })
       ).to.not.throw(InvalidStatusTransitionError);
     });
     it("should allow to change from status `CREATED` to `PENDING_PAYMENT` if there are items", () => {
       const order = new Order({
-        id: "1",
+        id: 1,
         code: "CODE123",
         status: OrderStatus.CREATED,
-        totalPrice: 100.0
+        totalPrice: 100.0,
+        customerId: 1
       });
       order.addItem({
-        id: "1",
-        productId: "1",
+        id: 1,
+        productId: 1,
         quantity: 1,
         unitPrice: 12.99,
         productName: "Hamburguer",
@@ -57,10 +59,11 @@ context("Order", () => {
     });
     it("should not allow to change from status `CREATED` to `PENDING_PAYMENT` if there are no items", () => {
       const order = new Order({
-        id: "1",
+        id: 1,
         code: "CODE123",
         status: OrderStatus.CREATED,
-        totalPrice: 100.0
+        totalPrice: 100,
+        customerId: 10
       });
       expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.throw(
         EmptyOrderError
@@ -68,14 +71,15 @@ context("Order", () => {
     });
     it("should not allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
       const order = new Order({
-        id: "1",
+        id: 1,
         code: "CODE123",
         status: OrderStatus.CREATED,
-        totalPrice: 100.0
+        totalPrice: 100,
+        customerId: 10
       });
       order.addItem({
-        id: "1",
-        productId: "1",
+        id: 1,
+        productId: 1,
         quantity: 1,
         unitPrice: 12.99,
         productName: "Hamburguer",
@@ -90,13 +94,14 @@ context("Order", () => {
   describe("addItem", () => {
     it("should add item to order", () => {
       const order = new Order({
-        id: "1",
+        id: 1,
         code: "CODE123",
         status: OrderStatus.CREATED,
-        totalPrice: 100.0
+        totalPrice: 100.0,
+        customerId: 1
       });
       const item = {
-        id: "item1",
+        id: 1,
         productId: 1,
         productName: "Hamburguer",
         productDescription: "Normal Hamburguer",
@@ -115,9 +120,10 @@ context("Order", () => {
         code: "CODE123",
         status: OrderStatus.PAYED,
         totalPrice: 100.0,
+        customerId: 1,
         items: [
           {
-            id: "item1",
+            id: 1,
             productId: 1,
             productName: "Hamburguer",
             productDescription: "Normal Hamburguer",
@@ -128,8 +134,8 @@ context("Order", () => {
       });
       expect(() =>
         order.addItem({
-          id: "2",
-          productId: "1",
+          id: 2,
+          productId: 1,
           quantity: 3,
           unitPrice: 12.99,
           productName: "Hamburguer",
@@ -145,9 +151,10 @@ context("Order", () => {
         code: "CODE123",
         status: OrderStatus.CREATED,
         totalPrice: 100.0,
+        customerId: 1,
         items: [
           {
-            id: "item1",
+            id: 1,
             productId: 1,
             productName: "Hamburguer",
             productDescription: "Normal Hamburguer",
@@ -161,7 +168,7 @@ context("Order", () => {
         quantity: 2
       };
 
-      const updatedItem = order.updateItem("item1", updateValues);
+      const updatedItem = order.updateItem(1, updateValues);
       expect(updatedItem.getQuantity()).to.be.equals(2);
       expect(updatedItem.getTotalPrice()).to.be.equals(
         updateValues.quantity * updatedItem.getUnitPrice()
@@ -176,7 +183,8 @@ context("Order", () => {
         code: "CODE123",
         status: OrderStatus.CREATED,
         totalPrice: 100.0,
-        items: []
+        items: [],
+        customerId: 1
       });
 
       const unexistingId = -1;
@@ -194,16 +202,19 @@ context("Order", () => {
         totalPrice: 100.0,
         items: [
           {
-            id: "item1",
+            id: 1,
             productId: 1,
             productName: "Hamburguer",
             productDescription: "Normal Hamburguer",
             unitPrice: 12.99,
             quantity: 1
           }
-        ]
+        ],
+        customerId: 1
       });
-      expect(() => order.updateItem("item1")).to.throw(ClosedOrderError);
+      expect(() => order.updateItem(1, { quantity: 0 })).to.throw(
+        ClosedOrderError
+      );
     });
   });
   describe("removeItem", () => {
@@ -215,17 +226,18 @@ context("Order", () => {
         totalPrice: 100.0,
         items: [
           {
-            id: "item1",
+            id: 1,
             productId: 1,
             productName: "Hamburguer",
             productDescription: "Normal Hamburguer",
             unitPrice: 12.99,
             quantity: 1
           }
-        ]
+        ],
+        customerId: 1
       });
 
-      order.removeItem("item1");
+      order.removeItem(1);
       expect(order.getItems().length).to.be.equals(0);
     });
     it("should throw an error when removing unexisting item", () => {
@@ -234,7 +246,8 @@ context("Order", () => {
         code: "CODE123",
         status: OrderStatus.CREATED,
         totalPrice: 100.0,
-        items: []
+        items: [],
+        customerId: 1
       });
 
       const unexistingId = -1;
@@ -251,16 +264,17 @@ context("Order", () => {
         totalPrice: 100.0,
         items: [
           {
-            id: "item1",
+            id: 1,
             productId: 1,
             productName: "Hamburguer",
             productDescription: "Normal Hamburguer",
             unitPrice: 12.99,
             quantity: 1
           }
-        ]
+        ],
+        customerId: 1
       });
-      expect(() => order.removeItem("item1")).to.throw(ClosedOrderError);
+      expect(() => order.removeItem(1)).to.throw(ClosedOrderError);
     });
   });
 });
