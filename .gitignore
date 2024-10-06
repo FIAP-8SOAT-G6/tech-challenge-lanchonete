@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 src/**/*.js
-!src/infrastructure/*.js
+!src/infrastructure/database/migrations/*.js
