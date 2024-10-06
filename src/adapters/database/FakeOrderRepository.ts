@@ -8,7 +8,7 @@ type FakeOrder = {
   code?: string;
   items: FakeItem[];
   createdAt?: Date;
-  customerId?: number;
+  customerId?: number | null;
 };
 
 type FakeItem = {

@@ -26,7 +26,7 @@ class Order extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
-  declare CustomerId: ForeignKey<Customer["id"]>;
+  declare CustomerId: ForeignKey<Customer["id"]> | null;
   declare customer?: NonAttribute<Customer>;
 
   declare items?: NonAttribute<Item[]>;
