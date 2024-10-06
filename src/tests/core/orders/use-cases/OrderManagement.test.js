@@ -293,16 +293,24 @@ context("Order Management", () => {
       expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
     });
 
-    it('should return "APPROVED" after payment is made', async () => {
-      const orderDTO = await createOrderDTO();
-      const order = await useCase.create(orderDTO);
-      await addItemToOrder(order.id);
+    //TODO - Implementar na tarefa dos webhooks
+    // it('should return "DENIED" after payment is made', async () => {
+    //   const orderDTO = await createOrderDTO();
+    //   const order = await useCase.create(orderDTO);
+    //   await addItemToOrder(order.id);
+    // });
 
-      await useCase.checkout(order.id);
+    //TODO - Implementar na tarefa dos webhooks
+    // it('should return "APPROVED" after payment is made', async () => {
+    //   const orderDTO = await createOrderDTO();
+    //   const order = await useCase.create(orderDTO);
+    //   await addItemToOrder(order.id);
 
-      const paymentStatus = await useCase.getPaymentStatus(order.id);
-      expect(paymentStatus).to.be.equals(OrderPaymentsStatus.APPROVED);
-    });
+    //   await useCase.checkout(order.id);
+
+    //   const paymentStatus = await useCase.getPaymentStatus(order.id);
+    //   expect(paymentStatus).to.be.equals(OrderPaymentsStatus.APPROVED);
+    // });
   });
 
   describe("get orders by priority", () => {

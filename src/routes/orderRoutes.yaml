@@ -367,4 +367,5 @@ components:
       description: Status do Pagamento do Pedido
       enum:
         - PENDING
+        - DENIED
         - APPROVED

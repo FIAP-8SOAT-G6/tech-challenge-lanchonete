@@ -36,6 +36,7 @@ class Order {
   #createdAt;
   #code;
   #status;
+  #paymentStatus;
   #totalPrice;
   #items;
   #customerId;
@@ -47,6 +48,7 @@ class Order {
     this.#totalPrice = 0;
     this.#items = [];
     this.#customerId = customerId;
+    this.#paymentStatus = OrderPaymentsStatus.PENDING;
     this.setStatus(status);
     this.#setItems(items);
   }
@@ -80,10 +82,7 @@ class Order {
   }
 
   getPaymentStatus() {
-    if (this.#status === OrderStatus.CREATED || this.#status === OrderStatus.PENDING_PAYMENT) {
-      return OrderPaymentsStatus.PENDING;
-    }
-    return OrderPaymentsStatus.APPROVED;
+    return this.#paymentStatus;
   }
 
   setStatus(status) {

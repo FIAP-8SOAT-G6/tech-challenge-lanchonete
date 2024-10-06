@@ -157,6 +157,7 @@ class OrderManagement {
       code: orderDTO.code,
       customerId: orderDTO.customerId,
       status: orderDTO.status,
+      paymentStatus: orderDTO.paymentStatus,
       totalPrice: orderDTO.status,
       items: orderDTO.items
     });
@@ -171,6 +172,7 @@ class OrderManagement {
       items: orderEntity.getItems().map(this.#toItemDTO),
       customerId: orderEntity.getCustomerId(),
       status: orderEntity.getStatus(),
+      paymentStatus: orderEntity.getPaymentStatus(),
       elapsedTime: orderEntity.getElapsedTime()
     });
   }

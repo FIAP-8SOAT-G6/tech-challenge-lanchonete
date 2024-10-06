@@ -16,11 +16,12 @@ module.exports = (sequelize, DataTypes) => {
   Order.init(
     {
       code: DataTypes.STRING,
-      status: DataTypes.STRING
+      status: DataTypes.STRING,
+      paymentStatus: DataTypes.STRING
     },
     {
       sequelize,
-      modelName: "Order",
+      modelName: "Order"
     }
   );
   return Order;
