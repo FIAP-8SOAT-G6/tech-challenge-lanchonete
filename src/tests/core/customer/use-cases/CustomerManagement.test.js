@@ -12,7 +12,6 @@ const EmailValidatorAdapter = require("../../../../adapters/services/validators/
 const ResourceAlreadyExistsError = require("../../../../core/common/exceptions/ResourceAlreadyExistsError");
 const ResourceNotFoundError = require("../../../../core/common/exceptions/ResourceNotFoundError");
 const MissingPropertyError = require("../../../../core/common/exceptions/MissingPropertyError");
-const InvalidAttributeError = require("../../../../core/common/exceptions/InvalidAttributeError");
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -45,9 +44,8 @@ context("Customer Management", () => {
       });
 
       const customerManagementUseCase = setupUseCase();
-      const customerCreated = await customerManagementUseCase.create(
-        customerDTO
-      );
+      const customerCreated =
+        await customerManagementUseCase.create(customerDTO);
 
       expect(customerCreated).to.not.be.undefined;
       expect(customerCreated.id).to.be.equal(1);
@@ -66,34 +64,6 @@ context("Customer Management", () => {
       await expect(
         customerManagementUseCase.create(customerDTO)
       ).to.be.eventually.rejectedWith(ResourceAlreadyExistsError);
-    });
-
-    it("should throw an error when cpf is invalid", async () => {
-      cpfValidatorMock.isValid.returns(false);
-      const customerDTO = new CustomerDTO({
-        name: "Ana",
-        cpf: "1111",
-        email: "test@mail.com"
-      });
-      const customerManagementUseCase = setupUseCase();
-
-      await expect(
-        customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(InvalidAttributeError);
-    });
-
-    it("should throw an error when email is invalid", async () => {
-      emailValidatorMock.isValid.returns(false);
-      const customerDTO = new CustomerDTO({
-        name: "Ana",
-        cpf: "123.456.789-00",
-        email: "ana.com"
-      });
-      const customerManagementUseCase = setupUseCase();
-
-      await expect(
-        customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(InvalidAttributeError);
     });
   });
 

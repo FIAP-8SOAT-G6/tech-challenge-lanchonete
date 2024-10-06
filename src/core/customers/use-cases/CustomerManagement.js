@@ -4,7 +4,6 @@ const CustomerDTO = require("../dto/CustomerDTO");
 const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
 const ResourceAlreadyExistsError = require("../../common/exceptions/ResourceAlreadyExistsError");
 const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
-const InvalidAttributeError = require("../../common/exceptions/InvalidAttributeError");
 
 class CustomerManagement {
   constructor(customerRepository, cpfValidator, emailValidator) {
@@ -16,8 +15,6 @@ class CustomerManagement {
   async create(customerDTO) {
     const customer = this.#toCustomerEntity(customerDTO);
     const cpf = customer.getCpf();
-    const email = customer.getEmail();
-    this.validateCustomerData(cpf, email);
     await this.validateCustomerExistence(cpf);
     return await this.customerRepository.create(this.#toCustomerDTO(customer));
   }
@@ -37,9 +34,8 @@ class CustomerManagement {
   }
 
   async validateCustomerExistence(cpf) {
-    const validateCustomerExistence = await this.customerRepository.findByCPF(
-      cpf
-    );
+    const validateCustomerExistence =
+      await this.customerRepository.findByCPF(cpf);
 
     if (validateCustomerExistence) {
       throw new ResourceAlreadyExistsError(
@@ -47,23 +43,6 @@ class CustomerManagement {
         "cpf",
         cpf
       );
-    }
-  }
-
-  validateCustomerData(cpf, email) {
-    this.assertCPFValidity(cpf);
-    this.assertEmailValidity(email);
-  }
-
-  assertCPFValidity(cpf) {
-    if (!this.cpfValidator.isValid(cpf)) {
-      throw new InvalidAttributeError("cpf", cpf);
-    }
-  }
-
-  assertEmailValidity(email) {
-    if (!this.emailValidator.isValid(email)) {
-      throw new InvalidAttributeError("email", email);
     }
   }
 
@@ -77,12 +56,15 @@ class CustomerManagement {
   }
 
   #toCustomerEntity(customerDTO) {
-    return new Customer({
-      id: customerDTO.id,
-      name: customerDTO.name,
-      cpf: customerDTO.cpf,
-      email: customerDTO.email
-    });
+    return new Customer(
+      {
+        id: customerDTO.id,
+        name: customerDTO.name,
+        cpf: customerDTO.cpf,
+        email: customerDTO.email
+      },
+      { cpfValidator: this.cpfValidator, emailValidator: this.emailValidator }
+    );
   }
 }
 

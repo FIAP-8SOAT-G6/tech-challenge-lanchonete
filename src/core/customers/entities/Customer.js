@@ -1,3 +1,4 @@
+const InvalidAttributeError = require("../../common/exceptions/InvalidAttributeError");
 const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
 
 class Customer {
@@ -5,9 +6,13 @@ class Customer {
   #name;
   #cpf;
   #email;
+  #cpfValidator;
+  #emailValidator;
 
-  constructor({ id, name, cpf, email }) {
+  constructor({ id, name, cpf, email }, { cpfValidator, emailValidator }) {
     this.#id = id;
+    this.#cpfValidator = cpfValidator;
+    this.#emailValidator = emailValidator;
 
     this.setName(name);
     this.setCPF(cpf);
@@ -55,11 +60,18 @@ class Customer {
     if (!cpf) {
       throw new MissingPropertyError("cpf");
     }
+    if (!this.#cpfValidator?.isValid(cpf)) {
+      throw new InvalidAttributeError("cpf", cpf);
+    }
   }
 
   #validateEmail(email) {
     if (!email) {
       throw new MissingPropertyError("email");
+    }
+
+    if (!this.#emailValidator?.isValid(email)) {
+      throw new InvalidAttributeError("email", email);
     }
   }
 }
