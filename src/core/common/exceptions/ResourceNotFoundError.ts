@@ -8,7 +8,7 @@ export default class ResourceNotFoundError extends Error {
     Order: "Order"
   };
 
-  constructor(resourceName, attributeName, attributeValue) {
+  constructor(resourceName: string, attributeName: string, attributeValue: any) {
     super(
       message
         .replace("&1", resourceName)

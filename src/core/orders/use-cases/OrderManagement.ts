@@ -65,7 +65,7 @@ export default class OrderManagement implements OrderManagementPort {
     const { productId, quantity } = itemDTO;
 
     const [productDTO, orderDTO] = await Promise.all([
-      this.productRepository.findById(productId),
+      this.productRepository.findById(productId!),
       this.orderRepository.findById(orderId)
     ]);
 
@@ -85,7 +85,7 @@ export default class OrderManagement implements OrderManagementPort {
     const order = this.#toOrderEntity(orderDTO);
     const item = order.addItem({
       productId: productDTO.id!,
-      quantity,
+      quantity: quantity!,
       unitPrice: productDTO.price!
     });
 
@@ -121,8 +121,8 @@ export default class OrderManagement implements OrderManagementPort {
         orderId
       );
     const order = this.#toOrderEntity(orderDTO);
-
-    const updatedItem = order.updateItem(itemId, itemDTO);
+    const quantity = itemDTO.quantity!;
+    const updatedItem = order.updateItem(itemId, { quantity });
     await this.orderRepository.updateItem(itemId, this.#toItemDTO(updatedItem));
 
     const updatedOrderDTO = await this.orderRepository.findById(orderId);

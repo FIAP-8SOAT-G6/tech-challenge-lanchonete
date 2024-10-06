@@ -1,14 +1,18 @@
-const { Router } = require("express");
+import { Router } from "express";
 
-const ProductDTO = require("../../core/products/dto/ProductDTO");
+import ProductDTO from "../../core/products/dto/ProductDTO";
 
-const InvalidCategoryError = require("../../core/products/exceptions/InvalidCategoryError");
-const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
-const ResourceNotFoundError = require("../../core/common/exceptions/ResourceNotFoundError");
+import InvalidCategoryError from "../../core/products/exceptions/InvalidCategoryError";
+import MissingPropertyError from "../../core/common/exceptions/MissingPropertyError";
+import ResourceNotFoundError from "../../core/common/exceptions/ResourceNotFoundError";
+import ProductManagementPort from "../../core/ports/ProductManagement";
 
-class ProductsController {
-  constructor(productManagementUseCase) {
-    this.router = new Router();
+export default class ProductsController {
+  private router: Router;
+  private useCase: ProductManagementPort;
+
+  constructor(productManagementUseCase: ProductManagementPort) {
+    this.router = Router();
     this.useCase = productManagementUseCase;
 
     this.initializeRoutes();
@@ -23,17 +27,17 @@ class ProductsController {
       try {
         const products = await this.useCase.findAll();
         return res.status(200).json(products);
-      } catch (error) {
+      } catch (error: any) {
         return res.status(500).json({ message: error.message });
       }
     });
 
     this.router.get("/products/:id", async (req, res) => {
       try {
-        const id = req.params.id;
+        const id = Number(req.params.id);
         const products = await this.useCase.findById(id);
         return res.status(200).json(products);
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
@@ -53,7 +57,7 @@ class ProductsController {
         });
         const product = await this.useCase.create(productDTO);
         return res.status(201).json(product);
-      } catch (error) {
+      } catch (error: any) {
         if (
           error instanceof MissingPropertyError ||
           error instanceof InvalidCategoryError
@@ -66,7 +70,7 @@ class ProductsController {
 
     this.router.put("/products/:id", async (req, res) => {
       try {
-        const id = req.params.id;
+        const id = Number(req.params.id);
         const { name, description, category, price, images } = req.body;
         const productDTO = new ProductDTO({
           id,
@@ -78,7 +82,7 @@ class ProductsController {
         });
         const product = await this.useCase.update(productDTO);
         return res.status(201).json(product);
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
@@ -94,10 +98,10 @@ class ProductsController {
 
     this.router.delete("/products/:id", async (req, res) => {
       try {
-        const id = req.params.id;
+        const id = Number(req.params.id);
         await this.useCase.delete(id);
         return res.status(204).json({});
-      } catch (error) {
+      } catch (error: any) {
         return res.status(500).json({ message: error.message });
       }
     });
@@ -107,7 +111,7 @@ class ProductsController {
         const category = req.params.category;
         const products = await this.useCase.findByCategory(category);
         return res.status(200).json(products);
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof InvalidCategoryError) {
           return res.status(400).json({ message: error.message });
         }

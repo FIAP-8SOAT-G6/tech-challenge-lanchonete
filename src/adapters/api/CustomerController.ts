@@ -1,13 +1,17 @@
-const { Router } = require("express");
-const CustomerDTO = require("../../core/customers/dto/CustomerDTO");
+import { Router } from "express";
+import CustomerDTO from "../../core/customers/dto/CustomerDTO";
 
-const MissingPropertyError = require("../../core/common/exceptions/MissingPropertyError");
-const ResourceNotFoundError = require("../../core/common/exceptions/ResourceNotFoundError");
-const ResourceAlreadyExistsError = require("../../core/common/exceptions/ResourceAlreadyExistsError");
+import MissingPropertyError from "../../core/common/exceptions/MissingPropertyError";
+import ResourceNotFoundError from "../../core/common/exceptions/ResourceNotFoundError";
+import ResourceAlreadyExistsError from "../../core/common/exceptions/ResourceAlreadyExistsError";
+import CustomerManagementPort from "../../core/ports/CustomerManagement";
 
-class CustomerController {
-  constructor(customerManagementUseCase) {
-    this.router = new Router();
+export default class CustomerController  {
+  private useCase: CustomerManagementPort;
+  private router: Router;
+
+  constructor(customerManagementUseCase: CustomerManagementPort) {
+    this.router = Router();
     this.useCase = customerManagementUseCase;
 
     this.initializeRoutes();
@@ -23,7 +27,7 @@ class CustomerController {
         const cpf = req.params.cpf;
         const customerFound = await this.useCase.findByCPF(cpf);
         return res.status(200).json(customerFound);
-      } catch (error) {
+      } catch (error: any) {
         if (error instanceof ResourceNotFoundError) {
           return res.status(404).json({ message: error.message });
         }
@@ -42,7 +46,7 @@ class CustomerController {
         const customerCreated = await this.useCase.create(customerDTO);
 
         return res.status(201).json(customerCreated);
-      } catch (error) {
+      } catch (error: any) {
         if (
           error instanceof MissingPropertyError ||
           error instanceof ResourceAlreadyExistsError

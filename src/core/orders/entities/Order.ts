@@ -199,10 +199,10 @@ export default class Order {
     } = itemDTO;
     const item = new Item({
       id,
-      productId,
+      productId: productId!,
       orderId: this.id!,
-      quantity,
-      unitPrice,
+      quantity: quantity!,
+      unitPrice: unitPrice!,
       productName,
       productDescription
     });

@@ -1,12 +1,12 @@
 export default class ItemDTO {
   public id?: number;
-  public orderId: number;
-  public productId: number;
+  public orderId?: number;
+  public productId?: number;
   public productName?: string;
   public productDescription?: string;
-  public quantity: number;
-  public unitPrice: number;
-  public totalPrice: number;
+  public quantity?: number;
+  public unitPrice?: number;
+  public totalPrice?: number;
 
   constructor({
     id,
@@ -19,13 +19,13 @@ export default class ItemDTO {
     totalPrice
   }: {
     id?: number;
-    orderId: number;
-    productId: number;
+    orderId?: number;
+    productId?: number;
     productName?: string;
     productDescription?: string;
-    quantity: number;
-    unitPrice: number;
-    totalPrice: number;
+    quantity?: number;
+    unitPrice?: number;
+    totalPrice?: number;
   }) {
     this.id = id;
     this.orderId = orderId;

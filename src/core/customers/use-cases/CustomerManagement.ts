@@ -5,8 +5,9 @@ import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError
 import ResourceAlreadyExistsError from "../../common/exceptions/ResourceAlreadyExistsError";
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
 import CustomerRepository from "../../ports/CustomerRepository";
+import CustomerManagementPort from "../../ports/CustomerManagement";
 
-export default class CustomerManagement {
+export default class CustomerManagement implements CustomerManagementPort {
   constructor(private customerRepository: CustomerRepository) {}
 
   async create(customerDTO: CustomerDTO) {
