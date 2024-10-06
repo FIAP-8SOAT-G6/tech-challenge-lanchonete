@@ -1,22 +1,21 @@
-const Customer = require("../entities/Customer");
-const CustomerDTO = require("../dto/CustomerDTO");
+import Customer from "../entities/Customer";
+import CustomerDTO from "../dto/CustomerDTO";
 
-const ResourceNotFoundError = require("../../common/exceptions/ResourceNotFoundError");
-const ResourceAlreadyExistsError = require("../../common/exceptions/ResourceAlreadyExistsError");
-const MissingPropertyError = require("../../common/exceptions/MissingPropertyError");
+import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
+import ResourceAlreadyExistsError from "../../common/exceptions/ResourceAlreadyExistsError";
+import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
+import CustomerRepository from "../../ports/CustomerRepository";
 
-class CustomerManagement {
-  constructor(customerRepository) {
-    this.customerRepository = customerRepository;
-  }
+export default class CustomerManagement {
+  constructor(private customerRepository: CustomerRepository) {}
 
-  async create(customerDTO) {
+  async create(customerDTO: CustomerDTO) {
     const customer = this.#toCustomerEntity(customerDTO);
     await this.validateCustomerExistence(customer.getCpf());
     return await this.customerRepository.create(this.#toCustomerDTO(customer));
   }
 
-  async findByCPF(cpf) {
+  async findByCPF(cpf: string) {
     if (!cpf) throw new MissingPropertyError("cpf");
 
     const customer = await this.customerRepository.findByCPF(cpf);
@@ -30,7 +29,7 @@ class CustomerManagement {
     return customer;
   }
 
-  async validateCustomerExistence(cpf) {
+  async validateCustomerExistence(cpf: string) {
     const validateCustomerExistence = await this.customerRepository.findByCPF(
       cpf
     );
@@ -44,7 +43,7 @@ class CustomerManagement {
     }
   }
 
-  #toCustomerDTO(customerEntity) {
+  #toCustomerDTO(customerEntity: Customer) {
     return new CustomerDTO({
       id: customerEntity.getId(),
       name: customerEntity.getName(),
@@ -53,12 +52,12 @@ class CustomerManagement {
     });
   }
 
-  #toCustomerEntity(customerDTO) {
+  #toCustomerEntity(customerDTO: CustomerDTO) {
     return new Customer({
-      id: customerDTO.id,
-      name: customerDTO.name,
-      cpf: customerDTO.cpf,
-      email: customerDTO.email
+      id: customerDTO.id!,
+      name: customerDTO.name!,
+      cpf: customerDTO.cpf!,
+      email: customerDTO.email!
     });
   }
 }
