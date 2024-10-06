@@ -1,18 +1,17 @@
-
-## 1. Objetivo 
+## 1. O que essa Pull Request faz?
 
 > Descrever o objetivo do PR
-
 
 ### Antes e depois
 
 > Adicionar imagens se necessário
 
+## 2. Como testar?
 
-## 2. Testes
+- [ ] Teste os endpoints
+- [ ] Execute os testes unitários
 
-> Descreber os cenários de teste
-
+Execute npm run build e npm run test
 
 ## 3. Importante e observações
 
