@@ -55,7 +55,7 @@ export default class ProductManagement implements ProductManagementPort {
     product.setImages(productDTO.images!);
 
     const updatedProductDTO = this.#toProductDTO(product);
-    return await this.productRepository.update(updatedProductDTO);
+    return (await this.productRepository.update(updatedProductDTO))!;
   }
 
   async delete(id: number): Promise<undefined> {

@@ -1,12 +1,13 @@
 import ProductDTO from "../../core/products/dto/ProductDTO";
-import { sequelize } from "../../infrastructure/database/models";
 import ProductRepository from "../../core/ports/ProductRepository";
 
-const { Product: SequelizeProduct, Image: SequelizeImage } = sequelize.models;
+import SequelizeProduct from "../../infrastructure/database/models/product";
+import SequelizeImage from "../../infrastructure/database/models/image";
 
 export default class SequelizeProductRepository implements ProductRepository {
   async create(productDTO: ProductDTO): Promise<ProductDTO> {
-    const { name, category, description, price, images } = productDTO;
+    const { name, category, description, price, images } =
+      productDTO as Required<ProductDTO>;
     const createdProduct = await SequelizeProduct.create({
       name,
       category,
@@ -16,7 +17,6 @@ export default class SequelizeProductRepository implements ProductRepository {
 
     createdProduct.images = await this.#addImages({
       productId: createdProduct.id,
-      images
     });
 
     return this.#createProductDTO(createdProduct);
@@ -30,7 +30,7 @@ export default class SequelizeProductRepository implements ProductRepository {
   async findById(id: number): Promise<ProductDTO | undefined> {
     const product = await SequelizeProduct.findByPk(id);
     const images = await this.#findImagesByProductId(id);
-    if (images?.length > 0) product.images = images;
+    if (product && images?.length > 0) product.images = images;
     return product ? this.#createProductDTO(product) : undefined;
   }
 
@@ -53,30 +53,31 @@ export default class SequelizeProductRepository implements ProductRepository {
     );
   }
 
-  async #findImagesByProductId(productId: number): Promise<string[]> {
+  async #findImagesByProductId(productId: number): Promise<SequelizeImage[]> {
     const images = await SequelizeImage.findAll({
       where: { ProductId: productId }
     });
     return images;
   }
 
-  async update(productDTO: ProductDTO): Promise<ProductDTO> {
+  async update(productDTO: ProductDTO): Promise<ProductDTO | undefined> {
     const dbProduct = await SequelizeProduct.findByPk(productDTO.id);
-    const updatedProduct = await dbProduct.update({
-      name: productDTO.name,
-      category: productDTO.category,
-      description: productDTO.description,
-      price: productDTO.price
-    });
+    if (dbProduct) {
+      const updatedProduct = await dbProduct.update({
+        name: productDTO.name,
+        category: productDTO.category,
+        description: productDTO.description,
+        price: productDTO.price
+      });
 
-    await this.#deleteImages(productDTO.id!);
+      await this.#deleteImages(productDTO.id!);
 
-    updatedProduct.images = await this.#addImages({
-      productId: productDTO.id!,
-      images: productDTO?.images
-    });
-
-    return this.#createProductDTO(updatedProduct);
+      updatedProduct.images = await this.#addImages({
+        productId: productDTO.id!,
+        images: productDTO?.images
+      });
+      return this.#createProductDTO(updatedProduct);
+    }
   }
 
   async delete(id: number) {
@@ -92,7 +93,7 @@ export default class SequelizeProductRepository implements ProductRepository {
   }: {
     productId: number;
     images?: { url: string }[];
-  }): Promise<string | undefined> {
+  }): Promise<SequelizeImage[] | undefined> {
     if (!images) return;
 
     const newImages = await Promise.all(

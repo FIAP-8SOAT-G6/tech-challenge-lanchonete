@@ -1,18 +1,15 @@
 import ItemDTO from "../../core/orders/dto/ItemDTO";
 import OrderDTO from "../../core/orders/dto/OrderDTO";
 import OrderRepository from "../../core/ports/OrderRepository";
-import { sequelize } from "../../infrastructure/database/models";
 
-const {
-  Order: SequelizeOrder,
-  Item: SequelizeItem,
-  Product: SequelizeProduct,
-  Customer: SequelizeCustomer
-} = sequelize.models;
+import SequelizeOrder from "../../infrastructure/database/models/order";
+import SequelizeItem from "../../infrastructure/database/models/item";
+import SequelizeProduct from "../../infrastructure/database/models/product";
+import SequelizeCustomer from "../../infrastructure/database/models/customer";
 
 export default class SequelizeOrderRepository implements OrderRepository {
   async create(orderDTO: OrderDTO): Promise<OrderDTO> {
-    const { status, code, customerId } = orderDTO;
+    const { status, code, customerId } = orderDTO as Required<OrderDTO>;
     const createdOrder = await SequelizeOrder.create({
       status,
       code,
@@ -64,31 +61,31 @@ export default class SequelizeOrderRepository implements OrderRepository {
       unitPrice,
       totalPrice
     } = itemDTO;
-    await orderModel.createItem({
-      id,
-      OrderId,
+    await orderModel!.createItem({
       ProductId,
-      quantity,
-      unitPrice,
-      totalPrice
+      quantity: quantity!,
+      unitPrice: unitPrice!,
+      totalPrice: totalPrice!
     });
   }
 
   async removeItem(orderId: number, itemId: number) {
     const order = await SequelizeOrder.findByPk(orderId);
-    await order.removeItem(itemId);
+    if (order) await order.removeItem(itemId);
   }
 
   async updateItem(itemId: number, itemDTO: ItemDTO) {
-    const item = await SequelizeItem.findByPk(itemId);
-    await item.update(itemDTO);
+    const item = await SequelizeItem.findByPk(itemId)!;
+    if (item) await item.update(itemDTO);
   }
 
-  async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
+  async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO | undefined> {
     const { id, code, status } = orderDTO;
-    const order = await SequelizeOrder.findByPk(id);
-    const updatedOrder = order.update({ code, status });
-    return this.#createOrderDTO(updatedOrder);
+    const order = await SequelizeOrder.findByPk(id)!;
+    if (order) {
+      const updatedOrder = order.update({ code, status });
+      return this.#createOrderDTO(updatedOrder);
+    }
   }
 
   #createOrderDTO(databaseOrder: any) {

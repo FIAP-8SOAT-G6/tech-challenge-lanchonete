@@ -8,5 +8,5 @@ export default interface OrderRepository {
   createItem(order: OrderDTO, itemDTO: ItemDTO): Promise;
   removeItem(orderId: number, itemId: number): Promise;
   updateItem(itemId: number, itemDTO: ItemDTO): Promise;
-  updateOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
+  updateOrder(orderDTO: OrderDTO): Promise<OrderDTO | undefined>;
 }

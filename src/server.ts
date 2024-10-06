@@ -1,6 +1,6 @@
-const express = require("express");
-const { swaggerUi, swaggerDocs } = require("./infrastructure/config/swagger");
-const ControllerFactory = require("./infrastructure/factories/ControllerFactory");
+import express from "express";
+import { swaggerUi, swaggerDocs } from "./infrastructure/config/swagger";
+import ControllerFactory from "./infrastructure/factories/ControllerFactory";
 
 
 const app = express();
@@ -19,4 +19,4 @@ app.get('/', (req, res) => {
   res.redirect('/api-docs');
 });
 
-module.exports = app;
+export default app;

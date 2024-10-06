@@ -9,7 +9,7 @@ export default interface ProductRepository {
 
   findByCategory(category: string): Promise<ProductDTO[]>;
 
-  update(productDTO: ProductDTO): Promise<ProductDTO>;
+  update(productDTO: ProductDTO): Promise<ProductDTO | undefined>;
 
   delete(id: number);
 }

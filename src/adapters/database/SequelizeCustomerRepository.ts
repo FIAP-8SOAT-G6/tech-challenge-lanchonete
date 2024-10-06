@@ -1,12 +1,11 @@
 import CustomerDTO from "../../core/customers/dto/CustomerDTO";
 import CustomerRepository from "../../core/ports/CustomerRepository";
-import { sequelize } from "../../infrastructure/database/models";
+import SequelizeCustomer  from "../../infrastructure/database/models/customer";
 
-const { Customer: SequelizeCustomer } = sequelize.models;
 
 export default class SequelizeCustomerRepository implements CustomerRepository {
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO | undefined> {
-    const { name, cpf, email } = customerDTO;
+    const { name, cpf, email } = customerDTO as Required<CustomerDTO>;
     const newCustomer = await SequelizeCustomer.create({
       name,
       cpf,

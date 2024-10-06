@@ -1,5 +1,5 @@
-const { sequelize } = require("./infrastructure/database/models");
-const app = require("./server");
+import { sequelize } from "./infrastructure/database/models";
+import app from "./server";
 const PORT_SERVER = process.env.PORT_SERVER || 3000;
 
 async function init() {
