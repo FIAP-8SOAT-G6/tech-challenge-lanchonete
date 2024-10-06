@@ -11,6 +11,8 @@ context("Product", () => {
       expect(
         () =>
           new Product({
+            name: undefined as unknown as string,
+            description: "Random description",
             category: ProductCategory.Lanche,
             price: 10
           })
@@ -21,6 +23,8 @@ context("Product", () => {
         () =>
           new Product({
             name: "Naming this product",
+            description: "Random description",
+            category: undefined as unknown as string,
             price: 10
           })
       ).to.throw(new MissingPropertyError("category").message);
@@ -30,6 +34,7 @@ context("Product", () => {
         () =>
           new Product({
             name: "Naming this product",
+            description: "Random description",
             category: ProductCategory.Lanche,
             price: 0
           })
@@ -40,6 +45,7 @@ context("Product", () => {
         () =>
           new Product({
             name: "Naming this product",
+            description: "Random description",
             category: ProductCategory.Lanche,
             price: -10
           })
@@ -50,6 +56,7 @@ context("Product", () => {
         () =>
           new Product({
             name: "Product1",
+            description: "Random description",
             category: "INVALID CATEGORY",
             price: 12
           })

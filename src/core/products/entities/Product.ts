@@ -19,10 +19,10 @@ export default class Product {
     images
   }: {
     id?: number;
-    name?: string;
-    category?: string;
-    description?: string;
-    price?: number;
+    name: string;
+    category: string;
+    description: string;
+    price: number;
     images?: { url: string }[];
   }) {
     this.id = id;
