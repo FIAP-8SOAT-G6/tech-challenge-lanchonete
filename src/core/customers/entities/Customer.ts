@@ -1,14 +1,14 @@
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
 
 type CustomerParams = {
-  id: number;
+  id?: number;
   name: string;
   cpf: string;
   email: string;
 }
 
 export default class Customer {
-  private id!: number;
+  private id!: number | undefined;
   private name!: string;
   private cpf!: string;
   private email!: string;

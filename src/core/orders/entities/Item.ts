@@ -1,5 +1,15 @@
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
 
+export type ItemParams = {
+  id?: number;
+  orderId: number;
+  productId: number;
+  productName?: string;
+  productDescription?: string;
+  quantity: number;
+  unitPrice: number;
+};
+
 export default class Item {
   private id!: number | undefined;
   private orderId!: number;
@@ -18,15 +28,7 @@ export default class Item {
     productDescription,
     quantity,
     unitPrice
-  }: {
-    id?: number;
-    orderId: number;
-    productId: number;
-    productName?: string;
-    productDescription?: string;
-    quantity: number;
-    unitPrice: number;
-  }) {
+  }: ItemParams) {
     this.id = id;
     this.orderId = orderId;
     this.productId = productId;
@@ -99,5 +101,3 @@ export default class Item {
     };
   }
 }
-
-

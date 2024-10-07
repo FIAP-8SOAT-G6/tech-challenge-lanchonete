@@ -31,6 +31,16 @@ const statusTransitionValidator = {
   [OrderStatus.FINISHED]: function (order: Order) {}
 };
 
+type OrderParams = {
+  id?: number;
+  createdAt?: Date;
+  code: string;
+  status: string;
+  totalPrice?: number;
+  items?: ItemDTO[];
+  customerId: number;
+};
+
 export default class Order {
   private id!: number | undefined;
   private createdAt!: Date | undefined;
@@ -47,15 +57,7 @@ export default class Order {
     status,
     customerId,
     items = []
-  }: {
-    id?: number;
-    createdAt?: Date;
-    code: string;
-    status: string;
-    totalPrice?: number;
-    items?: ItemDTO[];
-    customerId: number;
-  }) {
+  }: OrderParams) {
     this.id = id;
     this.createdAt = createdAt;
     this.code = code;

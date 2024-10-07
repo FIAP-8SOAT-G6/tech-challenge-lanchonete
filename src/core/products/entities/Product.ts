@@ -2,6 +2,15 @@ import InvalidCategoryError from "../exceptions/InvalidCategoryError";
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
 import ProductCategory from "./ProductCategory";
 
+type ProductParams = {
+  id?: number;
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  images?: { url: string }[];
+};
+
 export default class Product {
   private id?: number;
   private name!: string;
@@ -17,14 +26,7 @@ export default class Product {
     description,
     price,
     images
-  }: {
-    id?: number;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    images?: { url: string }[];
-  }) {
+  }: ProductParams) {
     this.id = id;
 
     this.setName(name!);
