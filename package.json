@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon --legacy-watch src/index.js",
-    "test": "mocha 'src/tests/**/*.js' --recursive",
+    "dev": "nodemon",
+    "test": "mocha --configs=.mocharc.json 'src/tests/' --recursive",
+    "build": "tsc -p tsconfig.json",
     "coverage": "nyc --reporter=text npm run test",
     "docker-compose:up:dev": "docker-compose -f docker-compose.dev.yml up --build",
     "docker-compose:down:dev": "docker-compose -f docker-compose.dev.yml down"
@@ -19,10 +20,12 @@
     "express": "^4.19.2",
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
+    "sequelize-typescript": "^2.1.6",
     "sinon": "^19.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "tech-challenge-lanchonete": "file:",
+    "typescript": "^5.6.2",
     "validator": "^13.12.0"
   },
   "devDependencies": {
@@ -32,6 +35,10 @@
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.7",
     "@types/sequelize": "^4.28.20",
+    "@types/sinon": "^17.0.3",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "chai": "^4",
     "chai-as-promised": "^7.0.0",
     "eslint": "^9.8.0",
@@ -40,6 +47,7 @@
     "nodemon": "^3.1.4",
     "nyc": "^17.0.0",
     "sequelize-cli": "^6.6.2",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "ts-node": "^10.9.2"
   }
 }
