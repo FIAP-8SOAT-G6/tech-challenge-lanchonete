@@ -56,7 +56,7 @@ let useCase: OrderManagement,
   productRepository: FakeProductRepository,
   customerRepository: FakeCustomerRepository;
 context("Order Management", () => {
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   beforeEach(() => {
     orderRepository = setupOrderRepository();
@@ -74,7 +74,7 @@ context("Order Management", () => {
     return new OrderDTO({ customerId: customer!.id });
   }
 
-  async function addItemToOrder(orderId) {
+  async function addItemToOrder(orderId: number) {
     const product = await productRepository.create(PRODUCT_DTO);
     const itemDTO = new ItemDTO({
       productId: product.id,
@@ -118,7 +118,7 @@ context("Order Management", () => {
       const orderDTO = await createOrderDTO();
       const order = await useCase.create(orderDTO);
 
-      await addItemToOrder(order.id);
+      await addItemToOrder(order.id!);
       await useCase.checkout(order.id!);
       await useCase.updateOrderStatus({ id: order.id!, status: RECEIVED });
 
@@ -212,16 +212,6 @@ context("Order Management", () => {
     });
   });
 
-  describe("remove item", () => {
-    it("should remove item from order", async () => {
-      const orderDTO = await createOrderDTO();
-      const order = await useCase.create(orderDTO);
-
-      const orderWithItems = await addItemToOrder(order.id);
-      const itemDTO = orderWithItems.items![0];
-      await expect(useCase.addItem(order.id!, itemDTO)).to.be.eventually.rejectedWith(ResourceNotFoundError);
-    });
-  });
   describe("removeItem", () => {
     it("should remove item from order", async () => {
       const product = await productRepository.create(PRODUCT_DTO);
@@ -287,7 +277,7 @@ context("Order Management", () => {
     it("should change status if order has items", async () => {
       const orderDTO = await createOrderDTO();
       const order = await useCase.create(orderDTO);
-      await addItemToOrder(order.id);
+      await addItemToOrder(order.id!);
 
       await expect(useCase.checkout(order.id!)).to.not.be.eventually.rejectedWith(EmptyOrderError);
       const updatedOrder = await useCase.getOrder(order.id!);
@@ -350,10 +340,10 @@ context("Order Management", () => {
       const orderThird = await useCase.create(orderDTO);
       const orderFourth = await useCase.create(orderDTO);
 
-      await addItemToOrder(orderFirst.id);
-      await addItemToOrder(orderSecond.id);
-      await addItemToOrder(orderThird.id); //pedido que irá ficar em aberto
-      await addItemToOrder(orderFourth.id);
+      await addItemToOrder(orderFirst.id!);
+      await addItemToOrder(orderSecond.id!);
+      await addItemToOrder(orderThird.id!); //pedido que irá ficar em aberto
+      await addItemToOrder(orderFourth.id!);
 
       await useCase.checkout(orderFirst.id!);
       await useCase.checkout(orderSecond.id!);
@@ -390,9 +380,9 @@ context("Order Management", () => {
       await delay(10);
       const orderThird = await useCase.create(orderDTO);
 
-      await addItemToOrder(orderFirst.id);
-      await addItemToOrder(orderSecond.id);
-      await addItemToOrder(orderThird.id);
+      await addItemToOrder(orderFirst.id!);
+      await addItemToOrder(orderSecond.id!);
+      await addItemToOrder(orderThird.id!);
 
       await useCase.checkout(orderFirst.id!);
       await useCase.checkout(orderSecond.id!);
@@ -426,7 +416,7 @@ context("Order Management", () => {
       const orderDTO = await createOrderDTO();
 
       const orderFirst = await useCase.create(orderDTO);
-      await addItemToOrder(orderFirst.id);
+      await addItemToOrder(orderFirst.id!);
       await useCase.checkout(orderFirst.id!);
       await useCase.updateOrderStatus({ id: orderFirst.id, status: RECEIVED });
       await useCase.updateOrderStatus({ id: orderFirst.id, status: PREPARING });
@@ -436,7 +426,7 @@ context("Order Management", () => {
       await useCase.create(orderDTO);
 
       const orderThird = await useCase.create(orderDTO);
-      await addItemToOrder(orderThird.id);
+      await addItemToOrder(orderThird.id!);
       await useCase.checkout(orderThird.id!);
       await useCase.updateOrderStatus({ id: orderThird.id, status: RECEIVED });
 

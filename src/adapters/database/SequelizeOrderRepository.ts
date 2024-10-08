@@ -9,11 +9,12 @@ import SequelizeCustomer from "../../infrastructure/database/models/customer";
 
 export default class SequelizeOrderRepository implements OrderRepository {
   async create(orderDTO: OrderDTO): Promise<OrderDTO> {
-    const { status, code, customerId } = orderDTO as Required<OrderDTO>;
+    const { status, code, customerId, paymentStatus } = orderDTO as Required<OrderDTO>;
     const createdOrder = await SequelizeOrder.create({
       status,
       code,
-      CustomerId: customerId
+      CustomerId: customerId,
+      paymentStatus
     });
 
     return this.#createOrderDTO(createdOrder);

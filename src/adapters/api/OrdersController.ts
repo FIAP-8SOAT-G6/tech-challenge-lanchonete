@@ -39,7 +39,7 @@ export default class OrdersController {
       try {
         const order = await this.useCase.getOrdersByPriority();
         return res.status(200).json(order);
-      } catch (error) {
+      } catch (error: any) {
         return res.status(500).json({ error: error.message });
       }
     });

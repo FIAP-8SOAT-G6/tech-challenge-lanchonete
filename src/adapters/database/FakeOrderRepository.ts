@@ -62,7 +62,7 @@ export default class FakeOrderRepository implements OrderRepository {
         ...order,
         items: this.items.filter((item) => item.OrderId === order.id)
       }))
-      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+      .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
 
     return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
