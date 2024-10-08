@@ -10,6 +10,7 @@ export default class OrderDTO {
   public customerId?: number | null;
   public customerName?: string;
   public elapsedTime?: number;
+  public paymentStatus?: string;
   constructor({
     id,
     createdAt,
@@ -19,7 +20,8 @@ export default class OrderDTO {
     items,
     customerId,
     customerName,
-    elapsedTime
+    elapsedTime,
+    paymentStatus
   }: {
     id?: number;
     createdAt?: Date;
@@ -30,6 +32,7 @@ export default class OrderDTO {
     customerId?: number | null;
     customerName?: string;
     elapsedTime?: number;
+    paymentStatus?: string;
   }) {
     this.id = id;
     this.createdAt = createdAt;
@@ -40,7 +43,6 @@ export default class OrderDTO {
     this.customerId = customerId;
     this.customerName = customerName;
     this.elapsedTime = elapsedTime;
+    this.paymentStatus = paymentStatus;
   }
 }
-
-

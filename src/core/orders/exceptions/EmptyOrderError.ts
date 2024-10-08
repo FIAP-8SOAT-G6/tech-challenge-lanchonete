@@ -5,5 +5,3 @@ export default class EmptyOrderError extends Error {
     super(message);
   }
 }
-
-

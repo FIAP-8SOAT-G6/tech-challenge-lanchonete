@@ -5,5 +5,3 @@ export default class InvalidCPFError extends Error {
     super(message.replace("&1", cpf));
   }
 }
-
-

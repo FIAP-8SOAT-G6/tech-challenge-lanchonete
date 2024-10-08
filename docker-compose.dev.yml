@@ -1,5 +1,4 @@
 services:
-
   lanchonete-db:
     image: postgres:latest
     container_name: lanchonete_postgres
@@ -16,7 +15,7 @@ services:
       - fiap
     expose:
       - ${CONTAINER_PORT_DB}
-      
+
   lanchonete-node:
     build:
       context: .

@@ -11,8 +11,7 @@ const swaggerOptions = {
     info: {
       title: "Tech challenge lanchonete",
       version: "1.0.0",
-      description:
-        "Documentação criada como requesito da primeira fase do tech challenge - Software Architecture",
+      description: "Documentação criada como requesito da primeira fase do tech challenge - Software Architecture",
       contact: {
         name: "GitHub",
         url: "https://github.com/FIAP-8SOAT-G6/tech-challenge-lanchonete"

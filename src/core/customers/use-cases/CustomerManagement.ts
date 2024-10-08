@@ -30,27 +30,16 @@ export default class CustomerManagement implements CustomerManagementPort {
     if (!cpf) throw new MissingPropertyError("cpf");
 
     const customer = await this.customerRepository.findByCPF(cpf);
-    if (!customer)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Customer,
-        "cpf",
-        cpf
-      );
+    if (!customer) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "cpf", cpf);
 
     return customer;
   }
 
   async validateCustomerExistence(cpf: string) {
-    const validateCustomerExistence = await this.customerRepository.findByCPF(
-      cpf
-    );
+    const validateCustomerExistence = await this.customerRepository.findByCPF(cpf);
 
     if (validateCustomerExistence) {
-      throw new ResourceAlreadyExistsError(
-        ResourceAlreadyExistsError.Resources.Customer,
-        "cpf",
-        cpf
-      );
+      throw new ResourceAlreadyExistsError(ResourceAlreadyExistsError.Resources.Customer, "cpf", cpf);
     }
   }
 

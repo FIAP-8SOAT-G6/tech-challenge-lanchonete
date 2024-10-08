@@ -16,13 +16,11 @@ import { sequelize } from ".";
 import Customer from "./customer";
 import Item from "./item";
 
-class Order extends Model<
-  InferAttributes<Order, { omit: "items" }>,
-  InferCreationAttributes<Order, { omit: "items" }>
-> {
+class Order extends Model<InferAttributes<Order, { omit: "items" }>, InferCreationAttributes<Order, { omit: "items" }>> {
   declare id: CreationOptional<number>;
   declare code: string;
   declare status: string;
+  declare paymentStatus: string;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -48,6 +46,7 @@ Order.init(
     },
     code: DataTypes.STRING,
     status: DataTypes.STRING,
+    paymentStatus: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   },

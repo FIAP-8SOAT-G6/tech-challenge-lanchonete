@@ -5,7 +5,7 @@ type CustomerParams = {
   name: string;
   cpf: string;
   email: string;
-}
+};
 
 export default class Customer {
   private id!: number | undefined;
@@ -70,5 +70,3 @@ export default class Customer {
     }
   }
 }
-
-

@@ -38,11 +38,7 @@ context("Customer Management", () => {
     cpfValidatorMock = new FakeCPFValidator();
     emailValidatorMock = new FakeEmailValidator();
 
-    return new CustomerManagement(
-      repository,
-      cpfValidatorMock,
-      emailValidatorMock
-    );
+    return new CustomerManagement(repository, cpfValidatorMock, emailValidatorMock);
   }
 
   describe("create", () => {
@@ -54,9 +50,7 @@ context("Customer Management", () => {
       });
 
       const customerManagementUseCase = setupUseCase();
-      const customerCreated = await customerManagementUseCase.create(
-        customerDTO
-      );
+      const customerCreated = await customerManagementUseCase.create(customerDTO);
 
       expect(customerCreated).to.not.be.undefined;
       expect(customerCreated!.id).to.be.equal(1);
@@ -72,9 +66,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create(customerDTO);
 
-      await expect(
-        customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(ResourceAlreadyExistsError);
+      await expect(customerManagementUseCase.create(customerDTO)).to.be.eventually.rejectedWith(ResourceAlreadyExistsError);
     });
 
     it("should throw an error when cpf is invalid", async () => {
@@ -86,9 +78,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       cpfValidatorMock.isValidCpf = false;
 
-      await expect(
-        customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(InvalidAttributeError);
+      await expect(customerManagementUseCase.create(customerDTO)).to.be.eventually.rejectedWith(InvalidAttributeError);
     });
 
     it("should throw an error when email is invalid", async () => {
@@ -100,9 +90,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       emailValidatorMock.isValidEmail = false;
 
-      await expect(
-        customerManagementUseCase.create(customerDTO)
-      ).to.be.eventually.rejectedWith(InvalidAttributeError);
+      await expect(customerManagementUseCase.create(customerDTO)).to.be.eventually.rejectedWith(InvalidAttributeError);
     });
   });
 
@@ -117,11 +105,10 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create(customerDTO);
 
-      const customerFound = await customerManagementUseCase.findByCPF(
-        customerDTO.cpf!
-      );
+      const customerFound = await customerManagementUseCase.findByCPF(customerDTO.cpf!);
 
       expect(customerFound).to.not.be.undefined;
+      expect(customerFound.cpf).to.be.equal(customerDTO.cpf);
     });
 
     it("should display an error message when it cannot find the customer", async () => {
@@ -134,9 +121,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create(customerDTO);
 
-      await expect(
-        customerManagementUseCase.findByCPF("123")
-      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
+      await expect(customerManagementUseCase.findByCPF("123")).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
 
     it("should display an error message when a CPF is not provided", async () => {
@@ -149,9 +134,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create(customerDTO);
 
-      await expect(
-        customerManagementUseCase.findByCPF("")
-      ).to.be.eventually.rejectedWith(new MissingPropertyError("cpf").message);
+      await expect(customerManagementUseCase.findByCPF("")).to.be.eventually.rejectedWith(new MissingPropertyError("cpf").message);
     });
   });
 });

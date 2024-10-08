@@ -53,9 +53,7 @@ context("Order", () => {
         productName: "Hamburguer",
         productDescription: "Classic Hamburguer"
       });
-      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.not.throw(
-        InvalidStatusTransitionError
-      );
+      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.not.throw(InvalidStatusTransitionError);
     });
     it("should not allow to change from status `CREATED` to `PENDING_PAYMENT` if there are no items", () => {
       const order = new Order({
@@ -65,9 +63,7 @@ context("Order", () => {
         totalPrice: 100,
         customerId: 10
       });
-      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.throw(
-        EmptyOrderError
-      );
+      expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.throw(EmptyOrderError);
     });
     it("should not allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
       const order = new Order({
@@ -86,9 +82,7 @@ context("Order", () => {
         productDescription: "Classic Hamburguer"
       });
       order.setStatus(OrderStatus.PENDING_PAYMENT);
-      expect(() => order.setStatus(OrderStatus.CREATED)).to.throw(
-        InvalidStatusTransitionError
-      );
+      expect(() => order.setStatus(OrderStatus.CREATED)).to.throw(InvalidStatusTransitionError);
     });
   });
   describe("addItem", () => {
@@ -110,9 +104,7 @@ context("Order", () => {
       };
       order.addItem(item);
       expect(order.getItems().length).to.be.at.least(1);
-      expect(Number(order.getTotalPrice())).to.be.equals(
-        item.quantity * item.unitPrice
-      );
+      expect(Number(order.getTotalPrice())).to.be.equals(item.quantity * item.unitPrice);
     });
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({
@@ -170,12 +162,8 @@ context("Order", () => {
 
       const updatedItem = order.updateItem(1, updateValues);
       expect(updatedItem.getQuantity()).to.be.equals(2);
-      expect(updatedItem.getTotalPrice()).to.be.equals(
-        updateValues.quantity * updatedItem.getUnitPrice()
-      );
-      expect(Number(order.getTotalPrice())).to.be.equals(
-        updateValues.quantity * Number(updatedItem.getUnitPrice())
-      );
+      expect(updatedItem.getTotalPrice()).to.be.equals(updateValues.quantity * updatedItem.getUnitPrice());
+      expect(Number(order.getTotalPrice())).to.be.equals(updateValues.quantity * Number(updatedItem.getUnitPrice()));
     });
     it("should throw an error when updating unexisting item", () => {
       const order = new Order({
@@ -190,9 +178,7 @@ context("Order", () => {
       const unexistingId = -1;
       const updateValues = { quantity: 3 };
 
-      expect(() => order.updateItem(unexistingId, updateValues)).to.throw(
-        ResourceNotFoundError
-      );
+      expect(() => order.updateItem(unexistingId, updateValues)).to.throw(ResourceNotFoundError);
     });
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({
@@ -212,9 +198,7 @@ context("Order", () => {
         ],
         customerId: 1
       });
-      expect(() => order.updateItem(1, { quantity: 0 })).to.throw(
-        ClosedOrderError
-      );
+      expect(() => order.updateItem(1, { quantity: 0 })).to.throw(ClosedOrderError);
     });
   });
   describe("removeItem", () => {
@@ -252,9 +236,7 @@ context("Order", () => {
 
       const unexistingId = -1;
 
-      expect(() => order.removeItem(unexistingId)).to.throw(
-        ResourceNotFoundError
-      );
+      expect(() => order.removeItem(unexistingId)).to.throw(ResourceNotFoundError);
     });
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({

@@ -1,18 +1,8 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-  NonAttribute
-} from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { sequelize } from ".";
 import Image from "./image";
 
-export class Product extends Model<
-  InferAttributes<Product>,
-  InferCreationAttributes<Product>
-> {
+export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
   declare id: CreationOptional<number>;
   declare name: string;
   declare category: string;

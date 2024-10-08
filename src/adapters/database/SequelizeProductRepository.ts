@@ -6,8 +6,7 @@ import SequelizeImage from "../../infrastructure/database/models/image";
 
 export default class SequelizeProductRepository implements ProductRepository {
   async create(productDTO: ProductDTO): Promise<ProductDTO> {
-    const { name, category, description, price, images } =
-      productDTO as Required<ProductDTO>;
+    const { name, category, description, price, images } = productDTO as Required<ProductDTO>;
     const createdProduct = await SequelizeProduct.create({
       name,
       category,
@@ -16,7 +15,7 @@ export default class SequelizeProductRepository implements ProductRepository {
     });
 
     createdProduct.images = await this.#addImages({
-      productId: createdProduct.id,
+      productId: createdProduct.id
     });
 
     return this.#createProductDTO(createdProduct);
@@ -87,13 +86,7 @@ export default class SequelizeProductRepository implements ProductRepository {
     await this.#deleteImages(id);
   }
 
-  async #addImages({
-    productId,
-    images
-  }: {
-    productId: number;
-    images?: { url: string }[];
-  }): Promise<SequelizeImage[] | undefined> {
+  async #addImages({ productId, images }: { productId: number; images?: { url: string }[] }): Promise<SequelizeImage[] | undefined> {
     if (!images) return;
 
     const newImages = await Promise.all(
@@ -131,5 +124,3 @@ export default class SequelizeProductRepository implements ProductRepository {
     });
   }
 }
-
-

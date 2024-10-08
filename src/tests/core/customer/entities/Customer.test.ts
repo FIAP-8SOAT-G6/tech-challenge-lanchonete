@@ -35,7 +35,7 @@ context("Customer", () => {
           new Customer({
             id: 123,
             name: "Ana",
-            cpf:  undefined as unknown as string,
+            cpf: undefined as unknown as string,
             email: "test@mail.com"
           })
       ).to.throw(new MissingPropertyError("cpf").message);
@@ -48,7 +48,7 @@ context("Customer", () => {
             id: 123,
             name: "Ana",
             cpf: "123.456.789-00",
-            email:  undefined as unknown as string,
+            email: undefined as unknown as string
           })
       ).to.throw(new MissingPropertyError("email").message);
     });

@@ -9,11 +9,12 @@ import SequelizeCustomer from "../../infrastructure/database/models/customer";
 
 export default class SequelizeOrderRepository implements OrderRepository {
   async create(orderDTO: OrderDTO): Promise<OrderDTO> {
-    const { status, code, customerId } = orderDTO as Required<OrderDTO>;
+    const { status, code, customerId, paymentStatus } = orderDTO as Required<OrderDTO>;
     const createdOrder = await SequelizeOrder.create({
       status,
       code,
-      CustomerId: customerId
+      CustomerId: customerId,
+      paymentStatus
     });
 
     return this.#createOrderDTO(createdOrder);
@@ -51,16 +52,27 @@ export default class SequelizeOrderRepository implements OrderRepository {
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
+  async findOrdersByStatusAndSortByAscDate(status: string) {
+    const orders = await SequelizeOrder.findAll({
+      include: [
+        {
+          model: SequelizeItem,
+          include: [SequelizeProduct]
+        },
+        {
+          model: SequelizeCustomer
+        }
+      ],
+      where: { status },
+      order: [["createdAt", "ASC"]]
+    });
+
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
+
   async createItem(order: OrderDTO, itemDTO: ItemDTO) {
     const orderModel = await SequelizeOrder.findByPk(order.id);
-    const {
-      id,
-      orderId: OrderId,
-      productId: ProductId,
-      quantity,
-      unitPrice,
-      totalPrice
-    } = itemDTO;
+    const { id, orderId: OrderId, productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
     await orderModel!.createItem({
       ProductId,
       quantity: quantity!,
@@ -113,5 +125,3 @@ export default class SequelizeOrderRepository implements OrderRepository {
     });
   }
 }
-
-

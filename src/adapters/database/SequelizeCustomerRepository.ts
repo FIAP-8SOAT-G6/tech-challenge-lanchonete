@@ -1,7 +1,6 @@
 import CustomerDTO from "../../core/customers/dto/CustomerDTO";
 import CustomerRepository from "../../core/ports/CustomerRepository";
-import SequelizeCustomer  from "../../infrastructure/database/models/customer";
-
+import SequelizeCustomer from "../../infrastructure/database/models/customer";
 
 export default class SequelizeCustomerRepository implements CustomerRepository {
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO | undefined> {
@@ -33,5 +32,3 @@ export default class SequelizeCustomerRepository implements CustomerRepository {
     return new CustomerDTO({ id, name, cpf, email });
   }
 }
-
-

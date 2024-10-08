@@ -51,15 +51,11 @@ export default class FakeProductRepository implements ProductRepository {
 
     if (images?.length > 0) product!.images = images;
 
-    return Promise.resolve(
-      product ? this.#createProductDTO(product) : undefined
-    );
+    return Promise.resolve(product ? this.#createProductDTO(product) : undefined);
   }
 
   async findByCategory(category: string): Promise<ProductDTO[]> {
-    const productsByCategory = this.products.filter(
-      (product) => product?.category === category
-    );
+    const productsByCategory = this.products.filter((product) => product?.category === category);
 
     const products = this.#findProductWithImage(productsByCategory);
 
@@ -67,9 +63,7 @@ export default class FakeProductRepository implements ProductRepository {
   }
 
   update(productDTO: ProductDTO): Promise<ProductDTO> {
-    const productIndex = this.products.findIndex(
-      (persistedProduct) => persistedProduct?.id === productDTO.id
-    );
+    const productIndex = this.products.findIndex((persistedProduct) => persistedProduct?.id === productDTO.id);
 
     this.products[productIndex].name = productDTO.name;
     this.products[productIndex].category = productDTO.category;
@@ -86,30 +80,20 @@ export default class FakeProductRepository implements ProductRepository {
   }
 
   delete(id: number) {
-    const productIndex = this.products.findIndex(
-      (product) => product?.id === id
-    );
+    const productIndex = this.products.findIndex((product) => product?.id === id);
     delete this.products[productIndex];
     return Promise.resolve();
   }
 
   #findProductWithImage(products: FakeProduct[]) {
     return products.map((product) => {
-      const images = this.images.filter(
-        (image) => image?.productId === product.id
-      );
+      const images = this.images.filter((image) => image?.productId === product.id);
       if (images?.length > 0) product.images = images;
       return product;
     });
   }
 
-  #addImages({
-    productId,
-    images
-  }: {
-    productId: number;
-    images?: FakeImage[];
-  }): FakeImage[] {
+  #addImages({ productId, images }: { productId: number; images?: FakeImage[] }): FakeImage[] {
     if (!images || images?.length === 0) return [];
 
     images?.forEach((image) => {
@@ -136,5 +120,3 @@ export default class FakeProductRepository implements ProductRepository {
     });
   }
 }
-
-

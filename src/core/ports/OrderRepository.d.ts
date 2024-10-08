@@ -9,4 +9,5 @@ export default interface OrderRepository {
   removeItem(orderId: number, itemId: number): Promise;
   updateItem(itemId: number, itemDTO: ItemDTO): Promise;
   updateOrder(orderDTO: OrderDTO): Promise<OrderDTO | undefined>;
+  findOrdersByStatusAndSortByAscDate(orderStatus: string): Promise<OrderDTO[]>;
 }

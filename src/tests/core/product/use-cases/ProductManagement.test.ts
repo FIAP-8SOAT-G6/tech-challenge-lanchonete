@@ -43,7 +43,7 @@ context("ProductManagement", () => {
         category: ProductCategory.Lanche,
         description: "Big Hamburguer",
         price: 12.0,
-        images: [ { url: "image1" } , { url: "image2" }]
+        images: [{ url: "image1" }, { url: "image2" }]
       });
 
       const product = await productManagementUseCase.create(productDTO);
@@ -57,9 +57,7 @@ context("ProductManagement", () => {
       const productManagementUseCase = setupUseCase();
       const unexistingId = 15;
 
-      await expect(
-        productManagementUseCase.findById(unexistingId)
-      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
+      await expect(productManagementUseCase.findById(unexistingId)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 
@@ -153,15 +151,11 @@ context("ProductManagement", () => {
         )
       ]);
 
-      const products = await productManagementUseCase.findByCategory(
-        ProductCategory.Lanche
-      );
+      const products = await productManagementUseCase.findByCategory(ProductCategory.Lanche);
 
       expect(products).to.not.be.undefined;
       expect(products.length).to.be.equals(2);
-      products.forEach((product) =>
-        expect(product.category).to.be.equal(ProductCategory.Lanche)
-      );
+      products.forEach((product) => expect(product.category).to.be.equal(ProductCategory.Lanche));
     });
 
     it("should return all Products of given category with images", async () => {
@@ -187,9 +181,7 @@ context("ProductManagement", () => {
         )
       ]);
 
-      const products = await productManagementUseCase.findByCategory(
-        ProductCategory.Lanche
-      );
+      const products = await productManagementUseCase.findByCategory(ProductCategory.Lanche);
 
       expect(products[0].images!.length).to.be.equals(2);
       expect(products[1].images!.length).to.be.equals(3);
@@ -199,9 +191,7 @@ context("ProductManagement", () => {
       const productManagementUseCase = setupUseCase();
       const invalidCategory = "UNEXISTING_CATEGORY";
 
-      await expect(
-        productManagementUseCase.findByCategory(invalidCategory)
-      ).to.be.eventually.rejectedWith(
+      await expect(productManagementUseCase.findByCategory(invalidCategory)).to.be.eventually.rejectedWith(
         new InvalidCategoryError(invalidCategory).message
       );
     });
@@ -216,9 +206,7 @@ context("ProductManagement", () => {
         description: "Big Hamburguer",
         price: 10.0
       });
-      const createdProductDTO = await productManagementUseCase.create(
-        productDTO
-      );
+      const createdProductDTO = await productManagementUseCase.create(productDTO);
 
       const updateProductDTO = new ProductDTO({
         id: createdProductDTO.id!,
@@ -230,17 +218,11 @@ context("ProductManagement", () => {
 
       await productManagementUseCase.update(updateProductDTO);
 
-      const foundProductDTO = await productManagementUseCase.findById(
-        updateProductDTO.id!
-      );
+      const foundProductDTO = await productManagementUseCase.findById(updateProductDTO.id!);
       expect(foundProductDTO).to.not.be.undefined;
       expect(foundProductDTO.name).to.be.equals("French Fries");
-      expect(foundProductDTO.category).to.be.equals(
-        ProductCategory.Acompanhamento
-      );
-      expect(foundProductDTO.description).to.be.equals(
-        "This should actually be some French Fries"
-      );
+      expect(foundProductDTO.category).to.be.equals(ProductCategory.Acompanhamento);
+      expect(foundProductDTO.description).to.be.equals("This should actually be some French Fries");
       expect(foundProductDTO.price).to.be.equals(12.0);
     });
 
@@ -253,9 +235,7 @@ context("ProductManagement", () => {
         price: 10.0,
         images: [{ url: "image1" }, { url: "image2" }]
       });
-      const createdProductDTO = await productManagementUseCase.create(
-        productDTO
-      );
+      const createdProductDTO = await productManagementUseCase.create(productDTO);
 
       const updateProductDTO = new ProductDTO({
         id: createdProductDTO.id!,
@@ -268,17 +248,11 @@ context("ProductManagement", () => {
 
       await productManagementUseCase.update(updateProductDTO);
 
-      const foundProductDTO = await productManagementUseCase.findById(
-        updateProductDTO.id!
-      );
+      const foundProductDTO = await productManagementUseCase.findById(updateProductDTO.id!);
       expect(foundProductDTO).to.not.be.undefined;
       expect(foundProductDTO.name).to.be.equals("French Fries");
-      expect(foundProductDTO.category).to.be.equals(
-        ProductCategory.Acompanhamento
-      );
-      expect(foundProductDTO.description).to.be.equals(
-        "This should actually be some French Fries"
-      );
+      expect(foundProductDTO.category).to.be.equals(ProductCategory.Acompanhamento);
+      expect(foundProductDTO.description).to.be.equals("This should actually be some French Fries");
       expect(foundProductDTO.price).to.be.equals(12.0);
       expect(foundProductDTO.images!.length).to.be.equals(1);
     });
@@ -292,9 +266,7 @@ context("ProductManagement", () => {
         price: 10.0,
         images: [{ url: "image1" }, { url: "image2" }]
       });
-      const createdProductDTO = await productManagementUseCase.create(
-        productDTO
-      );
+      const createdProductDTO = await productManagementUseCase.create(productDTO);
 
       const updateProductDTO = new ProductDTO({
         id: createdProductDTO.id!,
@@ -306,17 +278,11 @@ context("ProductManagement", () => {
 
       await productManagementUseCase.update(updateProductDTO);
 
-      const foundProductDTO = await productManagementUseCase.findById(
-        updateProductDTO.id!
-      );
+      const foundProductDTO = await productManagementUseCase.findById(updateProductDTO.id!);
       expect(foundProductDTO).to.not.be.undefined;
       expect(foundProductDTO.name).to.be.equals("French Fries");
-      expect(foundProductDTO.category).to.be.equals(
-        ProductCategory.Acompanhamento
-      );
-      expect(foundProductDTO.description).to.be.equals(
-        "This should actually be some French Fries"
-      );
+      expect(foundProductDTO.category).to.be.equals(ProductCategory.Acompanhamento);
+      expect(foundProductDTO.description).to.be.equals("This should actually be some French Fries");
       expect(foundProductDTO.price).to.be.equals(12.0);
       expect(foundProductDTO.images).to.be.deep.equals([]);
     });
@@ -328,12 +294,9 @@ context("ProductManagement", () => {
         description: "Very Big Hamburguer"
       });
 
-      const updatePromise =
-        productManagementUseCase.update(unexistingProductDTO);
+      const updatePromise = productManagementUseCase.update(unexistingProductDTO);
 
-      await expect(updatePromise).to.be.eventually.rejectedWith(
-        ResourceNotFoundError
-      );
+      await expect(updatePromise).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 
@@ -346,15 +309,11 @@ context("ProductManagement", () => {
         description: "Big Hamburguer",
         price: 10.0
       };
-      const createdProductDTO = await productManagementUseCase.create(
-        productDTO
-      );
+      const createdProductDTO = await productManagementUseCase.create(productDTO);
 
       await productManagementUseCase.delete(createdProductDTO.id!);
 
-      await expect(
-        productManagementUseCase.findById(createdProductDTO.id!)
-      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
+      await expect(productManagementUseCase.findById(createdProductDTO.id!)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
 
     it("should throw error  when Product does not exist", async () => {
@@ -362,9 +321,7 @@ context("ProductManagement", () => {
       const idNonexisting = 12;
       await productManagementUseCase.delete(idNonexisting);
 
-      await expect(
-        productManagementUseCase.findById(idNonexisting)
-      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
+      await expect(productManagementUseCase.findById(idNonexisting)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });

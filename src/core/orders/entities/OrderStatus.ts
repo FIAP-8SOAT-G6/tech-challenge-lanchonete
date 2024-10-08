@@ -4,6 +4,7 @@ export enum OrderStatus {
   PAYED = "PAYED",
   RECEIVED = "RECEIVED",
   PREPARING = "PREPARING",
+  DONE = "DONE",
   FINISHED = "FINISHED"
 }
 

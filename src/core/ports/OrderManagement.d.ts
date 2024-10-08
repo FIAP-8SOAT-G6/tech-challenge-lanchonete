@@ -6,17 +6,15 @@ export default interface OrderManagement {
 
   getOrders(): Promise<OrderDTO[]>;
 
+  getOrdersByPriority(): Promise<OrderDTO[]>;
+
   getOrder(orderId: number): Promise<OrderDTO>;
 
   addItem(orderId: number, itemDTO: ItemDTO): Promise<OrderDTO>;
 
   removeItem(orderId: number, itemId: number): Promise<undefined>;
 
-  updateItem(
-    orderId: number,
-    itemId: number,
-    itemDTO: ItemDTO
-  ): Promise<OrderDTO>;
+  updateItem(orderId: number, itemId: number, itemDTO: ItemDTO): Promise<OrderDTO>;
 
   checkout(orderId: number): Promise<void>;
 }

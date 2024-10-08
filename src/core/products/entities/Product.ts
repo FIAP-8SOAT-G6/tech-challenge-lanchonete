@@ -19,14 +19,7 @@ export default class Product {
   private price!: number;
   private images!: { url: string }[];
 
-  constructor({
-    id,
-    name,
-    category,
-    description,
-    price,
-    images
-  }: ProductParams) {
+  constructor({ id, name, category, description, price, images }: ProductParams) {
     this.id = id;
 
     this.setName(name!);
@@ -80,8 +73,7 @@ export default class Product {
   }
 
   setImages(images: { url: string }[]) {
-    this.images =
-      images?.map((url: any) => ({ productId: this.id, url })) || [];
+    this.images = images?.map((url: any) => ({ productId: this.id, url })) || [];
   }
 
   private validateName(name: string) {

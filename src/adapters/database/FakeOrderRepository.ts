@@ -55,6 +55,18 @@ export default class FakeOrderRepository implements OrderRepository {
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
+  async findOrdersByStatusAndSortByAscDate(orderStatus: string): Promise<OrderDTO[]> {
+    const orders = this.orders
+      .filter((order) => order.status === orderStatus)
+      .map((order) => ({
+        ...order,
+        items: this.items.filter((item) => item.OrderId === order.id)
+      }))
+      .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
+
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
+
   async createItem(order: OrderDTO, itemDTO: ItemDTO) {
     const { id: OrderId } = order;
     const { productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
@@ -70,9 +82,7 @@ export default class FakeOrderRepository implements OrderRepository {
   }
 
   async removeItem(orderId: number, itemId: number) {
-    const itemIndex = this.items.findIndex(
-      (item) => item.OrderId === orderId && item.id === itemId
-    );
+    const itemIndex = this.items.findIndex((item) => item.OrderId === orderId && item.id === itemId);
     this.items.splice(itemIndex, 1);
   }
 
@@ -117,5 +127,3 @@ export default class FakeOrderRepository implements OrderRepository {
     });
   }
 }
-
-

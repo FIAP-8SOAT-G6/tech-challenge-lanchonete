@@ -30,13 +30,21 @@ export default class OrdersController {
         const order = await this.useCase.create(orderDTO);
         return res.status(201).json(order);
       } catch (error: any) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
 
     this.router.get("/orders", async (req, res) => {
+      try {
+        const order = await this.useCase.getOrdersByPriority();
+        return res.status(200).json(order);
+      } catch (error: any) {
+        return res.status(500).json({ error: error.message });
+      }
+    });
+
+    this.router.get("/orders/all", async (req, res) => {
       try {
         const order = await this.useCase.getOrders();
         return res.status(200).json(order);
@@ -51,8 +59,7 @@ export default class OrdersController {
         const order = await this.useCase.getOrder(orderId);
         return res.status(201).json(order);
       } catch (error: any) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -65,13 +72,8 @@ export default class OrdersController {
         const order = await this.useCase.addItem(orderId, addItemDTO);
         return res.status(201).json(order);
       } catch (error: any) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (
-          error instanceof ResourceNotFoundError ||
-          error instanceof ClosedOrderError
-        )
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -82,10 +84,8 @@ export default class OrdersController {
         await this.useCase.removeItem(Number(orderId), Number(itemId));
         return res.status(204).json({});
       } catch (error: any) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (error instanceof ClosedOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -95,17 +95,11 @@ export default class OrdersController {
         const { orderId, itemId } = req.params;
         const { quantity } = req.body;
         const updateItemDTO = new ItemDTO({ quantity });
-        const updatedOrder = await this.useCase.updateItem(
-          Number(orderId),
-          Number(itemId),
-          updateItemDTO
-        );
+        const updatedOrder = await this.useCase.updateItem(Number(orderId), Number(itemId), updateItemDTO);
         return res.status(200).json(updatedOrder);
       } catch (error: any) {
-        if (error instanceof ResourceNotFoundError)
-          return res.status(404).json({ error: error.message });
-        if (error instanceof ClosedOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+        if (error instanceof ClosedOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
@@ -116,12 +110,9 @@ export default class OrdersController {
         await this.useCase.checkout(orderId);
         return res.status(200).json({});
       } catch (error: any) {
-        if (error instanceof EmptyOrderError)
-          return res.status(400).json({ error: error.message });
+        if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
         return res.status(500).json({ error: error.message });
       }
     });
   }
 }
-
-

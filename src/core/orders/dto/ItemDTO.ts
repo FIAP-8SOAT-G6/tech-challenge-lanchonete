@@ -37,5 +37,3 @@ export default class ItemDTO {
     this.totalPrice = Number(totalPrice);
   }
 }
-
-

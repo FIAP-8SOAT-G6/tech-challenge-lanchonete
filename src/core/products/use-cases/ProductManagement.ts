@@ -21,18 +21,12 @@ export default class ProductManagement implements ProductManagementPort {
 
   async findById(id: number): Promise<ProductDTO> {
     const product = await this.productRepository.findById(id);
-    if (!product)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Product,
-        "id",
-        id
-      );
+    if (!product) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Product, "id", id);
     return product;
   }
 
   async findByCategory(category: string): Promise<ProductDTO[]> {
-    if (!Object.keys(ProductCategory).includes(category))
-      throw new InvalidCategoryError(category);
+    if (!Object.keys(ProductCategory).includes(category)) throw new InvalidCategoryError(category);
     const productDTOs = await this.productRepository.findByCategory(category);
     return productDTOs;
   }
@@ -40,12 +34,7 @@ export default class ProductManagement implements ProductManagementPort {
   async update(productDTO: ProductDTO): Promise<ProductDTO> {
     const { id } = productDTO;
     const currentProductDTO = await this.productRepository.findById(id!);
-    if (!currentProductDTO)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Product,
-        "id",
-        id
-      );
+    if (!currentProductDTO) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Product, "id", id);
 
     const product = this.#toProductEntity(currentProductDTO);
     product.setName(productDTO.name!);
