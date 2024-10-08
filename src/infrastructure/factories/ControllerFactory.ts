@@ -12,28 +12,16 @@ import CPFValidatorAdapter from "../../adapters/services/validators/CPFValidator
 
 export default class ControllerFactory {
   static makeProductManagementController() {
-    return new ProductsController(
-      new ProductManagement(new SequelizeProductRepository())
-    );
+    return new ProductsController(new ProductManagement(new SequelizeProductRepository()));
   }
 
   static makeOrdersController() {
     return new OrdersController(
-      new OrderManagement(
-        new SequelizeOrderRepository(),
-        new SequelizeProductRepository(),
-        new SequelizeCustomerRepository()
-      )
+      new OrderManagement(new SequelizeOrderRepository(), new SequelizeProductRepository(), new SequelizeCustomerRepository())
     );
   }
 
   static makeCustomerManagementController() {
-    return new CustomerController(
-      new CustomerManagement(
-        new SequelizeCustomerRepository(),
-        new CPFValidatorAdapter(),
-        new EmailValidatorAdapter()
-      )
-    );
+    return new CustomerController(new CustomerManagement(new SequelizeCustomerRepository(), new CPFValidatorAdapter(), new EmailValidatorAdapter()));
   }
 }

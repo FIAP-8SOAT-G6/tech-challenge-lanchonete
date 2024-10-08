@@ -44,7 +44,7 @@ paths:
                   description: CPF do cliente sem formatação
                   example: "11111111111"
                 email:
-                  type: string 
+                  type: string
                   description: Email do cliente
                   example: john.doe@gmail.com
               required:
@@ -80,6 +80,6 @@ components:
           description: CPF do cliente sem formatação
           example: "11111111111"
         email:
-          type: string 
+          type: string
           description: Email do cliente
           example: john.doe@gmail.com

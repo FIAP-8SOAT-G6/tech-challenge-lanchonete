@@ -1,8 +1,8 @@
 const ProductCategory = Object.freeze({
-    Lanche: "Lanche",
-    Acompanhamento: "Acompanhamento",
-    Bebida: "Bebida",
-    Sobremesa: "Sobremesa"
+  Lanche: "Lanche",
+  Acompanhamento: "Acompanhamento",
+  Bebida: "Bebida",
+  Sobremesa: "Sobremesa"
 });
 
-export default ProductCategory
+export default ProductCategory;

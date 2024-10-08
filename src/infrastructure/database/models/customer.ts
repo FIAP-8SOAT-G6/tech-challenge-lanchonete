@@ -1,18 +1,8 @@
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model,
-  NonAttribute
-} from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, NonAttribute } from "sequelize";
 import { sequelize } from ".";
 import Order from "./order";
 
-export default class Customer extends Model<
-  InferAttributes<Customer>,
-  InferCreationAttributes<Customer>
-> {
+export default class Customer extends Model<InferAttributes<Customer>, InferCreationAttributes<Customer>> {
   declare id: CreationOptional<number>;
   declare name: string;
   declare cpf: string;

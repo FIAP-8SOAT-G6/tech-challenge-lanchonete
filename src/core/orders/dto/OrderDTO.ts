@@ -43,8 +43,6 @@ export default class OrderDTO {
     this.customerId = customerId;
     this.customerName = customerName;
     this.elapsedTime = elapsedTime;
-    this.paymentStatus = paymentStatus
+    this.paymentStatus = paymentStatus;
   }
 }
-
-

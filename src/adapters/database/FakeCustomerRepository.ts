@@ -9,7 +9,7 @@ type FakeCustomer = {
 };
 
 export default class FakeCustomerRepository implements CustomerRepository {
-  private customers: FakeCustomer[] = []
+  private customers: FakeCustomer[] = [];
 
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO | undefined> {
     const { name, cpf, email } = customerDTO;

@@ -82,9 +82,7 @@ export default class FakeOrderRepository implements OrderRepository {
   }
 
   async removeItem(orderId: number, itemId: number) {
-    const itemIndex = this.items.findIndex(
-      (item) => item.OrderId === orderId && item.id === itemId
-    );
+    const itemIndex = this.items.findIndex((item) => item.OrderId === orderId && item.id === itemId);
     this.items.splice(itemIndex, 1);
   }
 
@@ -129,5 +127,3 @@ export default class FakeOrderRepository implements OrderRepository {
     });
   }
 }
-
-

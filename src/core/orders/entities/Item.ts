@@ -20,15 +20,7 @@ export default class Item {
   private unitPrice!: number;
   private totalPrice!: number;
 
-  constructor({
-    id,
-    orderId,
-    productId,
-    productName,
-    productDescription,
-    quantity,
-    unitPrice
-  }: ItemParams) {
+  constructor({ id, orderId, productId, productName, productDescription, quantity, unitPrice }: ItemParams) {
     this.id = id;
     this.orderId = orderId;
     this.productId = productId;

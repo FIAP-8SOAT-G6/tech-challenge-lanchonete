@@ -38,11 +38,7 @@ context("Customer Management", () => {
     cpfValidatorMock = new FakeCPFValidator();
     emailValidatorMock = new FakeEmailValidator();
 
-    return new CustomerManagement(
-      repository,
-      cpfValidatorMock,
-      emailValidatorMock
-    );
+    return new CustomerManagement(repository, cpfValidatorMock, emailValidatorMock);
   }
 
   describe("create", () => {
@@ -109,9 +105,7 @@ context("Customer Management", () => {
       const customerManagementUseCase = setupUseCase();
       await customerManagementUseCase.create(customerDTO);
 
-      const customerFound = await customerManagementUseCase.findByCPF(
-        customerDTO.cpf!
-      );
+      const customerFound = await customerManagementUseCase.findByCPF(customerDTO.cpf!);
 
       expect(customerFound).to.not.be.undefined;
       expect(customerFound.cpf).to.be.equal(customerDTO.cpf);

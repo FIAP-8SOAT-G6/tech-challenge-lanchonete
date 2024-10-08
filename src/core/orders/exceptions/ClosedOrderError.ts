@@ -5,5 +5,3 @@ export default class ClosedOrderError extends Error {
     super(message.replace("&1", orderId).replace("&2", status));
   }
 }
-
-

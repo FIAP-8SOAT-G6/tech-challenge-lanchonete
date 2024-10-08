@@ -48,11 +48,7 @@ export default class CustomerController {
 
         return res.status(201).json(customerCreated);
       } catch (error: any) {
-        if (
-          error instanceof MissingPropertyError ||
-          error instanceof ResourceAlreadyExistsError ||
-          error instanceof InvalidAttributeError
-        ) {
+        if (error instanceof MissingPropertyError || error instanceof ResourceAlreadyExistsError || error instanceof InvalidAttributeError) {
           return res.status(400).json({ message: error.message });
         }
         return res.status(500).json({ message: error.message });

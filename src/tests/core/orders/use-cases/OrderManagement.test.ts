@@ -22,16 +22,8 @@ import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsS
 
 chai.use(chaiAsPromised);
 
-function setupUseCase(
-  orderRepository: OrderRepository,
-  productRepository: ProductRepository,
-  customerRepository: CustomerRepository
-) {
-  return new OrderManagement(
-    orderRepository,
-    productRepository,
-    customerRepository
-  );
+function setupUseCase(orderRepository: OrderRepository, productRepository: ProductRepository, customerRepository: CustomerRepository) {
+  return new OrderManagement(orderRepository, productRepository, customerRepository);
 }
 
 function setupOrderRepository() {
@@ -65,7 +57,6 @@ let useCase: OrderManagement,
   customerRepository: FakeCustomerRepository;
 context("Order Management", () => {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 
   beforeEach(() => {
     orderRepository = setupOrderRepository();
@@ -196,9 +187,7 @@ context("Order Management", () => {
       expect(createdItem.id).to.not.be.undefined;
       expect(createdItem.productId).to.be.equals(product.id);
       expect(createdItem.quantity).to.be.equals(2);
-      expect(createdItem.totalPrice).to.be.equals(
-        createdItem.quantity! * product.price!
-      );
+      expect(createdItem.totalPrice).to.be.equals(createdItem.quantity! * product.price!);
     });
 
     it("should throw error when order does not exist", async () => {
@@ -230,9 +219,7 @@ context("Order Management", () => {
 
       const orderWithItems = await addItemToOrder(order.id);
       const itemDTO = orderWithItems.items![0];
-      await expect(
-        useCase.addItem(order.id!, itemDTO)
-      ).to.be.eventually.rejectedWith(ResourceNotFoundError);
+      await expect(useCase.addItem(order.id!, itemDTO)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
   describe("removeItem", () => {

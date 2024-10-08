@@ -1,3 +1,3 @@
 export default interface CPFValidator {
-    isValid(cpf: string): boolean
+  isValid(cpf: string): boolean;
 }

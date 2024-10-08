@@ -16,10 +16,7 @@ import { sequelize } from ".";
 import Customer from "./customer";
 import Item from "./item";
 
-class Order extends Model<
-  InferAttributes<Order, { omit: "items" }>,
-  InferCreationAttributes<Order, { omit: "items" }>
-> {
+class Order extends Model<InferAttributes<Order, { omit: "items" }>, InferCreationAttributes<Order, { omit: "items" }>> {
   declare id: CreationOptional<number>;
   declare code: string;
   declare status: string;

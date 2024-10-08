@@ -29,5 +29,3 @@ export default class ProductDTO {
     this.images = images;
   }
 }
-
-

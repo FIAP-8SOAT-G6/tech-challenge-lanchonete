@@ -9,13 +9,6 @@ export default class ResourceNotFoundError extends Error {
   };
 
   constructor(resourceName: string, attributeName: string, attributeValue: any) {
-    super(
-      message
-        .replace("&1", resourceName)
-        .replace("&2", attributeName)
-        .replace("&3", attributeValue)
-    );
+    super(message.replace("&1", resourceName).replace("&2", attributeName).replace("&3", attributeValue));
   }
 }
-
-

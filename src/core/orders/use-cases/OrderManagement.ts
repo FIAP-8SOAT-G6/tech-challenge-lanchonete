@@ -22,20 +22,15 @@ export default class OrderManagement implements OrderManagementPort {
   async create(orderDTO: OrderDTO): Promise<OrderDTO> {
     const { customerId } = orderDTO;
 
-    if (!this.#isCustomerAnonymous(customerId!))
-      await this.#validateCustomerExists(customerId!);
+    if (!this.#isCustomerAnonymous(customerId!)) await this.#validateCustomerExists(customerId!);
 
     const order = new Order({
       status: OrderStatus.CREATED,
       code: this.#generateCode(),
       customerId: customerId!
     });
-    const createdOrderDTO = await this.orderRepository.create(
-      this.#toOrderDTO(order)
-    );
-    const completeOrderDTO = await this.orderRepository.findById(
-      createdOrderDTO.id!
-    );
+    const createdOrderDTO = await this.orderRepository.create(this.#toOrderDTO(order));
+    const completeOrderDTO = await this.orderRepository.findById(createdOrderDTO.id!);
     const completeOrder = this.#toOrderEntity(completeOrderDTO!);
 
     return this.#toOrderDTO(completeOrder);
@@ -77,13 +72,10 @@ export default class OrderManagement implements OrderManagementPort {
     return order.getPaymentStatus();
   }
 
- async addItem(orderId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
+  async addItem(orderId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
     const { productId, quantity } = itemDTO;
 
-    const [productDTO, orderDTO] = await Promise.all([
-      this.productRepository.findById(productId!),
-      this.orderRepository.findById(orderId)
-    ]);
+    const [productDTO, orderDTO] = await Promise.all([this.productRepository.findById(productId!), this.orderRepository.findById(orderId)]);
 
     this.#validateOrderExists(orderDTO?.id!, orderId);
     if (!productDTO) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Product, "id", productId);
@@ -110,11 +102,7 @@ export default class OrderManagement implements OrderManagementPort {
     await this.orderRepository.removeItem(orderId, itemId);
   }
 
-  async updateItem(
-    orderId: number,
-    itemId: number,
-    itemDTO: ItemDTO
-  ): Promise<OrderDTO> {
+  async updateItem(orderId: number, itemId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
     const orderDTO = await this.orderRepository.findById(orderId);
 
     this.#validateOrderExists(orderDTO?.id!, orderId);
@@ -208,5 +196,3 @@ export default class OrderManagement implements OrderManagementPort {
     });
   }
 }
-
-

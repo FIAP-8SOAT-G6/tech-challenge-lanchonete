@@ -55,15 +55,7 @@ export default class Order {
   private customerId!: number;
   private paymentStatus!: OrderPaymentsStatus;
 
-  constructor({
-    id,
-    createdAt,
-    code,
-    status,
-    customerId,
-    items = [],
-    paymentStatus = OrderPaymentsStatus.PENDING
-  }: OrderParams) {
+  constructor({ id, createdAt, code, status, customerId, items = [], paymentStatus = OrderPaymentsStatus.PENDING }: OrderParams) {
     this.id = id;
     this.createdAt = createdAt;
     this.code = code;
@@ -115,11 +107,7 @@ export default class Order {
         transitionValidator(this);
         this.status = status;
       } else {
-        throw new InvalidStatusTransitionError(
-          this.status as string,
-          status,
-          ALLOWED_TARGET_STATUS_TRANSITIONS[status]
-        );
+        throw new InvalidStatusTransitionError(this.status as string, status, ALLOWED_TARGET_STATUS_TRANSITIONS[status]);
       }
     }
   }
@@ -141,8 +129,7 @@ export default class Order {
     productName?: string;
     productDescription?: string;
   }) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const item = new Item({
       id,
@@ -165,17 +152,11 @@ export default class Order {
   }
 
   updateItem(itemId: number, updatedValues: { quantity: number }) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const item = this.items.find((item) => item.getId() === itemId);
 
-    if (!item)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Item,
-        "id",
-        itemId
-      );
+    if (!item) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Item, "id", itemId);
 
     const { quantity } = updatedValues;
     item.setQuantity(quantity);
@@ -185,16 +166,10 @@ export default class Order {
   }
 
   removeItem(itemId: number) {
-    if (this.getStatus() !== OrderStatus.CREATED)
-      throw new ClosedOrderError(this.getId(), this.getStatus());
+    if (this.getStatus() !== OrderStatus.CREATED) throw new ClosedOrderError(this.getId(), this.getStatus());
 
     const itemIndex = this.items.findIndex((item) => item.getId() === itemId);
-    if (itemIndex < 0)
-      throw new ResourceNotFoundError(
-        ResourceNotFoundError.Resources.Item,
-        "id",
-        itemId
-      );
+    if (itemIndex < 0) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Item, "id", itemId);
 
     this.items.splice(itemIndex, 1);
   }
@@ -205,15 +180,7 @@ export default class Order {
   }
 
   #insertIntoItems(itemDTO: ItemDTO) {
-    const {
-      id,
-      productId,
-      quantity,
-      unitPrice,
-      totalPrice,
-      productName,
-      productDescription
-    } = itemDTO;
+    const { id, productId, quantity, unitPrice, totalPrice, productName, productDescription } = itemDTO;
     const item = new Item({
       id,
       productId: productId!,
@@ -227,10 +194,6 @@ export default class Order {
   }
 
   #calculateTotalPrice() {
-    this.totalPrice = Number(
-      this.items
-        .reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0)
-        .toFixed(2)
-    );
+    this.totalPrice = Number(this.items.reduce((currentSum, item) => currentSum + item.getTotalPrice(), 0).toFixed(2));
   }
 }
