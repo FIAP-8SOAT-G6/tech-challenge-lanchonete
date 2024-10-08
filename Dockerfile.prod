@@ -19,4 +19,6 @@ USER lanchonete-api
 
 COPY . .
 
-CMD [ "node", "src/index.js" ]
+RUN npm run build
+
+CMD [ "node", "out/index.js" ]
