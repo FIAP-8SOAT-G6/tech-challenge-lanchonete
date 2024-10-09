@@ -8,7 +8,7 @@ type FakeCustomer = {
   email?: string;
 };
 
-export default class FakeCustomerGateway implements CustomerRepository {
+export default class FakeCustomerRepository implements CustomerRepository {
   private customers: FakeCustomer[] = [];
 
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO | undefined> {
