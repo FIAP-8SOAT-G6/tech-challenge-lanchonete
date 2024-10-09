@@ -1,5 +1,5 @@
-import CustomerDTO from "../../core/customers/dto/CustomerDTO";
-import CustomerRepository from "../../core/ports/CustomerRepository";
+import CustomerDTO from "../core/customers/dto/CustomerDTO";
+import CustomerGateway from "../core/gateways/CustomerGateway";
 
 type FakeCustomer = {
   id: number;
@@ -8,7 +8,7 @@ type FakeCustomer = {
   email?: string;
 };
 
-export default class FakeCustomerGateway implements CustomerRepository {
+export default class FakeCustomerGateway implements CustomerGateway {
   private customers: FakeCustomer[] = [];
 
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO | undefined> {
