@@ -1,19 +1,18 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { OrderStatus } from "../../../../core/orders/entities/OrderStatus";
 
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 import OrderDTO from "../../../../core/orders/dto/OrderDTO";
+import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
+import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
+import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 
+import OrderGateway from "../../../../core/gateways/OrderGateways";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
-import OrderGateway from "../../../../core/gateways/OrderGateways";
 import CustomerGateway from "../../../../core/gateways/CustomerGateway";
-
-import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
-import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
 
 import CPFValidator from "../../../../core/ports/CPFValidator";
 import EmailValidator from "../../../../core/ports/EmailValidator";
@@ -49,8 +48,12 @@ context("Order Use Case", () => {
     orderGateway = new FakeOrderGateway();
   });
 
-  function setupUseCase() {
+  function setupCreateOrderUseCase() {
     return new CreateOrderUseCase(orderGateway, customerGateway);
+  }
+
+  function setupGetOrderUseCase() {
+    return new GetOrderUseCase(orderGateway);
   }
 
   async function createCustomer() {
@@ -65,34 +68,24 @@ context("Order Use Case", () => {
     return new OrderDTO({ customerId: customer!.id });
   }
 
-  describe("Create order", () => {
-    it("should create order with status 'CREATED'", async () => {
+  describe("Get order by id", () => {
+    it("should return requested order", async () => {
       const orderDTO = await createOrderDTO();
-      const createOrderUseCase = setupUseCase();
-      const createdOrder = await createOrderUseCase.createOrder(orderDTO);
-      expect(createdOrder).to.not.be.undefined;
-      expect(createdOrder.id).to.not.be.undefined;
-      expect(createdOrder.status).to.be.equals(OrderStatus.CREATED);
-      expect(createdOrder.code).to.not.be.undefined;
-      expect(createdOrder.elapsedTime).to.not.be.undefined;
+      const createOrderUseCase = setupCreateOrderUseCase();
+      const getOrderUseCase = setupGetOrderUseCase();
+      const order = await createOrderUseCase.createOrder(orderDTO);
+      const requestedOrder = await getOrderUseCase.getOrder(order.id!);
+
+      expect(requestedOrder).to.not.be.undefined;
+      expect(requestedOrder.id).to.be.equals(order.id);
+      expect(requestedOrder.status).to.be.equals(order.status);
+      expect(requestedOrder.code).to.be.equals(order.code);
     });
 
-    it("should not throw an error when creating order with anonymous customer", async () => {
-      const anonymousCustomerId = null;
-      const orderDTO = new OrderDTO({ customerId: anonymousCustomerId });
-      const createOrderUseCase = setupUseCase();
-      const createOrderPromise = createOrderUseCase.createOrder(orderDTO);
-      await expect(createOrderPromise).to.not.be.eventually.rejectedWith(ResourceNotFoundError);
-      const createdOrder = await createOrderPromise;
-      expect(createdOrder).to.not.be.undefined;
-      expect(createdOrder.customerId).to.be.null;
-    });
-
-    it("should throw an error when creating order with unexisting customer", async () => {
-      const unexistingCustomerId = -1;
-      const createOrderUseCase = setupUseCase();
-      const orderDTO = new OrderDTO({ customerId: unexistingCustomerId });
-      await expect(createOrderUseCase.createOrder(orderDTO)).to.be.eventually.rejectedWith(ResourceNotFoundError);
+    it("should throw error when order does not exist", async () => {
+      const unexistingOrderId = -1;
+      const getOrderUseCase = setupGetOrderUseCase();
+      await expect(getOrderUseCase.getOrder(unexistingOrderId)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });

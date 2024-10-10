@@ -29,7 +29,7 @@ class FakeEmailValidator implements EmailValidator {
 }
 
 let cpfValidatorMock: FakeCPFValidator, emailValidatorMock: FakeEmailValidator;
-context("CreateCustomerUseCase", () => {
+context("Create Customer Use Case", () => {
   function setupUseCase() {
     const repository = new FakeCustomerGateway();
     cpfValidatorMock = new FakeCPFValidator();
