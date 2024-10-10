@@ -1,7 +1,7 @@
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import CustomerGateway from "../../gateways/CustomerGateway";
-import FindCustomerByCpf from "../interfaces/FindCustomerById";
+import FindCustomerByCpf from "../interfaces/FindCustomerByCpf";
 
 export default class FindCustomerByCpfUseCase implements FindCustomerByCpf {
   constructor(private customerGateway: CustomerGateway) {}

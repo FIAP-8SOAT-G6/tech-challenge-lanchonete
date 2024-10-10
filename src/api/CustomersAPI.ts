@@ -13,7 +13,7 @@ const customersAPIRouter = Router();
 customersAPIRouter.get("/customers/:cpf", async (req, res) => {
   try {
     const cpf = req.params.cpf;
-    const customerFound = CustomerController;
+    const customerFound = await CustomerController.findCustomerByCpf(new SequelizeCustomerDataSource(), cpf);
     return res.status(200).json(customerFound);
   } catch (error: any) {
     if (error instanceof ResourceNotFoundError) {

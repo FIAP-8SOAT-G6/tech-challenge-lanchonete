@@ -1,5 +1,5 @@
 import CreateCustomer from "../core/customers/interfaces/CreateCustomer";
-import FindCustomerByCpf from "../core/customers/interfaces/FindCustomerById";
+import FindCustomerByCpf from "../core/customers/interfaces/FindCustomerByCpf";
 import CreateCustomerUseCase from "../core/customers/use-cases/CreateCustomerUseCase";
 import FindCustomerByCpfUseCase from "../core/customers/use-cases/FindCustomerByCpfUseCase";
 
