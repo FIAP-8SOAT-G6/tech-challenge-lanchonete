@@ -52,7 +52,7 @@ export default class SequelizeOrderRepository implements OrderRepository {
     return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
   }
 
-  async findOrdersByStatusAndSortByAscDate(status: string) {
+  async findOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[] | []> {
     const orders = await SequelizeOrder.findAll({
       include: [
         {
