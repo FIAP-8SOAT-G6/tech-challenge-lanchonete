@@ -22,6 +22,7 @@ import CreateProductUseCase from "../../../../core/products/use-cases/CreateProd
 import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 import DeleteItemUseCase from "../../../../core/orders/use-cases/DeleteItemUseCase";
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
 chai.use(chaiAsPromised);
 
@@ -113,5 +114,13 @@ describe("Delete Item", () => {
 
     const updatedOrder = await getOrderUseCase.getOrder(orderWithItems.id!);
     expect(updatedOrder?.items!.length).to.be.equals(0);
+  });
+
+  it("should return an error when the order does not exist", async () => {
+    const deleteItemUseCase = setupDeleteItemUseCase();
+
+    const unexistingOrderId = -1;
+    const unexistingItemId = -1;
+    await expect(deleteItemUseCase.deleteItem(unexistingOrderId, unexistingItemId)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
 });

@@ -10,7 +10,7 @@ import CheckoutOrder from "../interfaces/CheckoutOrder";
 export default class CheckoutOrderUseCase implements CheckoutOrder {
   constructor(private orderGateway: OrderGateway) {}
 
-  async checkout(orderId: number): Promise<void> {
+  async checkout(orderId: number): Promise<OrderDTO> {
     const orderDTO = await this.orderGateway.getOrder(orderId);
     this.#validateOrderExists(orderDTO?.id!, orderId);
     const order = this.#toOrderEntity(orderDTO!);
@@ -20,7 +20,7 @@ export default class CheckoutOrderUseCase implements CheckoutOrder {
     // Fake Checkout: Pagamento não implementado - Mudando para pago
     order.setStatus(OrderStatus.PAYED);
 
-    await this.orderGateway.updateOrder(this.#toOrderDTO(order));
+    return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {
@@ -39,6 +39,7 @@ export default class CheckoutOrderUseCase implements CheckoutOrder {
       items: orderDTO.items
     });
   }
+
   #toOrderDTO(orderEntity: Order) {
     return new OrderDTO({
       id: orderEntity.getId(),

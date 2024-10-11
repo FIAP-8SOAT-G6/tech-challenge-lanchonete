@@ -35,10 +35,10 @@ export default class OrderController {
     return paymentStatus;
   }
 
-  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<any> {
+  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<string> {
     const useCase = OrdersFactory.makeCheckout(orderDataSource);
-    useCase.checkout(orderId);
-    return Promise.resolve();
+    const order = await useCase.checkout(orderId);
+    return OrderPresenter.adaptOrderData(order);
   }
 
   public static async updateOrderStatus(orderDataSource: OrderDataSource, orderId: number, status: string): Promise<string> {

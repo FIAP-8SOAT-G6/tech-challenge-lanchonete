@@ -6,7 +6,7 @@ paths:
         - Pedidos
       responses:
         "200":
-          description: Lista dos pedidos priorizados por status Pronto, Em preparação e Recebido por data de criação
+          description: Lista dos pedidos priorizados por status 'Pronto', 'Em preparação' e 'Recebido', ordenados por data de criação
           content:
             application/json:
               schema:

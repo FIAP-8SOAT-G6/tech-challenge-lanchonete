@@ -8,12 +8,12 @@ import GetOrdersAll from "../interfaces/GetOrdersAll";
 export default class GetOrdersAllUseCase implements GetOrdersAll {
   constructor(private orderGateway: OrderGateway) {}
 
-  async getOrdersAll(): Promise<OrderDTO[] | []> {
-    const repositoryOrderDTOs = await this.orderGateway.getOrdersAll();
-    if (!repositoryOrderDTOs) return [];
+  async getOrdersAll(): Promise<OrderDTO[] | undefined> {
+    const orderDTOs = await this.orderGateway.getOrdersAll();
+    if (!orderDTOs) return undefined;
 
-    const orders = repositoryOrderDTOs.map(this.#toOrderEntity);
-    return orders.map(this.#toOrderDTO.bind(this));
+    const ordersEntitys = orderDTOs.map(this.#toOrderEntity);
+    return ordersEntitys.map(this.#toOrderDTO.bind(this));
   }
 
   #toOrderEntity(orderDTO: OrderDTO) {

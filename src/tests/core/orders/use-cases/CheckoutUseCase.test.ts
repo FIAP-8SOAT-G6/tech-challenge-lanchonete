@@ -25,6 +25,7 @@ import CreateProductUseCase from "../../../../core/products/use-cases/CreateProd
 import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
 chai.use(chaiAsPromised);
 
@@ -136,5 +137,11 @@ describe("Checkout Order", () => {
     await expect(checkoutUseCase.checkout(order.id!)).to.be.eventually.rejectedWith(EmptyOrderError);
     const updatedOrder = await getOrderUseCase.getOrder(order.id!);
     expect(updatedOrder?.status).to.be.equals(OrderStatus.CREATED);
+  });
+
+  it("should return an error when the order does not exist", async () => {
+    const checkoutUseCase = setupCheckoutUseCase();
+    const unexistingOrderId = -1;
+    await expect(checkoutUseCase.checkout(unexistingOrderId)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
 });

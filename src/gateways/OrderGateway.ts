@@ -24,9 +24,9 @@ export default class OrderGateway implements OrderGatewayInterface {
     return orders;
   }
 
-  async getOrdersAll(): Promise<OrderDTO[] | []> {
+  async getOrdersAll(): Promise<OrderDTO[] | undefined> {
     const orders = await this.dataSource.findAll();
-    if (!orders) return [];
+    if (!orders) return undefined;
 
     return orders;
   }
@@ -48,7 +48,7 @@ export default class OrderGateway implements OrderGatewayInterface {
     return updatedOrder;
   }
 
-  async checkout(orderId: number): Promise<any> {
+  async checkout(orderId: number): Promise<OrderDTO> {
     const order = await this.dataSource.findById(orderId);
     const updatedOrder = await this.dataSource.updateOrder(order);
     return updatedOrder;

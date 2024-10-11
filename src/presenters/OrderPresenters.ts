@@ -24,7 +24,7 @@ export default class OrderPresenter {
     });
   }
 
-  public static adaptOrdersData(orders: OrderDTO[] | null): string {
+  public static adaptOrdersData(orders: OrderDTO[] | undefined): string {
     if (!orders) return JSON.stringify({});
     return JSON.stringify(
       orders.map((order) => ({

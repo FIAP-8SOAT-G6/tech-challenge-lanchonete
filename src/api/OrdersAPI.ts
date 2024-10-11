@@ -23,17 +23,6 @@ ordersAPIRouter.post("/orders", async (req, res) => {
   }
 });
 
-ordersAPIRouter.get("/orders/:orderId", async (req, res) => {
-  try {
-    const orderId = Number(req.params.orderId);
-    const order = await OrderController.getOrder(new SequelizeOrderDataSource(), orderId);
-    return res.status(201).json(order);
-  } catch (error: any) {
-    if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
-    return res.status(500).json({ error: error.message });
-  }
-});
-
 ordersAPIRouter.get("/orders", async (req, res) => {
   try {
     const orders = await OrderController.getOrders(new SequelizeOrderDataSource());
@@ -52,6 +41,17 @@ ordersAPIRouter.get("/orders/all", async (req, res) => {
   }
 });
 
+ordersAPIRouter.get("/orders/:orderId", async (req, res) => {
+  try {
+    const orderId = Number(req.params.orderId);
+    const order = await OrderController.getOrder(new SequelizeOrderDataSource(), orderId);
+    return res.status(201).json(order);
+  } catch (error: any) {
+    if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 ordersAPIRouter.post("/orders/:orderId/checkout", async (req, res) => {
   try {
     const orderId = Number(req.params.orderId);
@@ -63,12 +63,23 @@ ordersAPIRouter.post("/orders/:orderId/checkout", async (req, res) => {
   }
 });
 
+ordersAPIRouter.get("/orders/:orderId/payment_status", async (req, res) => {
+  try {
+    const orderId = Number(req.params.orderId);
+    await OrderController.getPaymentStatus(new SequelizeOrderDataSource(), orderId);
+    return res.status(200).json({});
+  } catch (error: any) {
+    if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 ordersAPIRouter.post("/orders/:orderId/status", async (req, res) => {
   try {
-    const orderId = req.params.orderId;
+    const orderId = Number(req.params.orderId);
     const { status } = req.body;
-    await OrderController.updateOrderStatus(new SequelizeOrderDataSource(), Number(orderId), status);
-    return res.status(200).json({});
+    const order = await OrderController.updateOrderStatus(new SequelizeOrderDataSource(), orderId, status);
+    return res.status(200).json(order);
   } catch (error: any) {
     if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
     return res.status(500).json({ error: error.message });

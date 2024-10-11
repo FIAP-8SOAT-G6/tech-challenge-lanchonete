@@ -71,7 +71,7 @@ context("Get All Orders Use Case", () => {
       const getOrdersUseCase = setupGetOrdersAllUseCase();
       const orders = await getOrdersUseCase.getOrdersAll();
       expect(orders).to.not.be.undefined;
-      expect(orders.length).to.be.equals(0);
+      expect(orders?.length).to.be.equals(0);
     });
 
     it("should return all orders", async () => {
@@ -82,7 +82,7 @@ context("Get All Orders Use Case", () => {
       await Promise.all([createOrderUseCase.createOrder(orderDTO), createOrderUseCase.createOrder(orderDTO)]);
       const orders = await getOrdersAllUseCase.getOrdersAll();
       expect(orders).to.not.be.undefined;
-      expect(orders.length).to.be.equals(2);
+      expect(orders?.length).to.be.equals(2);
     });
   });
 });
