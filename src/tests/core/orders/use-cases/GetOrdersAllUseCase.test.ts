@@ -7,7 +7,7 @@ import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCu
 import GetOrdersAllUseCase from "../../../../core/orders/use-cases/GetOrdersAllUseCase";
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 
-import OrderGateway from "../../../../core/gateways/OrderGateways";
+import OrderGateway from "../../../../core/gateways/OrderGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import CustomerGateway from "../../../../core/gateways/CustomerGateway";

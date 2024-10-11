@@ -20,7 +20,7 @@ export interface OrderDataSource {
 
   createItem(orderDTO: OrderDTO, itemDTO: ItemDTO);
   updateItem(itemId: number, itemDTO: ItemDTO);
-  removeItem(itemId: number, itemDTO: ItemDTO);
+  removeItem(orderId: number, itemId: number);
 }
 
 export interface ProductDataSource {

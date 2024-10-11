@@ -1,4 +1,4 @@
-import OrderGateway from "../core/gateways/OrderGateways";
+import OrderGateway from "../core/gateways/OrderGateway";
 import ItemDTO from "../core/orders/dto/ItemDTO";
 import OrderDTO from "../core/orders/dto/OrderDTO";
 
@@ -40,6 +40,18 @@ export default class FakeOrderGateway implements OrderGateway {
     return this.#createOrderDTO(order);
   }
 
+  async getOrdersByStatusAndSortByAscDate(orderStatus: string): Promise<OrderDTO[]> {
+    const orders = this.orders
+      .filter((order) => order.status === orderStatus)
+      .map((order) => ({
+        ...order,
+        items: this.items.filter((item) => item.OrderId === order.id)
+      }))
+      .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
+
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
+
   async getOrder(id: number): Promise<OrderDTO | undefined> {
     const order = this.orders.find((order) => order.id === id);
     if (!order) return undefined;
@@ -47,62 +59,69 @@ export default class FakeOrderGateway implements OrderGateway {
     return this.#createOrderDTO(order);
   }
 
-  // async findAll(): Promise<OrderDTO[] | undefined> {
-  //   const orders = this.orders.map((order) => ({
-  //     ...order,
-  //     items: this.items.filter((item) => item.OrderId === order.id)
-  //   }));
-  //   return orders?.length === 0 ? undefined : orders.map(this.#createOrderDTO);
-  // }
+  async getOrdersAll(): Promise<OrderDTO[] | []> {
+    const orders = this.orders.map((order) => ({
+      ...order,
+      items: this.items.filter((item) => item.OrderId === order.id)
+    }));
+    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+  }
 
-  // async findOrdersByStatusAndSortByAscDate(orderStatus: string): Promise<OrderDTO[]> {
-  //   const orders = this.orders
-  //     .filter((order) => order.status === orderStatus)
-  //     .map((order) => ({
-  //       ...order,
-  //       items: this.items.filter((item) => item.OrderId === order.id)
-  //     }))
-  //     .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
+  async getPaymentStatus(orderId: number): Promise<string> {
+    const order = this.orders.find((order) => order.id === orderId);
+    return order?.status || "";
+  }
 
-  //   return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
-  // }
+  async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
+    const { id } = orderDTO;
+    const orderIndex = this.orders.findIndex((order) => order.id === id);
+    this.orders[orderIndex] = {
+      ...this.orders[orderIndex],
+      ...orderDTO
+    };
+    return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
+  }
 
-  // async createItem(order: OrderDTO, itemDTO: ItemDTO) {
-  //   const { id: OrderId } = order;
-  //   const { productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
+  async updateOrderStatus(orderId: number, status: string): Promise<OrderDTO> {
+    const orderIndex = this.orders.findIndex((order) => order.id === orderId);
+    this.orders[orderIndex].status = status;
+    return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
+  }
 
-  //   this.items.push({
-  //     id: this.items.length + 1,
-  //     OrderId,
-  //     ProductId,
-  //     quantity,
-  //     unitPrice,
-  //     totalPrice
-  //   });
-  // }
+  async addItem(orderDTO: OrderDTO, itemDTO: ItemDTO): Promise<OrderDTO> {
+    const { id: OrderId } = orderDTO;
+    const { productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
 
-  // async removeItem(orderId: number, itemId: number) {
-  //   const itemIndex = this.items.findIndex((item) => item.OrderId === orderId && item.id === itemId);
-  //   this.items.splice(itemIndex, 1);
-  // }
+    this.items.push({
+      id: this.items.length + 1,
+      OrderId,
+      ProductId,
+      quantity,
+      unitPrice,
+      totalPrice
+    });
 
-  // async updateItem(itemId: number, itemDTO: ItemDTO) {
-  //   const itemIndex = this.items.findIndex((item) => item.id === itemId);
-  //   this.items[itemIndex] = {
-  //     ...this.items[itemIndex],
-  //     ...itemDTO
-  //   };
-  // }
+    const order = this.orders.find((order) => order.id === OrderId);
 
-  // async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
-  //   const { id } = orderDTO;
-  //   const orderIndex = this.orders.findIndex((order) => order.id === id);
-  //   this.orders[orderIndex] = {
-  //     ...this.orders[orderIndex],
-  //     ...orderDTO
-  //   };
-  //   return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
-  // }
+    return this.#createOrderDTO(order);
+  }
+
+  async updateItem(itemId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
+    const itemIndex = this.items.findIndex((item) => item.id === itemId);
+    this.items[itemIndex] = {
+      ...this.items[itemIndex],
+      ...itemDTO
+    };
+    const orderId = this.items[itemIndex].OrderId;
+    const order = this.orders.find((order) => order.id === orderId);
+    return Promise.resolve(this.#createOrderDTO(order));
+  }
+
+  async deleteItem(orderId: number, itemId: number) {
+    const itemIndex = this.items.findIndex((item) => item.OrderId === orderId && item.id === itemId);
+    this.items.splice(itemIndex, 1);
+    return Promise.resolve();
+  }
 
   #createOrderDTO(databaseOrder?: FakeOrder) {
     return new OrderDTO({

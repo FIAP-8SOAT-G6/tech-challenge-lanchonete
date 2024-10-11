@@ -72,7 +72,7 @@ export default class SequelizeOrderRepository implements OrderRepository {
 
   async createItem(order: OrderDTO, itemDTO: ItemDTO) {
     const orderModel = await SequelizeOrder.findByPk(order.id);
-    const { id, orderId: OrderId, productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
+    const { productId: ProductId, quantity, unitPrice, totalPrice } = itemDTO;
     await orderModel!.createItem({
       ProductId,
       quantity: quantity!,

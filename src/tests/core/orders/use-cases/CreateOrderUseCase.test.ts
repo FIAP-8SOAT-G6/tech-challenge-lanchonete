@@ -9,7 +9,7 @@ import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
-import OrderGateway from "../../../../core/gateways/OrderGateways";
+import OrderGateway from "../../../../core/gateways/OrderGateway";
 import CustomerGateway from "../../../../core/gateways/CustomerGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
@@ -40,8 +40,8 @@ const CUSTOMER_DTO = new CustomerDTO({
   email: "john.doe@gmail.com"
 });
 
-let orderGateway: OrderGateway;
 let customerGateway: CustomerGateway;
+let orderGateway: OrderGateway;
 
 context("Order Use Case", () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 import OrderDTO from "../core/orders/dto/OrderDTO";
 
 export default class OrderPresenter {
-  public static adaptOrderData(order: OrderDTO | null): string {
+  public static adaptOrderData(order: OrderDTO | undefined): string {
     if (!order) return JSON.stringify({});
     return JSON.stringify({
       id: order.id,

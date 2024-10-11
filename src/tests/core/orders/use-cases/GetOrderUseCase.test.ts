@@ -9,7 +9,7 @@ import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCu
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 
-import OrderGateway from "../../../../core/gateways/OrderGateways";
+import OrderGateway from "../../../../core/gateways/OrderGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import CustomerGateway from "../../../../core/gateways/CustomerGateway";
@@ -77,9 +77,9 @@ context("Order Use Case", () => {
       const requestedOrder = await getOrderUseCase.getOrder(order.id!);
 
       expect(requestedOrder).to.not.be.undefined;
-      expect(requestedOrder.id).to.be.equals(order.id);
-      expect(requestedOrder.status).to.be.equals(order.status);
-      expect(requestedOrder.code).to.be.equals(order.code);
+      expect(requestedOrder?.id).to.be.equals(order.id);
+      expect(requestedOrder?.status).to.be.equals(order.status);
+      expect(requestedOrder?.code).to.be.equals(order.code);
     });
 
     it("should throw error when order does not exist", async () => {

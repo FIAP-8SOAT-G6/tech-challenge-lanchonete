@@ -88,6 +88,7 @@ export default class OrderModelDataSource implements OrderDataSource {
       unitPrice: unitPrice!,
       totalPrice: totalPrice!
     });
+    return order;
   }
 
   async updateItem(itemId: number, itemDTO: ItemDTO) {

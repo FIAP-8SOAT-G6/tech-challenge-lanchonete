@@ -1,6 +1,7 @@
+import ItemDTO from "../core/orders/dto/ItemDTO";
 import OrderDTO from "../core/orders/dto/OrderDTO";
 import { OrdersFactory } from "../factories/OrdersFactory";
-import { CustomerDataSource, OrderDataSource } from "../interfaces/DataSources";
+import { CustomerDataSource, OrderDataSource, ProductDataSource } from "../interfaces/DataSources";
 import OrderPresenter from "../presenters/OrderPresenters";
 
 export default class OrderController {
@@ -8,5 +9,64 @@ export default class OrderController {
     const useCase = OrdersFactory.makeCreateOrder(orderDataSource, customerDataSource);
     const createdOrder = await useCase.createOrder(order);
     return OrderPresenter.adaptOrderData(createdOrder);
+  }
+
+  public static async getOrder(orderDataSource: OrderDataSource, orderId: number): Promise<string> {
+    const useCase = OrdersFactory.makeGetOrder(orderDataSource);
+    const order = await useCase.getOrder(orderId);
+    return OrderPresenter.adaptOrderData(order);
+  }
+
+  public static async getOrders(orderDataSource: OrderDataSource): Promise<string> {
+    const useCase = OrdersFactory.makeGetOrders(orderDataSource);
+    const orders = await useCase.getOrders();
+    return OrderPresenter.adaptOrdersData(orders);
+  }
+
+  public static async getOrdersAll(orderDataSource: OrderDataSource): Promise<string> {
+    const useCase = OrdersFactory.makeGetOrdersAll(orderDataSource);
+    const ordersAll = await useCase.getOrdersAll();
+    return OrderPresenter.adaptOrdersData(ordersAll);
+  }
+
+  public static async getPaymentStatus(orderDataSource: OrderDataSource, orderId: number): Promise<string> {
+    const useCase = OrdersFactory.makeGetPaymentStatus(orderDataSource);
+    const paymentStatus = await useCase.getPaymentStatus(orderId);
+    return paymentStatus;
+  }
+
+  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<any> {
+    const useCase = OrdersFactory.makeCheckout(orderDataSource);
+    useCase.checkout(orderId);
+    return Promise.resolve();
+  }
+
+  public static async updateOrderStatus(orderDataSource: OrderDataSource, orderId: number, status: string): Promise<string> {
+    const useCase = OrdersFactory.makeUpdateOrderStatus(orderDataSource);
+    const order = await useCase.updateOrderStatus(orderId, status);
+    return OrderPresenter.adaptOrderData(order);
+  }
+
+  public static async addItem(
+    orderDataSource: OrderDataSource,
+    productDataSource: ProductDataSource,
+    orderId: number,
+    addItemDTO: ItemDTO
+  ): Promise<string> {
+    const useCase = OrdersFactory.makeAddItem(orderDataSource, productDataSource);
+    const order = await useCase.addItem(orderId, addItemDTO);
+    return OrderPresenter.adaptOrderData(order);
+  }
+
+  public static async updateItem(orderDataSource: OrderDataSource, orderId: number, itemId: number, updateItemDTO: ItemDTO): Promise<string> {
+    const useCase = OrdersFactory.makeUpdateItem(orderDataSource);
+    const order = await useCase.updateItem(orderId, itemId, updateItemDTO);
+    return OrderPresenter.adaptOrderData(order);
+  }
+
+  public static async deleteItem(orderDataSource: OrderDataSource, orderId: number, itemId: number): Promise<any> {
+    const useCase = OrdersFactory.makeDeleteItem(orderDataSource);
+    await useCase.deleteItem(orderId, itemId);
+    return;
   }
 }
