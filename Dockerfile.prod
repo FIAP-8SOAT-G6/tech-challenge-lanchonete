@@ -21,4 +21,4 @@ USER lanchonete-api
 
 RUN npm run build
 
-CMD [ "node", "out/index.js" ]
+CMD [ "node", "build/index.js" ]
