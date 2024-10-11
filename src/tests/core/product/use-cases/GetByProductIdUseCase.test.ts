@@ -4,14 +4,18 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import ProductDTO from "../../../../core/products/dto/ProductDTO";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
-import CreateProductUseCase from "../../../../core/products/use-cases/CreateProduct";
-import GetByProductIdUseCase from "../../../../core/products/use-cases/GetByProductId";
+import CreateProductUseCase from "../../../../core/products/use-cases/CreateProductUseCase";
+import GetByProductIdUseCase from "../../../../core/products/use-cases/GetByProductIdUseCase";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe("Get By Product Id", () => {
-  const repository = new FakeProductGateway();
+  let repository: FakeProductGateway;
+
+  beforeEach(() => {
+    repository = new FakeProductGateway();
+  });
 
   function setupCreateUseCase() {
     return new CreateProductUseCase(repository);

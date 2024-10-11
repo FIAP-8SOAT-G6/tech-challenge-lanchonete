@@ -1,5 +1,5 @@
 import ProductDTO from "../dto/ProductDTO";
-import ProductGateway from "../../gateways/ProductGateways";
+import ProductGateway from "../../gateways/ProductGateway";
 import GetByCategory from "../interfaces/GetByCategory";
 import ProductCategory from "../entities/ProductCategory";
 import InvalidCategoryError from "../exceptions/InvalidCategoryError";

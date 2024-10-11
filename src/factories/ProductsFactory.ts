@@ -6,12 +6,12 @@ import GetAllProducts from "../core/products/interfaces/GetAllProducts";
 import GetByCategory from "../core/products/interfaces/GetByCategory";
 import GetByProductId from "../core/products/interfaces/GetByProductId";
 import UpdateProduct from "../core/products/interfaces/UpdateProduct";
-import CreateProductUseCase from "../core/products/use-cases/CreateProduct";
-import DeleteProductUseCase from "../core/products/use-cases/DeleteProduct";
-import GetAllProductsUseCase from "../core/products/use-cases/GetAllProduct";
-import GetByCategoryUseCase from "../core/products/use-cases/GetByCategory";
-import GetByProductIdUseCase from "../core/products/use-cases/GetByProductId";
-import UpdateProductUseCase from "../core/products/use-cases/UpdateProduct";
+import CreateProductUseCase from "../core/products/use-cases/CreateProductUseCase";
+import DeleteProductUseCase from "../core/products/use-cases/DeleteProductUseCase";
+import GetAllProductsUseCase from "../core/products/use-cases/GetAllProductUseCase";
+import GetByCategoryUseCase from "../core/products/use-cases/GetByCategoryUseCase";
+import GetByProductIdUseCase from "../core/products/use-cases/GetByProductIdUseCase";
+import UpdateProductUseCase from "../core/products/use-cases/UpdateProductUseCase";
 
 export class ProductsFactory {
   public static makeGetAllProduct(dataSource: ProductDataSource): GetAllProducts {

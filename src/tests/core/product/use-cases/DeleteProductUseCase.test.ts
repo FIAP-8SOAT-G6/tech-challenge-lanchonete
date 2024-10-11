@@ -3,15 +3,19 @@ import FakeProductGateway from "../../../../gateways/FakeProductGateway";
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
-import CreateProductUseCase from "../../../../core/products/use-cases/CreateProduct";
-import GetByProductIdUseCase from "../../../../core/products/use-cases/GetByProductId";
-import DeleteProductUseCase from "../../../../core/products/use-cases/DeleteProduct";
+import CreateProductUseCase from "../../../../core/products/use-cases/CreateProductUseCase";
+import GetByProductIdUseCase from "../../../../core/products/use-cases/GetByProductIdUseCase";
+import DeleteProductUseCase from "../../../../core/products/use-cases/DeleteProductUseCase";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe("Delete Product", () => {
-  const repository = new FakeProductGateway();
+  let repository: FakeProductGateway;
+
+  beforeEach(() => {
+    repository = new FakeProductGateway();
+  });
 
   function setupCreateUseCase() {
     return new CreateProductUseCase(repository);

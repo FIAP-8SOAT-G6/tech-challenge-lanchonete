@@ -4,14 +4,19 @@ import FakeProductGateway from "../../../../gateways/FakeProductGateway";
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import ProductDTO from "../../../../core/products/dto/ProductDTO";
-import CreateProductUseCase from "../../../../core/products/use-cases/CreateProduct";
-import GetByCategoryUseCase from "../../../../core/products/use-cases/GetByCategory";
+import CreateProductUseCase from "../../../../core/products/use-cases/CreateProductUseCase";
+import GetByCategoryUseCase from "../../../../core/products/use-cases/GetByCategoryUseCase";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe("Get By Category", () => {
-  const repository = new FakeProductGateway();
+  let repository: FakeProductGateway;
+
+  beforeEach(() => {
+    repository = new FakeProductGateway();
+  });
+
   function setupCreateUseCase() {
     return new CreateProductUseCase(repository);
   }
