@@ -28,6 +28,7 @@ Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o com
 Ao acessar a URL `http://localhost:8080/`, você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
 
 #### Executando os testes
+
 Execute `npm run test` para rodar os testes unitários da aplicação
 
 ## Tarefas

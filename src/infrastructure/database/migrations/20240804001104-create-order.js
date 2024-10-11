@@ -12,6 +12,9 @@ module.exports = {
       status: {
         type: Sequelize.STRING
       },
+      paymentStatus: {
+        type: Sequelize.STRING
+      },
       code: {
         type: Sequelize.STRING
       },

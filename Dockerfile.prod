@@ -7,16 +7,18 @@ ENV PORT $PORT_SERVER
 
 EXPOSE $PORT
 
-RUN mkdir -p /home/node/app && chown -R lanchonete-api /home/node/app
+RUN mkdir -p /home/node/app
 
 WORKDIR /home/node/app
 
-COPY package*.json ./
+COPY . .
+
+RUN chown -R lanchonete-api /home/node/app
 
 RUN npm ci
 
 USER lanchonete-api
 
-COPY . .
+RUN npm run build
 
-CMD [ "node", "src/index.js" ]
+CMD [ "node", "build/index.js" ]

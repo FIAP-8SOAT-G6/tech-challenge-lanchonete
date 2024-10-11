@@ -1,12 +1,12 @@
 paths:
   /orders:
     get:
-      summary: Lista todos os pedidos
+      summary: Lista de pedidos priorizados por status e data de criação
       tags:
         - Pedidos
       responses:
         "200":
-          description: Lista de pedidos
+          description: Lista dos pedidos priorizados por status Pronto, Em preparação e Recebido por data de criação
           content:
             application/json:
               schema:
@@ -42,6 +42,22 @@ paths:
                 $ref: "#/components/schemas/Order"
         "400":
           description: Payload inválido
+        "500":
+          description: Erro interno do servidor
+  /orders/all:
+    get:
+      summary: Lista todos os pedidos
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
         "500":
           description: Erro interno do servidor
   /orders/{orderId}:
@@ -82,6 +98,68 @@ paths:
           description: Pedido finalizado
         "400":
           description: Não foi possivel finalizar o pedido pois está vazio.
+        "404":
+          description: Pedido não encontrado
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}/status:
+    post:
+      summary: Permite a atualização do status do pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      requestBody:
+        description: Payload para atualização do status do pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Novo status do pedido
+                  $ref: "#/components/schemas/OrderStatus"
+                  example: RECEIVED | PREPARING | DONE | FINISHED
+              required:
+                - status
+      responses:
+        "200":
+          description: Pedido atualizado
+        "400":
+          description: Não foi possivel atualizar o pedido pois está vazio ou o status informado é inválido.
+        "404":
+          description: Pedido não encontrado
+        "500":
+          description: Erro interno do servidor
+  /orders/{orderId}/payment_status:
+    get:
+      summary: Retorna o status do pagamento do pedido
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      tags:
+        - Pedidos
+      responses:
+        "200":
+          description: Status de pagamento do pedido
+          content:
+            application/json:
+              schema:
+                type: string
+                $ref: "#/components/schemas/OrderPaymentsStatus"
+        "404":
+          description: Pedido não encontrado
         "500":
           description: Erro interno do servidor
   /orders/{orderId}/items:
@@ -281,4 +359,13 @@ components:
         - PAYED
         - RECEIVED
         - PREPARING
+        - DONE
         - FINISHED
+
+    OrderPaymentsStatus:
+      type: string
+      description: Status do Pagamento do Pedido
+      enum:
+        - PENDING
+        - DENIED
+        - APPROVED
