@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: lanchonete-db
+  name: lanchnonete-db-statefulset
 spec:
+  serviceName: lanchonete-db
   replicas: 1
   selector:
     matchLabels:
