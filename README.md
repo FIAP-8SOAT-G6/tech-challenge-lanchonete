@@ -1,14 +1,15 @@
 # Software Architecture Tech Challenge - Lanchonete
 
-Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP utilizando princípios de Arquitetura Hexagonal.
+Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP utilizando princípios de Arquitetura Limpa.
 
-Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael, @anadezuo e @RobsonArcoleze.
+Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 ## Rodando o Projeto
 
 #### Pré-requisitos
 
 - Ter a instalação do `docker` localmente.
+- Ter alguma ferramenta para executar `kubernetes` localmente.
 
 #### Executando o Docker
 
@@ -23,9 +24,23 @@ Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o com
 
 - `docker-compose down`
 
+#### Executando o Kubernetes
+
+Para executar o projeto utilizando Kubernetes, execute o seguinte comando:
+
+- `kubectl apply -f k8s/ -R`
+> Pode ser necessário utilizar outro comando dependendo da ferramente de Kubernetes que estiveres utilizando.
+
+Isso criará os artefatos necessários accessar o projeto de um Cluster K8s.
+
 #### Acessando as APIs
 
-Ao acessar a URL `http://localhost:8080/`, você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
+Ao acessar a URL `http://localhost:8080/` (`docker compose`) ou `http://localhost:31200` (`kubernetes`), você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
+
+> Caso você esteja executando em Cluster Kubernetes, pode ser necessário habilitar criar um _tunnel_ entre a sua máquina e o Cluster Kubernetes. Por exemplo:  
+> Minikube - `minikube service lanchonete-api-servce --url`  
+> Docker Desktop - `kubectl port-forward services/lanchonete-api-service 8080:80`  
+> Isso é necessário apenas se não conseguir acessar o Cluster de seu `localhost`.  
 
 #### Executando os testes
 
