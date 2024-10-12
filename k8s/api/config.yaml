@@ -6,3 +6,4 @@ metadata:
     app: lanchonete-api
 data:
   API_PORT: "31200"
+  
