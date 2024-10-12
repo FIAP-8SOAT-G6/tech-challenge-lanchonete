@@ -54,7 +54,7 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 ## Tecnologias & Bibliotecas
 
-- NodeJS (^v22) & JavaScript
+- NodeJS (^v22) & TypeScript
   - `express` - https://www.npmjs.com/package/express
   - `sequelize` - https://www.npmjs.com/package/sequelize
 - Postgres
@@ -66,14 +66,22 @@ As tarefas estão descritas em projetos da organização do GitHub.
 ## Estrutura do Projeto
 
 - `src` - Código fonte do projeto.
-- `src/adapters` - `Adapters` do projeto para as tecnologias utilizadas. Por exemplo, `DatabaseAdapter` para operações com banco e `Controller` para processamento de requisições HTTP.
-- `src/core` - Objetos do domínio da solução. Não devem depender de objetos que são criados fora dessa camada, devendo utilizar interfaces (`ports`) e injeção de dependência para execução da aplicação.
-- `src/core/<domain>/entities` - Entidades do domínio conforme identificado através dos exercícios de Domain-Driven Design.
-- `src/core/<domain>/use-cases` - Processos de negócio que foram identificados dentro do domínio; executados através da orquestração das entidades e das `ports`.
+- `src/api` - **Framework & Drivers** - Objetos que fazem a comunicação com o `express` para criar a API.
+- `src/api` - **Frameworks & Drivers** - Objetos que fazem a comunicação com o `sequelize` para accessar o banco de dados.
+- `src/controllers` - **Interface Adapters** - Objetos que fazem a orquestração dos casos de uso para executar as regras de negócio.
+- `src/gateways`- **Interface Adapters** - Objetos que intermediam a comunicação entre os casos de uso e os dados externos da aplicação, implementando as interfaces definidas pelos `use-cases`.
+- `src/presenters` - **Interface Adapters** - Objetos que formatam os dados retornados pelos `use-cases` para serem retornados ao cliente.
+- `src/interfaces` - **Interface Adapters** - Interfaces definidas pelos objetos pertencentes a esta camada para comunicação com objetos da camada **Framework & Drivers**
+- `src/core` - Objetos do domínio da solução. Não devem depender de objetos que são criados fora dessa camada, devendo utilizar interfaces e injeção de dependência para execução da aplicação.
+- `src/core/interfaces` - Interfaces definidas pelos objetos pertencentes a esta camada para comunicação com objetos externos (**Interface Adapters**);
+- `src/core/<domain>/entities` - **Enteprise Business Rules** Entidades do domínio conforme identificado através dos exercícios de Domain-Driven Design.
+- `src/core/<domain>/use-cases` - **Application Business Rules** Processos de negócio que foram identificados dentro do domínio; executados através da orquestração das entidades e das interfaces.
 - `src/core/<domain>/exceptions` - Exceções lançadas pelos processos de negócio e entidades;
 - `src/core/<domain>/dto` - Objetos para transferência de dados entre as camadas da aplicação;
-- `src/infrastructure` - Configurações de infraestrutura como banco de dados e documentação
+- `src/factories` - Classes que auxiliam a instânciar os objetos das demais camadas.
 - `src/tests` - Testes do projeto.
+- `src/infrastructure` - Configurações de infraestrutura como banco de dados e documentação
+- `src/routes` - Descrição das rotas do projeto para o Swagger.
 - `app.js` - Ponto de entrada da aplicação, onde os objetos são instanciados com suas respectivas dependências e a aplicação começa a ser executada.
 
 **OBS:** O arquivo `.env` foi compartilhado neste repositório para fins didáticos e facilidade nos testes, sendo esta uma má prática em ambientes de desenvolvimento real.
