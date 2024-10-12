@@ -5,7 +5,7 @@ metadata:
   labels:
     app: lanchonete-db
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 5432
   selector:

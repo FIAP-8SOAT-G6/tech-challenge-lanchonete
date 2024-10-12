@@ -11,9 +11,22 @@ spec:
       labels:
         app: lanchonete-api
     spec:
+      initContainers:
+      - name: wait-for-database
+        image: alpine
+        env:
+        - name: DATABASE_HOST
+          value: "lanchonete-db"
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: lanchonete-db-config
+              key: POSTGRES_PORT
+        command: ['sh', '-c', 'until nc -z $DATABASE_HOST $DATABASE_PORT; do echo "waiting for database"; sleep 5; done; echo "Database is up!"']
+
       containers:
         - name: lanchonete-api-container
-          image: vitorrafael/lanchonete-api:latest
+          image: vitorrafael/lanchonete-api:sequelize-try-catch
           env:
             - name: POSTGRES_HOST
               value: "lanchonete-db"
