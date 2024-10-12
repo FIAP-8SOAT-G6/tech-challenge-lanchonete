@@ -1,5 +1,5 @@
 import CustomerDTO from "../core/customers/dto/CustomerDTO";
-import CustomerGateway from "../core/gateways/CustomerGateway";
+import CustomerGateway from "../core/interfaces/CustomerGateway";
 
 type FakeCustomer = {
   id: number;

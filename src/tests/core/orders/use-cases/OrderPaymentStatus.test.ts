@@ -6,8 +6,8 @@ import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
 import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
 
-import CustomerGateway from "../../../../core/gateways/CustomerGateway";
-import OrderGateway from "../../../../core/gateways/OrderGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
+import OrderGateway from "../../../../core/interfaces/OrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 

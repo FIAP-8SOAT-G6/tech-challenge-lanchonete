@@ -9,8 +9,8 @@ import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
-import OrderGateway from "../../../../core/gateways/OrderGateway";
-import CustomerGateway from "../../../../core/gateways/CustomerGateway";
+import OrderGateway from "../../../../core/interfaces/OrderGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";

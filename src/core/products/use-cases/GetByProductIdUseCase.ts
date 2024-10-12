@@ -1,5 +1,5 @@
 import ProductDTO from "../dto/ProductDTO";
-import ProductGateway from "../../gateways/ProductGateway";
+import ProductGateway from "../../interfaces/ProductGateway";
 import GetByProductId from "../interfaces/GetByProductId";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 

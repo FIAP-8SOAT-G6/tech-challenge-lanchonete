@@ -6,7 +6,7 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
-import CustomerGateway from "../../../../core/gateways/CustomerGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;

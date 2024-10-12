@@ -1,4 +1,4 @@
-import ProductGateway from "../../gateways/ProductGateway";
+import ProductGateway from "../../interfaces/ProductGateway";
 import DeleteProduct from "../interfaces/DeleteProduct";
 
 export default class DeleteProductUseCase implements DeleteProduct {

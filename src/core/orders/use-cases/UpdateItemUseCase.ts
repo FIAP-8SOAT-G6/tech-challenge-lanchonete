@@ -1,5 +1,5 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import OrderGateway from "../../gateways/OrderGateway";
+import OrderGateway from "../../interfaces/OrderGateway";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import Item from "../entities/Item";
