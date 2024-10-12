@@ -63,6 +63,7 @@ Execute `npm run test` para rodar os testes unitários da aplicação
 As tarefas estão descritas em projetos da organização do GitHub.
 
 - [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
+- [Fase 2](https://github.com/orgs/FIAP-8SOAT-G6/projects/2)
 
 ## Tecnologias & Bibliotecas
 
