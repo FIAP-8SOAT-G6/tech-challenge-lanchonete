@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lanchonete-api-config
+  labels:
+    app: lanchonete-api
+data:
+  API_PORT: "31200"
+  
