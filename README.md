@@ -80,7 +80,7 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 - `src` - Código fonte do projeto.
 - `src/api` - **Framework & Drivers** - Objetos que fazem a comunicação com o `express` para criar a API.
-- `src/api` - **Frameworks & Drivers** - Objetos que fazem a comunicação com o `sequelize` para accessar o banco de dados.
+- `src/external` - **Frameworks & Drivers** - Objetos que fazem a comunicação com o sistemas externos. Por exemplo, objetos `DataSource`que interagem com o `sequelize` para accessar o banco de dados.
 - `src/controllers` - **Interface Adapters** - Objetos que fazem a orquestração dos casos de uso para executar as regras de negócio.
 - `src/gateways`- **Interface Adapters** - Objetos que intermediam a comunicação entre os casos de uso e os dados externos da aplicação, implementando as interfaces definidas pelos `use-cases`.
 - `src/presenters` - **Interface Adapters** - Objetos que formatam os dados retornados pelos `use-cases` para serem retornados ao cliente.
@@ -91,7 +91,7 @@ As tarefas estão descritas em projetos da organização do GitHub.
 - `src/core/<domain>/use-cases` - **Application Business Rules** Processos de negócio que foram identificados dentro do domínio; executados através da orquestração das entidades e das interfaces.
 - `src/core/<domain>/exceptions` - Exceções lançadas pelos processos de negócio e entidades;
 - `src/core/<domain>/dto` - Objetos para transferência de dados entre as camadas da aplicação;
-- `src/factories` - Classes que auxiliam a instânciar os objetos das demais camadas.
+- `src/factories` - Classes que auxiliam a instanciar os objetos das demais camadas.
 - `src/tests` - Testes do projeto.
 - `src/infrastructure` - Configurações de infraestrutura como banco de dados e documentação
 - `src/routes` - Descrição das rotas do projeto para o Swagger.
