@@ -1,4 +1,4 @@
-## 1. Objetivo
+## 1. O que esse PR faz?
 
 > Descrever o objetivo do PR
 
