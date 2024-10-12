@@ -1,5 +1,5 @@
 paths:
-  /webhooks:
+  /webhooks/payments:
     post:
       summary: Recebe confirmação de pagamento aprovado ou recusado
       tags:
