@@ -37,6 +37,11 @@ spec:
                 configMapKeyRef:
                   name: lanchonete-db-config
                   key: POSTGRES_PASSWORD
+            - name: API_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: lanchonete-api-config
+                  key: API_PORT
           ports:
             - containerPort: 8080
           livenessProbe:
