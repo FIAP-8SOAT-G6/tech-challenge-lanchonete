@@ -15,4 +15,10 @@ export default class CustomerGateway implements CustomerGatewayInterface {
     if (customer) return customer[0];
     return undefined;
   }
+
+  async findById(id: number): Promise<CustomerDTO | undefined> {
+    const customer = await this.dataSource.findByProperies({ id });
+    if (customer) return customer[0];
+    return undefined;
+  }
 }
