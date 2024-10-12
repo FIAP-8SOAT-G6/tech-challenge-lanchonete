@@ -26,7 +26,7 @@ spec:
 
       containers:
         - name: lanchonete-api-container
-          image: vitorrafael/lanchonete-api:sequelize-try-catch
+          image: vitorrafael/lanchonete-api:latest
           env:
             - name: POSTGRES_HOST
               value: "lanchonete-db"
