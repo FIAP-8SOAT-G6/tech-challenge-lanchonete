@@ -9,13 +9,15 @@ EXPOSE $PORT
 
 RUN mkdir -p /home/node/app
 
-WORKDIR /home/node/app
-
-COPY . .
-
 RUN chown -R lanchonete-api /home/node/app
 
+WORKDIR /home/node/app
+
+COPY package*.json ./
+
 RUN npm ci
+
+COPY --chown=lanchonete-api . .
 
 USER lanchonete-api
 

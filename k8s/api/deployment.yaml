@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lanchonete-api
+  labels:
+    app: lanchonete-api
+spec:
+  template:
+    metadata:
+      name: lanchonete-api
+      labels:
+        app: lanchonete-api
+    spec:
+      containers:
+        - name: lanchonete-api-container
+          image: vitorrafael/lanchonete-api:latest
+          env:
+            - name: POSTGRES_HOST
+              value: "lanchonete-db"
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: lanchonete-db-config
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: lanchonete-db-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: lanchonete-db-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD # DEVERIA USAR SECRET!
+              valueFrom:
+                configMapKeyRef:
+                  name: lanchonete-db-config
+                  key: POSTGRES_PASSWORD
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 5
+            initialDelaySeconds: 3
+          resources:
+            requests:
+              memory: "100M"
+              cpu: "250m"
+            limits:
+              memory: "200M"
+              cpu: "5000m"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lanchonete-api
