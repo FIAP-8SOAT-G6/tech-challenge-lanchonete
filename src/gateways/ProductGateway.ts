@@ -1,5 +1,5 @@
 import { ProductDataSource } from "../interfaces/DataSources";
-import ProductGatewayInterface from "../core/gateways/ProductGateway";
+import ProductGatewayInterface from "../core/interfaces/ProductGateway";
 import ProductDTO from "../core/products/dto/ProductDTO";
 
 export default class ProductGateway implements ProductGatewayInterface {

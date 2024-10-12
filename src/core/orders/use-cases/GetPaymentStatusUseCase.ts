@@ -1,5 +1,5 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import OrderGateway from "../../gateways/OrderGateway";
+import OrderGateway from "../../interfaces/OrderGateway";
 import OrderDTO from "../dto/OrderDTO";
 import Order from "../entities/Order";
 import GetPaymentStatus from "../interfaces/GetPaymentStatus";

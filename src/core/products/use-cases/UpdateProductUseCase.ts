@@ -1,6 +1,6 @@
 import Product from "../entities/Product";
 import ProductDTO from "../dto/ProductDTO";
-import ProductGateway from "../../gateways/ProductGateway";
+import ProductGateway from "../../interfaces/ProductGateway";
 import UpdateProduct from "../interfaces/UpdateProduct";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 

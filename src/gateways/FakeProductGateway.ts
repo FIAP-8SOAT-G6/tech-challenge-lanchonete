@@ -1,5 +1,5 @@
 import ProductDTO from "../core/products/dto/ProductDTO";
-import ProductGateway from "../core/gateways/ProductGateway";
+import ProductGateway from "../core/interfaces/ProductGateway";
 
 type FakeProduct = {
   id: number;

@@ -1,4 +1,4 @@
-import OrderGateway from "../core/gateways/OrderGateway";
+import OrderGateway from "../core/interfaces/OrderGateway";
 import ItemDTO from "../core/orders/dto/ItemDTO";
 import OrderDTO from "../core/orders/dto/OrderDTO";
 
