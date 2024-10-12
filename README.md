@@ -4,6 +4,18 @@ Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP ut
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
+#### Tabela de Conteúdos
+
+1. [Rodando o Projeto](#rodando-o-projeto)
+   1. [Pré-Requsiitos](#pré-requisitos)
+   2. [Executando o Docker](#executando-o-docker)
+   3. [Executando o Kubernetes](#executando-o-kubernetes)
+   4. [Acessando as APIs](#acessando-as-apis)
+   5. [Executando os Testes](#executando-os-testes)
+2. [Tarefas](#tarefas)
+3. [Tecnologias & Bibliotecas](#tecnologias--bibliotecas)
+4. [Estrutura do Projeto](#estrutura-do-projeto)
+
 ## Rodando o Projeto
 
 #### Pré-requisitos
@@ -29,7 +41,7 @@ Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o com
 Para executar o projeto utilizando Kubernetes, execute o seguinte comando:
 
 - `kubectl apply -f k8s/ -R`
-> Pode ser necessário utilizar outro comando dependendo da ferramente de Kubernetes que estiveres utilizando.
+  > Pode ser necessário utilizar outro comando dependendo da ferramente de Kubernetes que estiveres utilizando.
 
 Isso criará os artefatos necessários accessar o projeto de um Cluster K8s.
 
@@ -40,7 +52,7 @@ Ao acessar a URL `http://localhost:8080/` (`docker compose`) ou `http://localhos
 > Caso você esteja executando em Cluster Kubernetes, pode ser necessário habilitar criar um _tunnel_ entre a sua máquina e o Cluster Kubernetes. Por exemplo:  
 > Minikube - `minikube service lanchonete-api-servce --url`  
 > Docker Desktop - `kubectl port-forward services/lanchonete-api-service 8080:80`  
-> Isso é necessário apenas se não conseguir acessar o Cluster de seu `localhost`.  
+> Isso é necessário apenas se não conseguir acessar o Cluster de seu `localhost`.
 
 #### Executando os testes
 
