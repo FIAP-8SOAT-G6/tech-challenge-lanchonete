@@ -67,7 +67,19 @@ No diagrama a seguir, é possível identificar que cada camada se comunica de fo
 
 ### Arquitetura do Kubernetes
 
+A arquitetura K8s foi desenvolvida para permitir a escalabilidade do sistema conforme a demanda. O diagrama a seguir representa essa estrutura:
 ![Arquitetura K8s](diagrams/k8s-architecture.png)
+
+A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a seguinte estrutura:
+* **Deployment lanchonete-api:** Responsável por gerenciar os pods que executam a aplicação desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service NodePort** para que clientes consigam consumir as APIs desenvolvidas.
+* **StatefulSet lanchonete-db:** Responsável por gerenciar o banco de dados da aplicação. Está vinculado a um **Persistent Volume Claim (PVC)** para garantir o armazenamento persistente dos dados, utilizando um Persistent Volume. O banco de dados é acessível apenas dentro do cluster K8s por meio de um **ClusterIP Service**, de forma que os pods da aplicação possam se conectar ao banco de dados de maneira segura.
+* **ConfigMaps lanchonete-api-config e lanchonete-db-config**: Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
+* **Secret lanchonete-db-secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
+
+#### Fluxo de Comunicação
+1. O NodePort Service expõe a API externamente, encaminhando as requisições para os diferentes pods gerenciados pelo Deployment `lanchonete-api`.
+2. Os pods `lanchonete-api` se comunicam com o `lanchonete-db` por meio de um ClusterIP Service, que encaminha as requisições para os pods do banco de dados, gerenciados pelo StatefulSet. Assim, o `lanchonete-api` pode realizar as operações necessárias no banco de dados.
+  > Os ConfigMaps e o Secret são utilizados durante a inicialização dos pods para configurar a conexão com o banco de dados e outros serviços externos
 
 ### Arquitetura AWS - Idealização
 
