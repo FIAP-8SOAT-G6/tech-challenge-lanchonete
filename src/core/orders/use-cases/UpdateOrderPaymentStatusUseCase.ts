@@ -1,6 +1,6 @@
 import OrderGateway from "../../../gateways/OrderGateway";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import PaymentDTO from "../../webhooks/dto/PaymentDTO";
+import PaymentDTO from "../dto/PaymentDTO";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import Item from "../entities/Item";

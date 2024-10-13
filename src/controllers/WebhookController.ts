@@ -1,5 +1,5 @@
 import { WebhooksFactory } from "../factories/WebhooksFactory";
-import PaymentDTO from "../core/webhooks/dto/PaymentDTO";
+import PaymentDTO from "../core/orders/dto/PaymentDTO";
 import { OrderDataSource } from "../interfaces/DataSources";
 import OrderPresenter, { OrderResponse } from "../presenters/OrderPresenters";
 

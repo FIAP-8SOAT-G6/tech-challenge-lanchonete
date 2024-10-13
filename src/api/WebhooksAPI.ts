@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import WebhookController from "../controllers/WebhookController";
 import SequelizeOrderDataSource from "../external/SequelizeOrderDataSource";
-import PaymentDTO from "../core/webhooks/dto/PaymentDTO";
+import PaymentDTO from "../core/orders/dto/PaymentDTO";
 import ResourceNotFoundError from "../core/common/exceptions/ResourceNotFoundError";
 
 const webhooksAPIRouter = Router();
