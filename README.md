@@ -8,6 +8,9 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 1. [Requisitos](#requisitos)
 2. [Arquitetura](#arquitetura)
+   1. [Arquitetura da Aplicação](#arquitetura-da-aplicação)
+   2. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+   3. [Arquitetura AWS - Idealização](#arquitetura-aws---idealização)
 3. [Rodando o Projeto](#rodando-o-projeto)
    1. [Pré-Requsiitos](#pré-requisitos)
    2. [Executando o Docker](#executando-o-docker)
@@ -22,30 +25,42 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 ### Requisitos Funcionais
 
-| Identificador | Descrição
-|---------------|----------
-| RF-1 | Aplicação deve fornecer API para cadastrar o cliente.
-| RF-2 | Aplicação deve fornecer API para identificar o cliente por CPF.
-| RF-3 | Aplicação deve fornecer API para criar, editar e remover produtos.
-| RF-4 | Aplicação deve fornecer API para buscar produtos por categoria.
-| RF-5 | Aplicação deve fornecer API para realizar o checkout do pedido; durante a Fase 1, deverá ser implementado um _fake checkout_.
-| RF-6 | Aplicação deve fornecer API para listar os pedidos.
-| RF-7 | Aplicação deve fornecer API para consultar o status de pagamento do pedido, se foi aprovado ou recusado.
-| RF-8 | Aplicação deve fornecer um _webhook_ para receber confirmação do pagamento aprovado ou recusado.
-| RF-9 | Aplicação deverá ordernar os pedidos pelo status 'Pronto' > 'Em Preparação' > 'Recebido' e data de criação. Pedidos 'Finalizado' não devem ser retornados.
-| RF-10 | Aplicação deverá fornecer API para atualizar o status do pedido.
-| RF-11 | \[**Opcional**\] Aplicação deverá integrar com Mercado Pago.
+| Identificador | Descrição                                                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RF-1          | Aplicação deve fornecer API para cadastrar o cliente.                                                                                                      |
+| RF-2          | Aplicação deve fornecer API para identificar o cliente por CPF.                                                                                            |
+| RF-3          | Aplicação deve fornecer API para criar, editar e remover produtos.                                                                                         |
+| RF-4          | Aplicação deve fornecer API para buscar produtos por categoria.                                                                                            |
+| RF-5          | Aplicação deve fornecer API para realizar o checkout do pedido; durante a Fase 1, deverá ser implementado um _fake checkout_.                              |
+| RF-6          | Aplicação deve fornecer API para listar os pedidos.                                                                                                        |
+| RF-7          | Aplicação deve fornecer API para consultar o status de pagamento do pedido, se foi aprovado ou recusado.                                                   |
+| RF-8          | Aplicação deve fornecer um _webhook_ para receber confirmação do pagamento aprovado ou recusado.                                                           |
+| RF-9          | Aplicação deverá ordernar os pedidos pelo status 'Pronto' > 'Em Preparação' > 'Recebido' e data de criação. Pedidos 'Finalizado' não devem ser retornados. |
+| RF-10         | Aplicação deverá fornecer API para atualizar o status do pedido.                                                                                           |
+| RF-11         | \[**Opcional**\] Aplicação deverá integrar com Mercado Pago.                                                                                               |
 
 ### Requisitos Não-Funcionais
 
-| Identificador | Descrição
-|---------------|----------
-| RNF-1 | Aplicação deverá ser desenvolvida seguindo os princípios de Arquitetura Limpa
-| RNF-2 | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection
-| RNF-3 | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.
-| RNF-4 | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta.
+| Identificador | Descrição                                                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| RNF-1         | Aplicação deverá ser desenvolvida seguindo os princípios de Arquitetura Limpa                                                       |
+| RNF-2         | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection                                                 |
+| RNF-3         | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.                           |
+| RNF-4         | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta. |
 
 ## Arquitetura
+
+### Arquitetura da Aplicação
+
+![Arquitetura da Aplicação](diagrams/application-architecture.png)
+
+### Arquitetura do Kubernetes
+
+![Arquitetura K8s](diagrams/k8s-architecture.png)
+
+### Arquitetura AWS - Idealização
+
+![Arquitetura AWS](diagrams/aws-eks-architecture-diagram.png)
 
 ## Rodando o Projeto
 
