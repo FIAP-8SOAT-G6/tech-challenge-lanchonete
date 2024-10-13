@@ -1,7 +1,6 @@
 # Software Architecture Tech Challenge - Lanchonete
 
 Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP utilizando princípios de Arquitetura Limpa.
-<<<<<<< HEAD
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
@@ -44,24 +43,6 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 | RNF-2 | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection
 | RNF-3 | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.
 | RNF-4 | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta.
-
-
-=======
-
-Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
-
-#### Tabela de Conteúdos
-
-1. [Rodando o Projeto](#rodando-o-projeto)
-   1. [Pré-Requsiitos](#pré-requisitos)
-   2. [Executando o Docker](#executando-o-docker)
-   3. [Executando o Kubernetes](#executando-o-kubernetes)
-   4. [Acessando as APIs](#acessando-as-apis)
-   5. [Executando os Testes](#executando-os-testes)
-2. [Tarefas](#tarefas)
-3. [Tecnologias & Bibliotecas](#tecnologias--bibliotecas)
-4. [Estrutura do Projeto](#estrutura-do-projeto)
->>>>>>> d5290f41596ea7a51832c20fa120ba0b1b6bd553
 
 ## Rodando o Projeto
 
@@ -146,4 +127,4 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 **OBS:** O arquivo `.env` foi compartilhado neste repositório para fins didáticos e facilidade nos testes, sendo esta uma má prática em ambientes de desenvolvimento real.
 
-![Estrutura do Projeto](assets/ProjectStructure.png)
+![Estrutura do Projeto](diagrams/project-structure.png.png)
