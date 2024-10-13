@@ -56,7 +56,12 @@ export function AddItem (orderId, productId, quantity) {
   let payload = JSON.stringify({ orderId: orderId, productId: productId, quantity: quantity });
   let params = { headers: { "Content-Type": "application/json" } }
 
-  return http.post(`${BASE_URL}/orders/${orderId}/items`, payload, params);
+  let res = http.post(`${BASE_URL}/orders/${orderId}/items`, payload, params);
+
+  check(res, {
+    "POST /orders/<order_id>/items status is 201": (r) => r.status === 201,
+    "POST /orders/<order_id>/items took less than 700ms": (r) => r.timings.duration < 700
+  });
 }
 
 export function getCustomer(cpf) {
