@@ -1,4 +1,4 @@
-export default class WebhookDTO {
+export default class PaymentDTO {
     public orderId?: number;
     public paymentStatus?: string;
     public timestamp?: Date;

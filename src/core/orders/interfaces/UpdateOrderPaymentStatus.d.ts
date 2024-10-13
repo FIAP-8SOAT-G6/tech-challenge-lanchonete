@@ -1,5 +1,5 @@
-import WebhookDTO from "../../webhooks/dto/WebhookDTO";
+import PaymentDTO from "../../webhooks/dto/PaymentDTO";
 
 export default interface UpdateOrderPaymentStatus {
-  updateOrderPaymentStatus(webhookDTO: WebhookDTO): Promise<OrderDTO>;
+  updateOrderPaymentStatus(paymentDTO: PaymentDTO): Promise<OrderDTO>;
 }

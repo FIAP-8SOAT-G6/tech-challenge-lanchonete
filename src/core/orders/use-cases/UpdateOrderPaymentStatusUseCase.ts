@@ -1,6 +1,6 @@
 import OrderGateway from "../../../gateways/OrderGateway";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import WebhookDTO from "../../webhooks/dto/WebhookDTO";
+import PaymentDTO from "../../webhooks/dto/PaymentDTO";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import Item from "../entities/Item";
@@ -10,8 +10,8 @@ import UpdateOrderPaymentStatus from "../interfaces/UpdateOrderPaymentStatus";
 export default class UpdateOrderPaymentStatusUseCase implements UpdateOrderPaymentStatus {
   constructor(private orderGateway: OrderGateway) { }
 
-  async updateOrderPaymentStatus(webhookDTO: WebhookDTO): Promise<OrderDTO> {
-    const { orderId, paymentStatus } = webhookDTO;
+  async updateOrderPaymentStatus(paymentDTO: PaymentDTO): Promise<OrderDTO> {
+    const { orderId, paymentStatus } = paymentDTO;
     const orderDTO = await this.orderGateway.getOrder(orderId!);
     this.#validateOrderExists(orderDTO?.id!, orderId!);
 

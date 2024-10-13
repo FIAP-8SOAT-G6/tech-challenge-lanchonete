@@ -1,12 +1,12 @@
 import { WebhooksFactory } from "../factories/WebhooksFactory";
-import WebhookDTO from "../core/webhooks/dto/WebhookDTO";
+import PaymentDTO from "../core/webhooks/dto/PaymentDTO";
 import { OrderDataSource } from "../interfaces/DataSources";
 import OrderPresenter, { OrderResponse } from "../presenters/OrderPresenters";
 
 export default class WebhookController {
-  public static async process(orderDataSource: OrderDataSource, webhookDTO: WebhookDTO): Promise<OrderResponse> {
+  public static async process(orderDataSource: OrderDataSource, paymentDTO: PaymentDTO): Promise<OrderResponse> {
     const useCase = WebhooksFactory.process(orderDataSource);
-    const updatedOrder = await useCase.updateOrderPaymentStatus(webhookDTO);
+    const updatedOrder = await useCase.updateOrderPaymentStatus(paymentDTO);
 
     return OrderPresenter.adaptOrderData(updatedOrder);
   }

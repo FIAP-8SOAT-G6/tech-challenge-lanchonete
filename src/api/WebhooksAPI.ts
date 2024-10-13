@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import WebhookController from "../controllers/WebhookController";
 import SequelizeOrderDataSource from "../external/SequelizeOrderDataSource";
-import WebhookDTO from "../core/webhooks/dto/WebhookDTO";
+import PaymentDTO from "../core/webhooks/dto/PaymentDTO";
 import ResourceNotFoundError from "../core/common/exceptions/ResourceNotFoundError";
 
 const webhooksAPIRouter = Router();
@@ -10,12 +10,12 @@ const webhooksAPIRouter = Router();
 webhooksAPIRouter.post("/webhooks/payments", async (req, res) => {
   try {
     const { orderId, paymentStatus, timestamp } = req.body;  
-    const webhookDTO = new WebhookDTO({ 
+    const paymentDTO = new PaymentDTO({ 
       orderId,
       paymentStatus,
       timestamp
     });
-    const order = await WebhookController.process(new SequelizeOrderDataSource(), webhookDTO);
+    const order = await WebhookController.process(new SequelizeOrderDataSource(), paymentDTO);
     
     return res.status(200).json(order);
   } catch (error: any) {
