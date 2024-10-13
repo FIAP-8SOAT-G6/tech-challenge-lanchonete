@@ -45,11 +45,11 @@ spec:
                 configMapKeyRef:
                   name: lanchonete-db-config
                   key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD # DEVERIA USAR SECRET!
+            - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: lanchonete-db-config
-                  key: POSTGRES_PASSWORD
+                secretKeyRef:
+                  name: lanchonete-db-secret
+                  key: DB_PASSWORD
             - name: API_PORT
               valueFrom:
                 configMapKeyRef:
