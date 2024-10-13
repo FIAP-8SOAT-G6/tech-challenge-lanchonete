@@ -6,7 +6,7 @@ import InvalidStatusTransitionError from "../exceptions/InvalidStatusTransitionE
 import ClosedOrderError from "../exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import ItemDTO from "../dto/ItemDTO";
-import OrderPaymentsStatus from "./OrderPaymentsStatus";
+import OrderPaymentsStatus, { isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS: {
   [key in OrderStatus]: OrderStatus[];
@@ -109,6 +109,12 @@ export default class Order {
       } else {
         throw new InvalidStatusTransitionError(this.status as string, status, ALLOWED_TARGET_STATUS_TRANSITIONS[status]);
       }
+    }
+  }
+
+  setPaymentStatus(paymentStatus: string) {
+    if (isValidOrderPaymentStatus(paymentStatus)) {
+      this.paymentStatus = paymentStatus as OrderPaymentsStatus;
     }
   }
 

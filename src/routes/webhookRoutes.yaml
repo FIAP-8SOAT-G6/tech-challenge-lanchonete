@@ -1,0 +1,48 @@
+paths:
+  /webhooks/payments:
+    post:
+      summary: Recebe confirmação de pagamento aprovado ou recusado
+      tags:
+        - Webhooks
+      requestBody:
+        description: Payload de confirmação de pagamento
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: integer
+                  description: ID do pedido relacionado ao pagamento
+                  example: 1
+                paymentStatus:
+                  $ref: "#/components/schemas/OrderPaymentsStatus"
+                  description: Status do pagamento (Aprovado ou Recusado)
+                  example: APPROVED
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: Data e hora da confirmação de pagamento
+                  example: "2024-01-01T12:00:00Z"
+              required:
+                - orderId
+                - paymentStatus
+                - timestamp
+      responses:
+        "200":
+          description: Notificação recebida com sucesso
+        "400":
+          description: Payload inválido
+        "500":
+          description: Erro interno do servidor
+
+components:
+  schemas:
+    OrderPaymentsStatus:
+      type: string
+      description: Status do Pagamento do Pedido
+      enum:
+        - PENDING
+        - DENIED
+        - APPROVED
