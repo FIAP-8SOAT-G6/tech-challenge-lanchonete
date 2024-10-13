@@ -20,21 +20,23 @@ export const CATEGORIES = [
 
 export default function () {
   let customer = getCustomer(CUSTOMER_CPF);
-  let order = createOrder(customer.id);
+  if (!customer) fail("Get Customer failed. Skipping subsequent tests");
 
-  CATEGORIES.forEach(category => {
+  let order = createOrder(customer.id);
+  if (!order) fail("Create Order failed. Skipping subsequent tests");
+
+  for (const category of CATEGORIES) {
     let products = getProducts(category);
 
-    if (products.length > 0) {
+    if (products && products.length > 0) {
       let product = products[Math.floor(Math.random() * products.length)];
       let quantity = Math.floor(Math.random() * 10) + 1;
-
       // Add item to order with random quantity
       AddItem(order.id, product.id, quantity);
     }
 
     sleep(1);
-  });
+  }
 }
 
 export function createOrder (customerId) {
