@@ -67,7 +67,12 @@ export function AddItem (orderId, productId, quantity) {
 export function getCustomer(cpf) {
   let res = http.get(`${BASE_URL}/customers/${cpf}`);
 
-  return JSON.parse(res.body);
+  check(res, {
+    "GET /customers/<cpf> status is 200": (r) => r.status === 200,
+    "GET /customers/<cpf> took less than 700ms": (r) => r.timings.duration < 700
+  });
+
+  return res.body;
 }
 
 export function getProducts (category) {
