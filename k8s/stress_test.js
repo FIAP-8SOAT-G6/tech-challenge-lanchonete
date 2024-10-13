@@ -2,8 +2,11 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export const options = {
-  vus: 1000,
-  duration: '1m',
+  stages: [
+    { duration: "30s", target: 10 }, // Vá até 10 usuários em 30s
+    { duration: "1m", target: 50 }, // Mantenha 50 usuários por 1m
+    { duration: "30s", target: 0 } // Reduza até 0 usuários em 30s
+  ]
 };
 
 export const BASE_URL = 'http://localhost:31200';
