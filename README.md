@@ -10,7 +10,7 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 2. [Arquitetura](#arquitetura)
    1. [Arquitetura da Aplicação](#arquitetura-da-aplicação)
    2. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
-   3. [Arquitetura AWS - Idealização](#arquitetura-aws---idealização)
+   3. [Arquitetura AWS - Concepção](#arquitetura-aws---concepção)
 3. [Rodando o Projeto](#rodando-o-projeto)
    1. [Pré-Requsiitos](#pré-requisitos)
    2. [Executando o Docker](#executando-o-docker)
