@@ -4,7 +4,7 @@ import OrderDTO from "../core/orders/dto/OrderDTO";
 import { OrderDataSource } from "../interfaces/DataSources";
 
 export default class OrderGateway implements OrderGatewayInterface {
-  constructor(private dataSource: OrderDataSource) {}
+  constructor(private dataSource: OrderDataSource) { }
 
   async createOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
     const createdOrder = await this.dataSource.create(orderDTO);

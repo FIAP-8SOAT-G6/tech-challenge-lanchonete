@@ -72,9 +72,10 @@ export default class OrderModelDataSource implements OrderDataSource {
 
   async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO | undefined> {
     const { id, code, status, paymentStatus } = orderDTO;
+
     const order = await OrderModel.findByPk(id)!;
     if (order) {
-      const updatedOrder = order.update({ code, status, paymentStatus });
+      const updatedOrder = await order.update({ code, status, paymentStatus });
       return this.createOrderDTO(updatedOrder);
     }
   }
@@ -109,6 +110,7 @@ export default class OrderModelDataSource implements OrderDataSource {
       status: databaseOrder.status,
       totalPrice: databaseOrder.totalPrice,
       customerId: databaseOrder.CustomerId,
+      paymentStatus: databaseOrder.paymentStatus,
       customerName: databaseOrder.Customer?.name,
       items: databaseOrder.Items?.map(
         (databaseItem: any) =>
