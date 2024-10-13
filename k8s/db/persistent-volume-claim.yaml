@@ -5,7 +5,7 @@ metadata:
   labels:
     app: lanchonete-db
 spec:
-  storageClassName: manual
+  storageClassName: local-storage
   accessModes:
     - ReadWriteMany
   resources:

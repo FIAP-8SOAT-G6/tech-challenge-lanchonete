@@ -6,7 +6,8 @@ metadata:
     type: local
     app: lanchonete-db-volume
 spec:
-  storageClassName: manual
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain 
   capacity:
     storage: 10Gi
   accessModes:
