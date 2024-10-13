@@ -6,20 +6,21 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 #### Tabela de Conteúdos
 
-1. [Arquitetura](#arquitetura)
-2. [Rodando o Projeto](#rodando-o-projeto)
+1. [Requisitos](#requisitos)
+2. [Arquitetura](#arquitetura)
+3. [Rodando o Projeto](#rodando-o-projeto)
    1. [Pré-Requsiitos](#pré-requisitos)
    2. [Executando o Docker](#executando-o-docker)
    3. [Executando o Kubernetes](#executando-o-kubernetes)
    4. [Acessando as APIs](#acessando-as-apis)
    5. [Executando os Testes](#executando-os-testes)
-2. [Tarefas](#tarefas)
-3. [Tecnologias & Bibliotecas](#tecnologias--bibliotecas)
-4. [Estrutura do Projeto](#estrutura-do-projeto)
+4. [Tarefas](#tarefas)
+5. [Tecnologias & Bibliotecas](#tecnologias--bibliotecas)
+6. [Estrutura do Projeto](#estrutura-do-projeto)
 
-## Arquitetura
+## Requisitos
 
-#### Requisitos Funcionais
+### Requisitos Funcionais
 
 | Identificador | Descrição
 |---------------|----------
@@ -35,7 +36,7 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 | RF-10 | Aplicação deverá fornecer API para atualizar o status do pedido.
 | RF-11 | \[**Opcional**\] Aplicação deverá integrar com Mercado Pago.
 
-#### Requisitos Não-Funcionais
+### Requisitos Não-Funcionais
 
 | Identificador | Descrição
 |---------------|----------
@@ -43,6 +44,8 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 | RNF-2 | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection
 | RNF-3 | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.
 | RNF-4 | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta.
+
+## Arquitetura
 
 ## Rodando o Projeto
 
