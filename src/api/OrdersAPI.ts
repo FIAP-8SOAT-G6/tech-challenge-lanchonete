@@ -66,8 +66,8 @@ ordersAPIRouter.post("/orders/:orderId/checkout", async (req, res) => {
 ordersAPIRouter.get("/orders/:orderId/payment_status", async (req, res) => {
   try {
     const orderId = Number(req.params.orderId);
-    await OrderController.getPaymentStatus(new SequelizeOrderDataSource(), orderId);
-    return res.status(200).json({});
+    const status = await OrderController.getPaymentStatus(new SequelizeOrderDataSource(), orderId);
+    return res.status(200).json(status);
   } catch (error: any) {
     if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
     return res.status(500).json({ error: error.message });

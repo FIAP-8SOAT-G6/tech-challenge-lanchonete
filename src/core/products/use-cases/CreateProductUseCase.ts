@@ -1,7 +1,7 @@
 import Product from "../entities/Product";
 import ProductDTO from "../dto/ProductDTO";
 import CreateProduct from "../interfaces/CreateProduct";
-import ProductGateway from "../../gateways/ProductGateway";
+import ProductGateway from "../../interfaces/ProductGateway";
 
 export default class CreateProductUseCase implements CreateProduct {
   constructor(private productGateway: ProductGateway) {}

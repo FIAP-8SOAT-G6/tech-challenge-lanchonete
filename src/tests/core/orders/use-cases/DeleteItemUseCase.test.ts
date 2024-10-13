@@ -6,9 +6,9 @@ import ItemDTO from "../../../../core/orders/dto/ItemDTO";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
-import CustomerGateway from "../../../../core/gateways/CustomerGateway";
-import OrderGateway from "../../../../core/gateways/OrderGateway";
-import ProductGateway from "../../../../core/gateways/ProductGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
+import OrderGateway from "../../../../core/interfaces/OrderGateway";
+import ProductGateway from "../../../../core/interfaces/ProductGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";

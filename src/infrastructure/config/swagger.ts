@@ -1,7 +1,7 @@
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
-const port = process.env.PORT_SERVER || 3000;
+const port = process.env.API_PORT || 3000;
 const serverUrl = `http://localhost:${port}`;
 
 // Configurações do Swagger
