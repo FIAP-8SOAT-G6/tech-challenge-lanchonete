@@ -71,8 +71,8 @@ export function getCustomer(cpf) {
     "GET /customers/<cpf> status is 200": (r) => r.status === 200,
     "GET /customers/<cpf> took less than 700ms": (r) => r.timings.duration < 700
   });
-
-  return res.body;
+  
+  return res.json();
 }
 
 export function getProducts (category) {
@@ -83,5 +83,5 @@ export function getProducts (category) {
     "GET /category/<category>/products took less than 700ms": (r) => r.timings.duration < 700
   });
 
-  return res.body;
+  return res.json();
 }
