@@ -20,6 +20,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: lanchonete-db-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lanchonete-db-secret
+                  key: DB_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: lanchonete-db-data
