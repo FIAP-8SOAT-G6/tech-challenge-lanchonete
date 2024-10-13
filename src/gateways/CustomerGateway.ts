@@ -1,5 +1,5 @@
 import { CustomerDataSource } from "../interfaces/DataSources";
-import CustomerGatewayInterface from "../core/gateways/CustomerGateway";
+import CustomerGatewayInterface from "../core/interfaces/CustomerGateway";
 import CustomerDTO from "../core/customers/dto/CustomerDTO";
 
 export default class CustomerGateway implements CustomerGatewayInterface {

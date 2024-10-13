@@ -1,6 +1,6 @@
 import InvalidAttributeError from "../../common/exceptions/InvalidAttributeError";
 import ResourceAlreadyExistsError from "../../common/exceptions/ResourceAlreadyExistsError";
-import CustomerGateway from "../../gateways/CustomerGateway";
+import CustomerGateway from "../../interfaces/CustomerGateway";
 import CPFValidator from "../../ports/CPFValidator";
 import EmailValidator from "../../ports/EmailValidator";
 import CustomerDTO from "../dto/CustomerDTO";

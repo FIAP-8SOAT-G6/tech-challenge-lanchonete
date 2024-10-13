@@ -9,10 +9,10 @@ import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCu
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 
-import OrderGateway from "../../../../core/gateways/OrderGateway";
+import OrderGateway from "../../../../core/interfaces/OrderGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
-import CustomerGateway from "../../../../core/gateways/CustomerGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 
 import CPFValidator from "../../../../core/ports/CPFValidator";
 import EmailValidator from "../../../../core/ports/EmailValidator";

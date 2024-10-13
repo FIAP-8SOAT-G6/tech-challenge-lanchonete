@@ -2,28 +2,28 @@ import ItemDTO from "../core/orders/dto/ItemDTO";
 import OrderDTO from "../core/orders/dto/OrderDTO";
 import { OrdersFactory } from "../factories/OrdersFactory";
 import { CustomerDataSource, OrderDataSource, ProductDataSource } from "../interfaces/DataSources";
-import OrderPresenter from "../presenters/OrderPresenters";
+import OrderPresenter, { OrderResponse } from "../presenters/OrderPresenters";
 
 export default class OrderController {
-  public static async createOrder(orderDataSource: OrderDataSource, customerDataSource: CustomerDataSource, order: OrderDTO): Promise<string> {
+  public static async createOrder(orderDataSource: OrderDataSource, customerDataSource: CustomerDataSource, order: OrderDTO): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeCreateOrder(orderDataSource, customerDataSource);
     const createdOrder = await useCase.createOrder(order);
     return OrderPresenter.adaptOrderData(createdOrder);
   }
 
-  public static async getOrder(orderDataSource: OrderDataSource, orderId: number): Promise<string> {
+  public static async getOrder(orderDataSource: OrderDataSource, orderId: number): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeGetOrder(orderDataSource);
     const order = await useCase.getOrder(orderId);
     return OrderPresenter.adaptOrderData(order);
   }
 
-  public static async getOrders(orderDataSource: OrderDataSource): Promise<string> {
+  public static async getOrders(orderDataSource: OrderDataSource): Promise<OrderResponse[]> {
     const useCase = OrdersFactory.makeGetOrders(orderDataSource);
     const orders = await useCase.getOrders();
     return OrderPresenter.adaptOrdersData(orders);
   }
 
-  public static async getOrdersAll(orderDataSource: OrderDataSource): Promise<string> {
+  public static async getOrdersAll(orderDataSource: OrderDataSource): Promise<OrderResponse[]> {
     const useCase = OrdersFactory.makeGetOrdersAll(orderDataSource);
     const ordersAll = await useCase.getOrdersAll();
     return OrderPresenter.adaptOrdersData(ordersAll);
@@ -35,13 +35,13 @@ export default class OrderController {
     return paymentStatus;
   }
 
-  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<string> {
+  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeCheckout(orderDataSource);
     const order = await useCase.checkout(orderId);
     return OrderPresenter.adaptOrderData(order);
   }
 
-  public static async updateOrderStatus(orderDataSource: OrderDataSource, orderId: number, status: string): Promise<string> {
+  public static async updateOrderStatus(orderDataSource: OrderDataSource, orderId: number, status: string): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeUpdateOrderStatus(orderDataSource);
     const order = await useCase.updateOrderStatus(orderId, status);
     return OrderPresenter.adaptOrderData(order);
@@ -52,13 +52,13 @@ export default class OrderController {
     productDataSource: ProductDataSource,
     orderId: number,
     addItemDTO: ItemDTO
-  ): Promise<string> {
+  ): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeAddItem(orderDataSource, productDataSource);
     const order = await useCase.addItem(orderId, addItemDTO);
     return OrderPresenter.adaptOrderData(order);
   }
 
-  public static async updateItem(orderDataSource: OrderDataSource, orderId: number, itemId: number, updateItemDTO: ItemDTO): Promise<string> {
+  public static async updateItem(orderDataSource: OrderDataSource, orderId: number, itemId: number, updateItemDTO: ItemDTO): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeUpdateItem(orderDataSource);
     const order = await useCase.updateItem(orderId, itemId, updateItemDTO);
     return OrderPresenter.adaptOrderData(order);
