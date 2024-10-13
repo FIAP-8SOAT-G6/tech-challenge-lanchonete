@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check, sleep, fail } from 'k6';
 
 export const options = {
   stages: [
@@ -48,7 +48,7 @@ export function createOrder (customerId) {
     "POST /orders status is 201": (r) => r.status === 201,
     "POST /orders took less than 700ms": (r) => r.timings.duration < 700
   });
-    
+
   return res.json();
 }
 
@@ -82,6 +82,6 @@ export function getProducts (category) {
     "GET /category/<category>/products status is 200": (r) => r.status === 200,
     "GET /category/<category>/products took less than 700ms": (r) => r.timings.duration < 700
   });
-  
+
   return res.body;
 }
