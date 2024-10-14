@@ -11,9 +11,6 @@ import OrderGateway from "../../../../core/interfaces/OrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 
-import CPFValidator from "../../../../core/ports/CPFValidator";
-import EmailValidator from "../../../../core/ports/EmailValidator";
-
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
 import GetPaymentStatusUseCase from "../../../../core/orders/use-cases/GetPaymentStatusUseCase";
@@ -25,20 +22,6 @@ const CUSTOMER_DTO = new CustomerDTO({
   cpf: "11111111111",
   email: "john.doe@gmail.com"
 });
-
-class FakeCPFValidator implements CPFValidator {
-  public isValidCpf: boolean = true;
-  isValid(cpf: string): boolean {
-    return this.isValidCpf;
-  }
-}
-
-class FakeEmailValidator implements EmailValidator {
-  public isValidEmail: boolean = true;
-  isValid(email: string): boolean {
-    return this.isValidEmail;
-  }
-}
 
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
@@ -58,9 +41,7 @@ describe("Order payment status", () => {
   }
 
   async function createCustomer() {
-    const cpfValidatorMock = new FakeCPFValidator();
-    const emailValidatorMock = new FakeEmailValidator();
-    const customeUseCase = new CreateCustomerUseCase(customerGateway, cpfValidatorMock, emailValidatorMock);
+    const customeUseCase = new CreateCustomerUseCase(customerGateway);
     return await customeUseCase.create(CUSTOMER_DTO);
   }
 

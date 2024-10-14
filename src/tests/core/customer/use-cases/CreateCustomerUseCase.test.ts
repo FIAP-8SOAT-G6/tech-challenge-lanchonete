@@ -8,41 +8,21 @@ import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 
 import InvalidAttributeError from "../../../../core/common/exceptions/InvalidAttributeError";
 
-import CPFValidator from "../../../../core/ports/CPFValidator";
-import EmailValidator from "../../../../core/ports/EmailValidator";
-
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-class FakeCPFValidator implements CPFValidator {
-  public isValidCpf: boolean = true;
-  isValid(cpf: string): boolean {
-    return this.isValidCpf;
-  }
-}
-
-class FakeEmailValidator implements EmailValidator {
-  public isValidEmail: boolean = true;
-  isValid(email: string): boolean {
-    return this.isValidEmail;
-  }
-}
-
-let cpfValidatorMock: FakeCPFValidator, emailValidatorMock: FakeEmailValidator;
 context("Create Customer Use Case", () => {
   function setupUseCase() {
     const repository = new FakeCustomerGateway();
-    cpfValidatorMock = new FakeCPFValidator();
-    emailValidatorMock = new FakeEmailValidator();
 
-    return new CreateCustomerUseCase(repository, cpfValidatorMock, emailValidatorMock);
+    return new CreateCustomerUseCase(repository);
   }
 
   describe("create", () => {
     it("should create a Customer with an id", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-00",
+        cpf: "123.456.789-09",
         email: "test@mail.com"
       });
 
@@ -56,7 +36,7 @@ context("Create Customer Use Case", () => {
     it("should display an error message when an existing CPF is provided", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-01",
+        cpf: "123.456.789-09",
         email: "test@mail.com"
       });
 
@@ -69,24 +49,20 @@ context("Create Customer Use Case", () => {
     it("should throw an error when cpf is invalid", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "1111",
+        cpf: "123.456.789-10",
         email: "test@mail.com"
       });
       const customerManagementUseCase = setupUseCase();
-      cpfValidatorMock.isValidCpf = false;
-
       await expect(customerManagementUseCase.create(customerDTO)).to.be.eventually.rejectedWith(InvalidAttributeError);
     });
 
     it("should throw an error when email is invalid", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
-        cpf: "123.456.789-00",
+        cpf: "123.456.789-09",
         email: "ana.com"
       });
       const customerManagementUseCase = setupUseCase();
-      emailValidatorMock.isValidEmail = false;
-
       await expect(customerManagementUseCase.create(customerDTO)).to.be.eventually.rejectedWith(InvalidAttributeError);
     });
   });

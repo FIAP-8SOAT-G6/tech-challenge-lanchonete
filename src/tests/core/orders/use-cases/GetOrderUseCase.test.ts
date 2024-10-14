@@ -14,24 +14,7 @@ import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 
-import CPFValidator from "../../../../core/ports/CPFValidator";
-import EmailValidator from "../../../../core/ports/EmailValidator";
-
 chai.use(chaiAsPromised);
-
-class FakeCPFValidator implements CPFValidator {
-  public isValidCpf: boolean = true;
-  isValid(cpf: string): boolean {
-    return this.isValidCpf;
-  }
-}
-
-class FakeEmailValidator implements EmailValidator {
-  public isValidEmail: boolean = true;
-  isValid(email: string): boolean {
-    return this.isValidEmail;
-  }
-}
 
 const CUSTOMER_DTO = new CustomerDTO({
   name: "John Doe",
@@ -57,9 +40,7 @@ context("Order Use Case", () => {
   }
 
   async function createCustomer() {
-    const cpfValidatorMock = new FakeCPFValidator();
-    const emailValidatorMock = new FakeEmailValidator();
-    const customeUseCase = new CreateCustomerUseCase(customerGateway, cpfValidatorMock, emailValidatorMock);
+    const customeUseCase = new CreateCustomerUseCase(customerGateway);
     return await customeUseCase.create(CUSTOMER_DTO);
   }
 

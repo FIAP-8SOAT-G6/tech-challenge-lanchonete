@@ -11,7 +11,7 @@ context("Customer", () => {
           new Customer({
             id: 123,
             name: "Ana",
-            cpf: "123.456.789-00",
+            cpf: "123.456.789-09",
             email: "test@mail.com"
           })
       ).to.not.throw();
@@ -23,7 +23,7 @@ context("Customer", () => {
           new Customer({
             id: 123,
             name: undefined as unknown as string,
-            cpf: "123.456.789-00",
+            cpf: "123.456.789-09",
             email: "test@mail.com"
           })
       ).to.throw(new MissingPropertyError("name").message);
@@ -47,7 +47,7 @@ context("Customer", () => {
           new Customer({
             id: 123,
             name: "Ana",
-            cpf: "123.456.789-00",
+            cpf: "123.456.789-09",
             email: undefined as unknown as string
           })
       ).to.throw(new MissingPropertyError("email").message);
