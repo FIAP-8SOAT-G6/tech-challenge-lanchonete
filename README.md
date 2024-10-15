@@ -149,6 +149,7 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 - [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
 - [Fase 2](https://github.com/orgs/FIAP-8SOAT-G6/projects/2)
+   - [Apresentação do Projeto](https://youtu.be/1UloxK_VfNE)
 
 ## Tecnologias & Bibliotecas
 
