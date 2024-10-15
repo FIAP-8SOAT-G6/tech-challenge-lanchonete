@@ -54,13 +54,13 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 A aplicação foi desenvolvida seguindo os princípios da Arquitetura Limpa (Clean Architecture) proposta por Robert C. Martin. O objetivo é garantir que as regras de negócio fiquem isoladas e independentes de detalhes externos, como frameworks ou banco de dados, facilitando a manutenção, escalabilidade e testabilidade da aplicação.
 
-* **Enterprise Business Rules**: Camada que contém as entidades (_Entities_) do domínio, que representam os conceitos centrais e regras mais importantes da aplicação que garantem a consistência das regras de negócio. São independentes de infraestrutura ou do caso de uso em que são utilizadas.
-* **Aplication Business Rules**: Camada que contém os casos de uso (_Use Case_) que definem como as entidades interagem entre si para cumprir os requisitos funcionais da aplicação. São independentes dos detalhes de infraestrutura e dependem apenas de interfaces para interagir com objetos externos.
-* **Interface Adapters**: Camada que adapta a entrada e saída de dados entre o sistema e os consumidores externos, responsável pela lógica que conecta os casos de uso ao mundo exterior. Seus principais componentes são:
-  * **Gateways:** Implementações das interfaces dos casos de uso para acessar sistemas externos (exemplo: banco de dados, sistemas de pagamento);
-  * **Presenters:** Adaptam o resultado dos casos de uso para as camadas externas conforme o formato esperado;
-  * **Controllers:** Recebem as requisições externas e executam os casos de uso com suas respectivas dependências.
-* **Frameworks & Drivers**: Camada com  _frameworks_ e serviços externos usados pela aplicação como bibliotecas de _Web API_, objetos que encapsulam comunicação com banco de dados, sistemas externos, etc. Serve apenas para viabilizar a interação com o mundo exterior, sem lógica de negócios.
+- **Enterprise Business Rules**: Camada que contém as entidades (_Entities_) do domínio, que representam os conceitos centrais e regras mais importantes da aplicação que garantem a consistência das regras de negócio. São independentes de infraestrutura ou do caso de uso em que são utilizadas.
+- **Aplication Business Rules**: Camada que contém os casos de uso (_Use Case_) que definem como as entidades interagem entre si para cumprir os requisitos funcionais da aplicação. São independentes dos detalhes de infraestrutura e dependem apenas de interfaces para interagir com objetos externos.
+- **Interface Adapters**: Camada que adapta a entrada e saída de dados entre o sistema e os consumidores externos, responsável pela lógica que conecta os casos de uso ao mundo exterior. Seus principais componentes são:
+  - **Gateways:** Implementações das interfaces dos casos de uso para acessar sistemas externos (exemplo: banco de dados, sistemas de pagamento);
+  - **Presenters:** Adaptam o resultado dos casos de uso para as camadas externas conforme o formato esperado;
+  - **Controllers:** Recebem as requisições externas e executam os casos de uso com suas respectivas dependências.
+- **Frameworks & Drivers**: Camada com _frameworks_ e serviços externos usados pela aplicação como bibliotecas de _Web API_, objetos que encapsulam comunicação com banco de dados, sistemas externos, etc. Serve apenas para viabilizar a interação com o mundo exterior, sem lógica de negócios.
 
 No diagrama a seguir, é possível identificar que cada camada se comunica de forma unidirecional, com as camadas externas dependendo das internas. Isso garante que as regras de negócio permaneçam independentes de detalhes técnicos. Para tanto, é necessário seguir os princípios SOLID como o _Single Responsibility Principle_, uma vez que cada objeto e camada tem uma única responsabilidade, e o _Dependency Inversion Principle_, visto que as camadas internas dependem de abstrações e as implementações são fornecidas pelas camadas externas.
 ![Arquitetura da Aplicação](diagrams/application-architecture.png)
@@ -71,15 +71,17 @@ A arquitetura K8s foi desenvolvida para permitir a escalabilidade do sistema con
 ![Arquitetura K8s](diagrams/k8s-architecture.png)
 
 A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a seguinte estrutura:
-* **Deployment lanchonete-api:** Responsável por gerenciar os pods que executam a aplicação desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service NodePort** para que clientes consigam consumir as APIs desenvolvidas.
-* **StatefulSet lanchonete-db:** Responsável por gerenciar o banco de dados da aplicação. Está vinculado a um **Persistent Volume Claim (PVC)** para garantir o armazenamento persistente dos dados, utilizando um Persistent Volume. O banco de dados é acessível apenas dentro do cluster K8s por meio de um **ClusterIP Service**, de forma que os pods da aplicação possam se conectar ao banco de dados de maneira segura.
-* **ConfigMaps lanchonete-api-config e lanchonete-db-config**: Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
-* **Secret lanchonete-db-secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
+
+- **Deployment lanchonete-api:** Responsável por gerenciar os pods que executam a aplicação desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service NodePort** para que clientes consigam consumir as APIs desenvolvidas.
+- **StatefulSet lanchonete-db:** Responsável por gerenciar o banco de dados da aplicação. Está vinculado a um **Persistent Volume Claim (PVC)** para garantir o armazenamento persistente dos dados, utilizando um Persistent Volume. O banco de dados é acessível apenas dentro do cluster K8s por meio de um **ClusterIP Service**, de forma que os pods da aplicação possam se conectar ao banco de dados de maneira segura.
+- **ConfigMaps lanchonete-api-config e lanchonete-db-config**: Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
+- **Secret lanchonete-db-secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
 
 #### Fluxo de Comunicação
+
 1. O NodePort Service expõe a API externamente, encaminhando as requisições para os diferentes pods gerenciados pelo Deployment `lanchonete-api`.
 2. Os pods `lanchonete-api` se comunicam com o `lanchonete-db` por meio de um ClusterIP Service, que encaminha as requisições para os pods do banco de dados, gerenciados pelo StatefulSet. Assim, o `lanchonete-api` pode realizar as operações necessárias no banco de dados.
-  > Os ConfigMaps e o Secret são utilizados durante a inicialização dos pods para configurar a conexão com o banco de dados e outros serviços externos
+   > Os ConfigMaps e o Secret são utilizados durante a inicialização dos pods para configurar a conexão com o banco de dados e outros serviços externos
 
 ### Arquitetura AWS - Concepção
 
@@ -88,17 +90,18 @@ A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a se
 ![Arquitetura AWS](diagrams/aws-eks-architecture-diagram.png)
 
 A arquitetura proposta utiliza serviços gerenciados da AWS para oferecer uma solução escalável e resiliente. Seguem os principais componentes:
-* **Amazon Route 53**: Os usuários finais interagem com a API por meio do **Amazon Route 53**, que atua como um serviço de DNS gerenciado para rotear o tráfego.
 
-* **Network Load Balancer (NLB)**: Encaminha as requisições dentro da **Virtual Private Cloud (VPC)** para o **Amazon Elastic Kubernetes Service (EKS)**. 
+- **Amazon Route 53**: Os usuários finais interagem com a API por meio do **Amazon Route 53**, que atua como um serviço de DNS gerenciado para rotear o tráfego.
 
-* **Kubernetes Ingress**: Gerencia o roteamento das requisições para os serviços corretos da aplicação.
+- **Network Load Balancer (NLB)**: Encaminha as requisições dentro da **Virtual Private Cloud (VPC)** para o **Amazon Elastic Kubernetes Service (EKS)**.
 
-* **Amazon EKS (Elastic Kubernetes Service)**: A aplicação é implantada em um **Amazon EKS Cluster** dentro de uma **sub-rede privada**. Os detalhes sobre o Cluster K8S podem ser encontrados em [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+- **Kubernetes Ingress**: Gerencia o roteamento das requisições para os serviços corretos da aplicação.
 
-* **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers da aplicação, facilitando a atualização dos pods dentro do cluster EKS que utilizam a tag _latest_.
+- **Amazon EKS (Elastic Kubernetes Service)**: A aplicação é implantada em um **Amazon EKS Cluster** dentro de uma **sub-rede privada**. Os detalhes sobre o Cluster K8S podem ser encontrados em [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
 
-## Rodando o Projeto
+- **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers da aplicação, facilitando a atualização dos pods dentro do cluster EKS que utilizam a tag _latest_.
+
+## Executando o Projeto
 
 #### Pré-requisitos
 
@@ -141,7 +144,200 @@ Ao acessar a URL `http://localhost:8080/` (`docker compose`) ou `http://localhos
 Execute `npm run test` para rodar os testes unitários da aplicação
 
 Execute teste de carga `k6` com `npm run test:k8s`
+
 > Obs.: Instale o `k6` em sua máquina conforme: https://grafana.com/docs/k6/latest/set-up/install-k6/
+
+## Orderm de execução das APIs
+
+Para realiar a emissão de um pedido até sua finalização, as APIs precisam ser chamadas na seguinte sequência:
+
+#### 1. Adicionar produtos
+
+Os produtos precisaram ser adicionados a um catálogo para que posteriormente possam ser adicionados no pedido de venda.
+
+Endpoint: `POST /products`
+
+Exemplo:
+
+```JSON
+{
+  "name": "Hamburguer",
+  "category": "Lanche",
+  "price": 12.99,
+  "description": "Hamburguer Classico",
+  "images": [
+    "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+  ]
+}
+```
+
+#### 1.1 [Opcional] Listar todos os produtos
+
+Endpoint: `GET /products`
+
+#### 1.2 [Opcional] Listar produto pelo ID
+
+Necessário informar o ID do produto a ser procurado.
+
+Endpoint: `GET /products/{id}`
+
+#### 1.3 [Opcional] Listar produtos pela categoria
+
+É possível buscar os produtos com base em sua categoria.
+
+Endpoint: `GET /category/{category}/products`
+
+#### 1.4 [Opcional] Editar produto
+
+Todos os campos que compõem um produto poderão ser alterados, com execessão do ID.
+
+Endpoint: `PUT /products/{id}`
+
+#### 1.5 [Opcional] Excluir um produto
+
+Necessário informar o ID do produto a ser excluído.
+
+Endpoint: `DELETE /products/{id}`
+
+<hr>
+
+#### 2. [Opcional] Cadastrar Cliente
+
+Cadastra o cliente, permitindo seu vínculo com o pedido realizado.
+
+Endpoint: `POST /customers`
+
+Exemplo de Requisição:
+
+```JSON
+{
+  "name": "John Doe",
+  "cpf": "12345678909",
+  "email": "john.doe@gmail.com"
+}
+```
+
+#### 2.1 [Opcional] Buscar pelo Cliente
+
+A busca do cliente pode ser realizada com base no CPF cadastrado.
+
+Endpoint: `GET /customers/{cpf}`
+
+<hr>
+
+#### 3. Criar Pedido
+
+Ao criar um pedido, o cliente poderá ser vinculado com o cliente previamente cadastrado, ou anonimamente inserindo o valor **null**.
+
+Endpoint: `POST /orders`
+
+Exemplo de Requisição:
+
+```JSON
+{
+  "customerId": 1
+}
+```
+
+<hr>
+
+#### 4. Adicionar item ao pedido
+
+Adiciona um item ao pedido, para isso é necessário informar o código do produto do catálogo e a quantidade do item.
+Para essa ação o pedido precisará estar com o status em aberto, ou seja, antes da realização do pagamento.
+
+Endpoint: `POST /orders/{orderId}/items`
+
+```JSON
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+```
+
+#### 4.1 [Opcional] Editar um item do pedido
+
+É possível alterar a quantidade do item adicionado ao pedido.
+Para essa ação o pedido precisará estar com o status em aberto, ou seja, antes da realização do pagamento.
+
+Endpoint: `PUT /orders/{orderId}/items/{itemId}`
+
+#### 4.2 [Opcional] Excluir um item do pedido
+
+Exclui um item que foi adicionado ao pedido.
+Para essa ação o pedido precisará estar com o status em aberto, ou seja, antes da realização do pagamento.
+Endpoint: `DELETE /orders/{orderId}/items/{itemId}`
+
+<hr>
+
+#### 5. Realizar Checkout do pedido
+
+Para o fechamento do pedido, é necessário que seja inserido pelo menos um item ao pedido.
+
+Endpoint: `POST /orders/{orderId}/checkout`
+
+<hr>
+
+#### 6. Webhook
+
+Recebe a confirmação sobre o pagamento estar aprovado ou recusado.
+
+Enpoint: `POST /webhooks/payments`
+
+```JSON
+{
+  "orderId": 1,
+  "paymentStatus": "PENDING",
+  "timestamp": "2024-01-01T12:00:00Z"
+}
+```
+
+#### 6.1 [Opcional] Consulta do status de pagamento do pedido
+
+Enpoint: `GET /orders/{orderId}/payment_status`
+
+<hr>
+
+#### 7. Listar o pedido em linha de produção
+
+Após o pagamento do pedido, o mesmo passa pelas etapas de Recebido pela cozinha, Em preparação e Pronto.
+
+Endpoint: `GET /orders`
+
+<hr>
+
+#### 8. Concluir pedido
+
+Conforme o pedido avança em suas etapas de preparo, é realizada a atualização do status. A Atualização poderá ser feita com base na regra de atualização de status.
+
+Ordem para atualização:
+
+```JAVASCRIPT
+'Criado' (CREATED)->
+'Pagamento pendente' (PENDING_PAYMENT) ->
+'Pago' (PAYED) ->
+'Recebido' (RECEIVED) ->
+'Em preparação' (PREPARING) ->
+'Pronto' (DONE) ->
+'Finalizado' (FINISHED)
+```
+
+Endpoint: `PUT /orders/{orderId}/status`
+
+<hr>
+
+#### 9. Listar os pedidos
+
+Busca por todos os pedidos já cadastrados.
+
+Endpoint: `GET /orders/all`
+
+#### 9.1 [Opcional] Listar um pedido pelo ID
+
+Realiza a busca de um pedido com base em seu id de cadastrado.
+
+Endpoint: `GET /orders/{orderId}`
 
 ## Tarefas
 
@@ -149,7 +345,7 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 - [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
 - [Fase 2](https://github.com/orgs/FIAP-8SOAT-G6/projects/2)
-   - [Apresentação do Projeto](https://youtu.be/1UloxK_VfNE)
+  - [Apresentação do Projeto](https://youtu.be/1UloxK_VfNE)
 
 ## Tecnologias & Bibliotecas
 
@@ -185,4 +381,4 @@ As tarefas estão descritas em projetos da organização do GitHub.
 
 **OBS:** O arquivo `.env` foi compartilhado neste repositório para fins didáticos e facilidade nos testes, sendo esta uma má prática em ambientes de desenvolvimento real.
 
-![Estrutura do Projeto](diagrams/project-structure.png.png)
+![Estrutura do Projeto](diagrams/project-structure.png)
