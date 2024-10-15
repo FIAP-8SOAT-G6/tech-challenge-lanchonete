@@ -76,7 +76,7 @@ export default class OrderModelDataSource implements OrderDataSource {
     const order = await OrderModel.findByPk(id)!;
     if (order) {
       const updatedOrder = await order.update({ code, status, paymentStatus });
-      return this.createOrderDTO(updatedOrder);
+      return this.findById(updatedOrder.id);
     }
   }
 

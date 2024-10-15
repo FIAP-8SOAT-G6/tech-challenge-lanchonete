@@ -1,4 +1,4 @@
-import OrderGateway from "../../../gateways/OrderGateway";
+import OrderGateway from "../../interfaces/OrderGateway";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import PaymentDTO from "../dto/PaymentDTO";
 import ItemDTO from "../dto/ItemDTO";
@@ -6,6 +6,8 @@ import OrderDTO from "../dto/OrderDTO";
 import Item from "../entities/Item";
 import Order from "../entities/Order";
 import UpdateOrderPaymentStatus from "../interfaces/UpdateOrderPaymentStatus";
+import { OrderStatus } from "../entities/OrderStatus";
+import OrderPaymentsStatus from "../entities/OrderPaymentsStatus";
 
 export default class UpdateOrderPaymentStatusUseCase implements UpdateOrderPaymentStatus {
   constructor(private orderGateway: OrderGateway) { }
@@ -16,7 +18,13 @@ export default class UpdateOrderPaymentStatusUseCase implements UpdateOrderPayme
     this.#validateOrderExists(orderDTO?.id!, orderId!);
 
     const order = this.#toOrderEntity(orderDTO!);
+
     order.setPaymentStatus(paymentStatus!);
+    
+    if (order.getPaymentStatus() === OrderPaymentsStatus.APPROVED) { 
+      order.setStatus(OrderStatus.PAYED);
+    }  
+
     return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
   }
 

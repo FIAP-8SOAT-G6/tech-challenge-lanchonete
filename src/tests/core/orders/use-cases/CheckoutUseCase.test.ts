@@ -15,6 +15,7 @@ import ProductGateway from "../../../../core/interfaces/ProductGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
+import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 
 import CPFValidator from "../../../../core/ports/CPFValidator";
 import EmailValidator from "../../../../core/ports/EmailValidator";
@@ -26,6 +27,7 @@ import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
+import PaymentGateway from "../../../../core/interfaces/PaymentGateway";
 
 chai.use(chaiAsPromised);
 
@@ -59,12 +61,14 @@ class FakeEmailValidator implements EmailValidator {
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 let productGateway: ProductGateway;
+let paymentGateway: PaymentGateway;
 
 describe("Checkout Order", () => {
   beforeEach(() => {
     customerGateway = new FakeCustomerGateway();
     orderGateway = new FakeOrderGateway();
     productGateway = new FakeProductGateway();
+    paymentGateway = new MockPaymentGateway();
   });
 
   function setupCreateOrderUseCase() {
@@ -72,9 +76,9 @@ describe("Checkout Order", () => {
   }
 
   function setupCheckoutUseCase() {
-    return new CheckoutOrderUseCase(orderGateway);
+    return new CheckoutOrderUseCase(orderGateway, paymentGateway);
   }
-
+  
   function setupGetOrderUseCase() {
     return new GetOrderUseCase(orderGateway);
   }
