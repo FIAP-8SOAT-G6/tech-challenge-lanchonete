@@ -1,4 +1,6 @@
 import MissingPropertyError from "../../common/exceptions/MissingPropertyError";
+import CPF from "./CPF";
+import Email from "./Email";
 
 type CustomerParams = {
   id?: number;
@@ -10,8 +12,8 @@ type CustomerParams = {
 export default class Customer {
   private id!: number | undefined;
   private name!: string;
-  private cpf!: string;
-  private email!: string;
+  private cpf!: CPF;
+  private email!: Email;
 
   constructor({ id, name, cpf, email }: CustomerParams) {
     this.id = id;
@@ -30,11 +32,11 @@ export default class Customer {
   }
 
   getCpf() {
-    return this.cpf;
+    return this.cpf.getCPF();
   }
 
   getEmail() {
-    return this.email;
+    return this.email.getEmail();
   }
 
   setName(name: string) {
@@ -43,30 +45,16 @@ export default class Customer {
   }
 
   setCPF(cpf: string) {
-    this.validateCPF(cpf);
-    this.cpf = cpf;
+    this.cpf = new CPF({ cpf });
   }
 
   setEmail(email: string) {
-    this.validateEmail(email);
-    this.email = email;
+    this.email = new Email({ email });
   }
 
   private validateName(name: string) {
     if (!name) {
       throw new MissingPropertyError("name");
-    }
-  }
-
-  private validateCPF(cpf: string) {
-    if (!cpf) {
-      throw new MissingPropertyError("cpf");
-    }
-  }
-
-  private validateEmail(email: string) {
-    if (!email) {
-      throw new MissingPropertyError("email");
     }
   }
 }
