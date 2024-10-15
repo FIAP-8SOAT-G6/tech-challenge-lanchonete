@@ -7,6 +7,7 @@ import ClosedOrderError from "../exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import ItemDTO from "../dto/ItemDTO";
 import OrderPaymentsStatus, { isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
+import ForbiddenPaymentStatusChangeError from "../exceptions/ForbiddenPaymentStatusChangeError";
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS: {
   [key in OrderStatus]: OrderStatus[];
@@ -27,7 +28,11 @@ const statusTransitionValidator = {
       throw new EmptyOrderError();
     }
   },
-  [OrderStatus.PAYED]: function (order: Order) {},
+  [OrderStatus.PAYED]: function (order: Order) {
+    if (order.getPaymentStatus() !== OrderPaymentsStatus.APPROVED) {
+      throw new ForbiddenPaymentStatusChangeError();
+    }
+  },
   [OrderStatus.RECEIVED]: function (order: Order) {},
   [OrderStatus.PREPARING]: function (order: Order) {},
   [OrderStatus.DONE]: function (order: Order) {},
@@ -63,8 +68,8 @@ export default class Order {
     this.items = [];
     this.customerId = customerId;
     this.paymentStatus = paymentStatus as OrderPaymentsStatus;
-    this.setStatus(status);
     this.setItems(items);
+    this.setStatus(status);
   }
 
   getId() {

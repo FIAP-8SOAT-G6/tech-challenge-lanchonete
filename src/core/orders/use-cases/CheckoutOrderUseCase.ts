@@ -1,5 +1,6 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import OrderGateway from "../../interfaces/OrderGateway";
+import PaymentGateway from "../../interfaces/PaymentGateway";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import Item from "../entities/Item";
@@ -8,7 +9,7 @@ import { OrderStatus } from "../entities/OrderStatus";
 import CheckoutOrder from "../interfaces/CheckoutOrder";
 
 export default class CheckoutOrderUseCase implements CheckoutOrder {
-  constructor(private orderGateway: OrderGateway) {}
+  constructor(private orderGateway: OrderGateway, private paymentGateway: PaymentGateway) {}
 
   async checkout(orderId: number): Promise<OrderDTO> {
     const orderDTO = await this.orderGateway.getOrder(orderId);
@@ -17,8 +18,7 @@ export default class CheckoutOrderUseCase implements CheckoutOrder {
 
     order.setStatus(OrderStatus.PENDING_PAYMENT);
 
-    // Fake Checkout: Pagamento não implementado - Mudando para pago
-    order.setStatus(OrderStatus.PAYED);
+    await this.paymentGateway.performPayment(order.getId()!);
 
     return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
   }
