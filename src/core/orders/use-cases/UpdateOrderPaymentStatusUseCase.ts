@@ -1,4 +1,4 @@
-import OrderGateway from "../../../gateways/OrderGateway";
+import OrderGateway from "../../interfaces/OrderGateway";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import PaymentDTO from "../dto/PaymentDTO";
 import ItemDTO from "../dto/ItemDTO";

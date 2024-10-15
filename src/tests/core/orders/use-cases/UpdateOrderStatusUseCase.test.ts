@@ -26,6 +26,9 @@ import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
+import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
+import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
+import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
 
 chai.use(chaiAsPromised);
 
@@ -72,7 +75,7 @@ describe("Update Order Status", () => {
   }
 
   function setupCheckoutUseCase() {
-    return new CheckoutOrderUseCase(orderGateway);
+    return new CheckoutOrderUseCase(orderGateway, new MockPaymentGateway());
   }
 
   function setupUpdateOrderStatusUseCase() {
@@ -89,6 +92,10 @@ describe("Update Order Status", () => {
 
   function setupAddItemUseCase() {
     return new AddItemUseCase(orderGateway, productGateway);
+  }
+
+  function setupUpdateOrderPaymentUseCase() {
+    return new UpdateOrderPaymentStatusUseCase(orderGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -120,6 +127,7 @@ describe("Update Order Status", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrderUseCase = setupGetOrderUseCase();
+    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
 
     const { RECEIVED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -127,6 +135,7 @@ describe("Update Order Status", () => {
 
     await addItemToOrder(order.id!);
     await checkoutUseCase.checkout(order.id!);
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
     await updateOrderStatusUseCase.updateOrderStatus(order.id!, RECEIVED);
 
     const orderUpdated = await getOrderUseCase.getOrder(order.id!);

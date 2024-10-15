@@ -23,7 +23,10 @@ import CreateProductUseCase from "../../../../core/products/use-cases/CreateProd
 import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
+import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
 import GetOrdersUseCase from "../../../../core/orders/use-cases/GetOrdersUseCase";
+import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
+import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 chai.use(chaiAsPromised);
 
@@ -72,7 +75,7 @@ describe("Get orders by priority", () => {
   }
 
   function setupCheckoutUseCase() {
-    return new CheckoutOrderUseCase(orderGateway);
+    return new CheckoutOrderUseCase(orderGateway, new MockPaymentGateway());
   }
 
   function setupUpdateOrderStatusUseCase() {
@@ -89,6 +92,10 @@ describe("Get orders by priority", () => {
 
   function setupGetOrdersUseCase() {
     return new GetOrdersUseCase(orderGateway);
+  }
+
+  function setupUpdateOrderPaymentUseCase() {
+    return new UpdateOrderPaymentStatusUseCase(orderGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -128,6 +135,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
+    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
 
     const { DONE, RECEIVED, PREPARING } = OrderStatus;
 
@@ -145,6 +153,9 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderFirst.id!);
     await checkoutUseCase.checkout(orderSecond.id!);
     await checkoutUseCase.checkout(orderFourth.id!);
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFourth.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
 
@@ -172,6 +183,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
+    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
 
     const { RECEIVED, PREPARING } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -190,6 +202,10 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderSecond.id!);
     await checkoutUseCase.checkout(orderThird.id!);
 
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+    
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), PREPARING);
@@ -218,6 +234,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
+    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
 
     const { DONE, RECEIVED, PREPARING, FINISHED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -225,6 +242,9 @@ describe("Get orders by priority", () => {
     const orderFirst = await createOrderUseCase.createOrder(orderDTO);
     await addItemToOrder(orderFirst.id!);
     await checkoutUseCase.checkout(orderFirst.id!);
+    
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), PREPARING);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), DONE);
@@ -235,6 +255,7 @@ describe("Get orders by priority", () => {
     const orderThird = await createOrderUseCase.createOrder(orderDTO);
     await addItemToOrder(orderThird.id!);
     await checkoutUseCase.checkout(orderThird.id!);
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
 
     const orders = await getOrdersUseCase.getOrders();

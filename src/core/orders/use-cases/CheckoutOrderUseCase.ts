@@ -20,7 +20,9 @@ export default class CheckoutOrderUseCase implements CheckoutOrder {
 
     await this.paymentGateway.performPayment(order.getId()!);
 
-    return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
+    const updatedOrder = await this.orderGateway.updateOrder(this.#toOrderDTO(order));
+
+    return this.#toOrderDTO(this.#toOrderEntity(updatedOrder));
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {

@@ -7,6 +7,7 @@ import InvalidStatusTransitionError from "../../../../core/orders/exceptions/Inv
 import EmptyOrderError from "../../../../core/orders/exceptions/EmptyOrderError";
 import ClosedOrderError from "../../../../core/orders/exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
+import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 context("Order", () => {
   describe("validations", () => {
@@ -111,6 +112,7 @@ context("Order", () => {
         id: 1,
         code: "CODE123",
         status: OrderStatus.PAYED,
+        paymentStatus: OrderPaymentsStatus.APPROVED,
         totalPrice: 100.0,
         customerId: 1,
         items: [
@@ -185,6 +187,7 @@ context("Order", () => {
         id: 1,
         code: "CODE123",
         status: OrderStatus.PAYED,
+        paymentStatus: OrderPaymentsStatus.APPROVED,
         totalPrice: 100.0,
         items: [
           {
@@ -243,6 +246,7 @@ context("Order", () => {
         id: 1,
         code: "CODE123",
         status: OrderStatus.PAYED,
+        paymentStatus: OrderPaymentsStatus.APPROVED,
         totalPrice: 100.0,
         items: [
           {

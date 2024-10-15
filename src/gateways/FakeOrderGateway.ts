@@ -5,6 +5,7 @@ import OrderDTO from "../core/orders/dto/OrderDTO";
 type FakeOrder = {
   id: number;
   status?: string;
+  paymentStatus?: string;
   code?: string;
   items: FakeItem[];
   createdAt?: Date;
@@ -27,10 +28,11 @@ export default class FakeOrderGateway implements OrderGateway {
   private items: FakeItem[] = [];
 
   async createOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
-    const { status, code, customerId } = orderDTO;
+    const { status, paymentStatus, code, customerId } = orderDTO;
     const order = {
       id: this.orders.length + 1,
       status,
+      paymentStatus,
       code,
       items: [],
       createdAt: new Date(),
@@ -129,6 +131,7 @@ export default class FakeOrderGateway implements OrderGateway {
       code: databaseOrder!.code,
       createdAt: databaseOrder!.createdAt,
       status: databaseOrder!.status,
+      paymentStatus: databaseOrder!.paymentStatus,
       customerId: databaseOrder!.customerId,
       items: databaseOrder!.items.map(
         (databaseItem) =>
