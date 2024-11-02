@@ -5,11 +5,10 @@ type IndexedObject = { [key: string]: any };
 
 export interface CustomerDataSource {
   create(customerDTO: CustomerDTO): Promise<CustomerDTO>;
-  findByProperies(properties: IndexedObject): Promise<CustomerDTO[] | undefined>;
+  findByProperties(properties: IndexedObject): Promise<CustomerDTO[] | undefined>;
 }
 
 export interface OrderDataSource {
-  //interfaces dos metodos do banco
   create(orderDTO: OrderDTO): Promise<OrderDTO>;
 
   findById(id: number): Promise<OrderDTO | undefined>;

@@ -12,7 +12,7 @@ export default class SequelizeCustomerDataSource implements CustomerDataSource {
     return this.createCustomerDTO(customer)!;
   }
 
-  async findByProperies(properties: IndexedObject): Promise<CustomerDTO[]> {
+  async findByProperties(properties: IndexedObject): Promise<CustomerDTO[]> {
     const customers = await Customer.findAll({
       where: {
         ...properties
