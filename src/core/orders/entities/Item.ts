@@ -31,7 +31,7 @@ export default class Item {
 
     this.setQuantity(quantity);
 
-    this.#updateTotalPrice();
+    this.updateTotalPrice();
   }
 
   getId() {
@@ -67,16 +67,16 @@ export default class Item {
   }
 
   setQuantity(quantity: number) {
-    this.#validateQuantity(quantity);
+    Item.validateQuantity(quantity);
     this.quantity = quantity;
-    this.#updateTotalPrice();
+    this.updateTotalPrice();
   }
 
-  #updateTotalPrice() {
+  private updateTotalPrice() {
     this.totalPrice = this.unitPrice * this.quantity;
   }
 
-  #validateQuantity(quantity: number) {
+  private static validateQuantity(quantity: number) {
     if (!quantity || quantity <= 0) {
       throw new MissingPropertyError("quantity");
     }

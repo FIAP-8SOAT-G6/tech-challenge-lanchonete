@@ -54,17 +54,17 @@ export default class Product {
   }
 
   setName(name: string) {
-    this.validateName(name);
+    Product.validateName(name);
     this.name = name;
   }
 
   setCategory(category: string) {
-    this.validateCategory(category);
+    Product.validateCategory(category);
     this.category = category;
   }
 
   setPrice(price: number) {
-    this.validatePrice(price);
+    Product.validatePrice(price);
     this.price = price;
   }
 
@@ -76,13 +76,13 @@ export default class Product {
     this.images = images?.map((url: any) => ({ productId: this.id, url })) || [];
   }
 
-  private validateName(name: string) {
+  private static validateName(name: string) {
     if (!name) {
       throw new MissingPropertyError("name");
     }
   }
 
-  private validateCategory(category: string) {
+  private static validateCategory(category: string) {
     if (!category) {
       throw new MissingPropertyError("category");
     }
@@ -92,7 +92,7 @@ export default class Product {
     }
   }
 
-  private validatePrice(price: number) {
+  private static validatePrice(price: number) {
     if (!price || price < 0) {
       throw new MissingPropertyError("price");
     }
