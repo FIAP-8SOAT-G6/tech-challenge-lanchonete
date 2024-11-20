@@ -40,7 +40,7 @@ export default class Customer {
   }
 
   setName(name: string) {
-    this.validateName(name);
+    Customer.validateName(name);
     this.name = name;
   }
 
@@ -52,7 +52,7 @@ export default class Customer {
     this.email = new Email({ email });
   }
 
-  private validateName(name: string) {
+  private static validateName(name: string) {
     if (!name) {
       throw new MissingPropertyError("name");
     }

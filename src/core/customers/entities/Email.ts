@@ -17,21 +17,21 @@ export default class Email {
   }
 
   setEmail(email: string) {
-    this.validateEmail(email);
+    Email.validateEmail(email);
     this.email = email;
   }
 
-  private validateEmail(email: string) {
+  private static validateEmail(email: string) {
     if (!email) {
       throw new MissingPropertyError("email");
     }
 
-    if (!this.isValidEmail(email)) {
+    if (!Email.isValidEmail(email)) {
       throw new InvalidAttributeError("email", email);
     }
   }
 
-  private isValidEmail(email: string): boolean {
+  private static isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }

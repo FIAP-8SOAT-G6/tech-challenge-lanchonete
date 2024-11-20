@@ -191,7 +191,7 @@ export default class Order {
   }
 
   #insertIntoItems(itemDTO: ItemDTO) {
-    const { id, productId, quantity, unitPrice, totalPrice, productName, productDescription } = itemDTO;
+    const { id, productId, quantity, unitPrice, productName, productDescription } = itemDTO;
     const item = new Item({
       id,
       productId: productId!,

@@ -94,8 +94,8 @@ describe("Get orders by priority", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {
@@ -128,15 +128,15 @@ describe("Get orders by priority", () => {
 
     await addItemToOrder(orderFirst.id!);
     await addItemToOrder(orderSecond.id!);
-    await addItemToOrder(orderThird.id!); //pedido que irá ficar em aberto
+    await addItemToOrder(orderThird.id!);
     await addItemToOrder(orderFourth.id!);
 
     await checkoutUseCase.checkout(orderFirst.id!);
     await checkoutUseCase.checkout(orderSecond.id!);
     await checkoutUseCase.checkout(orderFourth.id!);
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFourth.id!, paymentStatus: OrderPaymentsStatus.APPROVED} );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFourth.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
 
@@ -149,14 +149,14 @@ describe("Get orders by priority", () => {
 
     const orders = await getOrdersUseCase.getOrders();
 
-    const [firstOrder, secondOrder, thirdOrder] = orders;
+    const [doneOrder, preparingOrder, receivedOrder] = orders;
 
     expect(orders).not.to.be.undefined;
     expect(orders.length).to.be.equals(3);
 
-    expect(firstOrder.status).to.be.equals(DONE);
-    expect(secondOrder.status).to.be.equals(PREPARING);
-    expect(thirdOrder.status).to.be.equals(RECEIVED);
+    expect(doneOrder.status).to.be.equals(DONE);
+    expect(preparingOrder.status).to.be.equals(PREPARING);
+    expect(receivedOrder.status).to.be.equals(RECEIVED);
   });
 
   it("should sort the requests by status and from oldest to newest", async () => {
@@ -183,10 +183,10 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderSecond.id!);
     await checkoutUseCase.checkout(orderThird.id!);
 
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
-    
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), PREPARING);
@@ -223,8 +223,8 @@ describe("Get orders by priority", () => {
     const orderFirst = await createOrderUseCase.createOrder(orderDTO);
     await addItemToOrder(orderFirst.id!);
     await checkoutUseCase.checkout(orderFirst.id!);
-    
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), PREPARING);
@@ -236,7 +236,7 @@ describe("Get orders by priority", () => {
     const orderThird = await createOrderUseCase.createOrder(orderDTO);
     await addItemToOrder(orderThird.id!);
     await checkoutUseCase.checkout(orderThird.id!);
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
 
     const orders = await getOrdersUseCase.getOrders();
