@@ -1,5 +1,7 @@
-import { OrderPaymentPayload, PaymentStatus, PaymentSystem } from "../interfaces/PaymentSystem";
 import axios from "axios";
+import { WEBHOOK_PATH } from "../api/WebhooksAPI";
+import { OrderPaymentPayload, PaymentDetails, PaymentSystem } from "../interfaces/PaymentSystem";
+import OrderPaymentsStatus from "../core/orders/entities/OrderPaymentsStatus";
 
 const MERCADO_PAGO_QR_CODE_URL = "https://api.mercadopago.com/instore/orders/qr/seller/collectors/{USER_ID}/pos/{EXTERNAL_POS_ID}/qrs";
 const MERCADO_PAGO_PAYMENT_URL = "https://api.mercadopago.com/v1/payments/";
@@ -10,6 +12,16 @@ const PLACEHOLDERS = {
 };
 
 const MINUTES_EXPIRATION_TIME = 10;
+
+const mercadoPagoPaymentStatusToOrderPaymentStatus: { [key: string]: OrderPaymentsStatus } = {
+  pending: OrderPaymentsStatus.PENDING,
+  approved: OrderPaymentsStatus.APPROVED,
+  authorized: OrderPaymentsStatus.PENDING,
+  in_process: OrderPaymentsStatus.PENDING,
+  in_mediation: OrderPaymentsStatus.PENDING,
+  rejected: OrderPaymentsStatus.DENIED,
+  cancelled: OrderPaymentsStatus.DENIED
+};
 
 interface MercadoPagoQRCodePayload {
   external_reference: string;
@@ -68,7 +80,8 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
     };
   }
 
-  async getPaymentDetails(paymentID: any): Promise<PaymentStatus> {
+  async getPaymentDetails(paymentID: any): Promise<PaymentDetails> {
+    console.log("Fetching Payment Details for Payment ID :", paymentID);
     const serviceUrl = `${MERCADO_PAGO_PAYMENT_URL}/${paymentID}`;
     const response = await axios.get(serviceUrl, {
       headers: {
@@ -77,9 +90,17 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
       }
     });
 
+    console.log(`Payment Details Response: ${JSON.stringify(response.data)}`);
+
     return {
-      paymentStatus: response.data.status
+      externalReference: response.data.external_reference,
+      paymentStatus: this.convertToInternalPaymentStatus(response.data.status),
+      approvalDate: response.data.date_approved
     };
+  }
+
+  private convertToInternalPaymentStatus(status: string): OrderPaymentsStatus {
+    return mercadoPagoPaymentStatusToOrderPaymentStatus[status];
   }
 
   private getMercadoPagoQRCodeUrl(): string {
@@ -90,7 +111,7 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
   }
 
   private getNotificationUrl(): string {
-    return process.env.NOTIFICATION_URL!;
+    return `${process.env.NOTIFICATION_URL_HOST!}/${WEBHOOK_PATH}`;
   }
 
   private getAccessToken(): string {

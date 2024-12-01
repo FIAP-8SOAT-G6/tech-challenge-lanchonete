@@ -4,13 +4,15 @@ export interface OrderPaymentPayload {
     totalAmount: number;
 }
 
-export interface PaymentStatus {
-    paymentStatus: boolean
+export interface PaymentDetails {
+    paymentStatus: string;
+    externalReference: string;
+    approvalDate: string;
 }
 
 type QRCodeString = string;
 
 export interface PaymentSystem {
     async sendPaymentRequest(payload: OrderPaymentPayload): Promise<QRCodeString>;
-    async getPaymentDetails(paymentID): Promise<PaymentStatus>;
+    async getPaymentDetails(paymentID): Promise<PaymentDetails>;
 }
