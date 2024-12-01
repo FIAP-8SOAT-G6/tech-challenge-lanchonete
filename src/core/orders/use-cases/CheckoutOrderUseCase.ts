@@ -9,20 +9,22 @@ import { OrderStatus } from "../entities/OrderStatus";
 import CheckoutOrder from "../interfaces/CheckoutOrder";
 
 export default class CheckoutOrderUseCase implements CheckoutOrder {
-  constructor(private orderGateway: OrderGateway, private paymentGateway: PaymentGateway) {}
+  constructor(
+    private orderGateway: OrderGateway,
+    private paymentGateway: PaymentGateway
+  ) {}
 
-  async checkout(orderId: number): Promise<OrderDTO> {
+  async checkout(orderId: number): Promise<string> {
     const orderDTO = await this.orderGateway.getOrder(orderId);
     this.#validateOrderExists(orderDTO?.id!, orderId);
     const order = this.#toOrderEntity(orderDTO!);
 
     order.setStatus(OrderStatus.PENDING_PAYMENT);
 
-    await this.paymentGateway.performPayment(order.getId()!);
+    const qrCode = await this.paymentGateway.performPayment(order.getId()!);
+    await this.orderGateway.updateOrder(this.#toOrderDTO(order));
 
-    const updatedOrder = await this.orderGateway.updateOrder(this.#toOrderDTO(order));
-
-    return this.#toOrderDTO(this.#toOrderEntity(updatedOrder));
+    return qrCode;
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {

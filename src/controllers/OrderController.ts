@@ -2,7 +2,8 @@ import ItemDTO from "../core/orders/dto/ItemDTO";
 import OrderDTO from "../core/orders/dto/OrderDTO";
 import { OrdersFactory } from "../factories/OrdersFactory";
 import { CustomerDataSource, OrderDataSource, ProductDataSource } from "../interfaces/DataSources";
-import OrderPresenter, { OrderResponse } from "../presenters/OrderPresenters";
+import { PaymentSystem } from "../interfaces/PaymentSystem";
+import OrderPresenter, { OrderResponse, QRCodeResponse } from "../presenters/OrderPresenters";
 
 export default class OrderController {
   public static async createOrder(orderDataSource: OrderDataSource, customerDataSource: CustomerDataSource, order: OrderDTO): Promise<OrderResponse> {
@@ -35,10 +36,10 @@ export default class OrderController {
     return paymentStatus;
   }
 
-  public static async checkout(orderDataSource: OrderDataSource, orderId: number): Promise<OrderResponse> {
-    const useCase = OrdersFactory.makeCheckout(orderDataSource);
-    const order = await useCase.checkout(orderId);
-    return OrderPresenter.adaptOrderData(order);
+  public static async checkout(orderDataSource: OrderDataSource, paymentSystem: PaymentSystem, orderId: number): Promise<QRCodeResponse> {
+    const useCase = OrdersFactory.makeCheckout(orderDataSource, paymentSystem);
+    const orderPaymentQRCode = await useCase.checkout(orderId);
+    return OrderPresenter.adaptOrderCheckoutData(orderPaymentQRCode);
   }
 
   public static async updateOrderStatus(orderDataSource: OrderDataSource, orderId: number, status: string): Promise<OrderResponse> {
