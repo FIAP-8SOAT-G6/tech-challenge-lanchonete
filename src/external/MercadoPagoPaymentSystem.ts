@@ -111,7 +111,7 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
   }
 
   private getNotificationUrl(): string {
-    return `${process.env.NOTIFICATION_URL_HOST!}/${WEBHOOK_PATH}`;
+    return `${process.env.NOTIFICATION_URL_HOST!}${WEBHOOK_PATH}`;
   }
 
   private getAccessToken(): string {
