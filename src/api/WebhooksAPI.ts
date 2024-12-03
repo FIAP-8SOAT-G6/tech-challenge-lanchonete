@@ -19,7 +19,6 @@ webhooksAPIRouter.post(WEBHOOK_PATH, async (req, res) => {
     const { topic, id } = req.query;
 
     if (topic === SUPPORTED_TOPICS.Payment) {
-      console.log(`Webhook entrypoint ` + topic, id);
       const paymentDTO = new PaymentDTO({
         paymentId: Number(id)
       });

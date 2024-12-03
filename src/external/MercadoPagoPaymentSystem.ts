@@ -81,7 +81,6 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
   }
 
   async getPaymentDetails(paymentID: any): Promise<PaymentDetails> {
-    console.log("Fetching Payment Details for Payment ID :", paymentID);
     const serviceUrl = `${MERCADO_PAGO_PAYMENT_URL}/${paymentID}`;
     const response = await axios.get(serviceUrl, {
       headers: {
@@ -89,8 +88,6 @@ export class MercadoPagoPaymentSystem implements PaymentSystem {
         Authorization: `Bearer ${this.getAccessToken()}`
       }
     });
-
-    console.log(`Payment Details Response: ${JSON.stringify(response.data)}`);
 
     return {
       externalReference: response.data.external_reference,
