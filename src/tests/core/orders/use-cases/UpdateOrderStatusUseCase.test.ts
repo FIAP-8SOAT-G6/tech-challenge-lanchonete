@@ -45,12 +45,14 @@ const CUSTOMER_DTO = new CustomerDTO({
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 let productGateway: ProductGateway;
+let paymentGateway: MockPaymentGateway;
 
 describe("Update Order Status", () => {
   beforeEach(() => {
     customerGateway = new FakeCustomerGateway();
     orderGateway = new FakeOrderGateway();
     productGateway = new FakeProductGateway();
+    paymentGateway = new MockPaymentGateway();
   });
 
   function setupCreateOrderUseCase() {
@@ -58,7 +60,7 @@ describe("Update Order Status", () => {
   }
 
   function setupCheckoutUseCase() {
-    return new CheckoutOrderUseCase(orderGateway, new MockPaymentGateway());
+    return new CheckoutOrderUseCase(orderGateway, paymentGateway);
   }
 
   function setupUpdateOrderStatusUseCase() {
@@ -78,7 +80,7 @@ describe("Update Order Status", () => {
   }
 
   function setupUpdateOrderPaymentUseCase() {
-    return new UpdateOrderPaymentStatusUseCase(orderGateway);
+    return new UpdateOrderPaymentStatusUseCase(orderGateway, paymentGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -116,7 +118,9 @@ describe("Update Order Status", () => {
 
     await addItemToOrder(order.id!);
     await checkoutUseCase.checkout(order.id!);
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED } );
+
+    paymentGateway.setMockedPaymentDetails({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
     await updateOrderStatusUseCase.updateOrderStatus(order.id!, RECEIVED);
 
     const orderUpdated = await getOrderUseCase.getOrder(order.id!);
