@@ -37,10 +37,6 @@ jobs:
       - name: Tests & Coverage 
         run: npm run coverage
 
-  sonar-qube:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
