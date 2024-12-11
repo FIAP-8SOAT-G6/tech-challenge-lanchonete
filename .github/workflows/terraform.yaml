@@ -54,17 +54,17 @@ jobs:
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
-        PLAN: ${{ steps.plan.outputs.stdout }}
+        BACKEND_PLAN: ${{ steps.backend-plan.outputs.stdout }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const output = `#### Terraform Backend
-          #### Terraform Backend Plan 📖\`${{ steps.plan.outcome }}\`
+          #### Terraform Backend Plan 📖\`${{ steps.backend-plan.outcome }}\`
 
           <details><summary>Show Plan</summary>
 
           \`\`\`terraform\n
-          ${process.env.PLAN}
+          ${process.env.BACKEND_PLAN}
           \`\`\`
 
           </details>
