@@ -25,7 +25,8 @@ async function init() {
   configureHealthRoutes(app);
 
   const server = app.listen(PORT_SERVER, () => {
-    console.log(`Server running on port ${PORT_SERVER}`), console.log(`Documentação da API disponível em http://localhost:${PORT_SERVER}/api-docs`);
+    console.log(`Server running on port ${PORT_SERVER}`);
+    console.log(`Documentação da API disponível em http://localhost:${PORT_SERVER}/api-docs`);
   });
 
   process.on("SIGINT", function onSigint() {
