@@ -193,6 +193,7 @@ jobs:
 
       - name: Push Image
         id: push-image
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
