@@ -1,10 +1,12 @@
 import UpdateOrderPaymentStatus from "../core/orders/interfaces/UpdateOrderPaymentStatus";
-import UpdateOrderPaymentStatusUseCase from "../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
+import ProcessOrderPaymentUseCase from "../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
 import OrderGateway from "../gateways/OrderGateway";
+import { PaymentGateway } from "../gateways/PaymentGateway";
 import { OrderDataSource } from "../interfaces/DataSources";
+import { PaymentSystem } from "../interfaces/PaymentSystem";
 
 export class WebhooksFactory {
-  public static process(orderDataSource: OrderDataSource): UpdateOrderPaymentStatus {
-    return new UpdateOrderPaymentStatusUseCase(new OrderGateway(orderDataSource));
+  public static processPayment(orderDataSource: OrderDataSource, paymentSystem: PaymentSystem): UpdateOrderPaymentStatus {
+    return new ProcessOrderPaymentUseCase(new OrderGateway(orderDataSource), new PaymentGateway(new OrderGateway(orderDataSource), paymentSystem));
   }
 }

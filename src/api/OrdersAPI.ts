@@ -9,6 +9,7 @@ import SequelizeProductDataSource from "../external/SequelizeProductDataSource";
 import ItemDTO from "../core/orders/dto/ItemDTO";
 import ClosedOrderError from "../core/orders/exceptions/ClosedOrderError";
 import EmptyOrderError from "../core/orders/exceptions/EmptyOrderError";
+import { MercadoPagoPaymentSystem } from "../external/MercadoPagoPaymentSystem";
 
 const ordersAPIRouter = Router();
 
@@ -55,8 +56,8 @@ ordersAPIRouter.get("/orders/:orderId", async (req, res) => {
 ordersAPIRouter.post("/orders/:orderId/checkout", async (req, res) => {
   try {
     const orderId = Number(req.params.orderId);
-    await OrderController.checkout(new SequelizeOrderDataSource(), orderId);
-    return res.status(200).json({});
+    const checkoutResponse = await OrderController.checkout(new SequelizeOrderDataSource(), new MercadoPagoPaymentSystem(), orderId);
+    return res.status(200).json(checkoutResponse);
   } catch (error: any) {
     if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
     return res.status(500).json({ error: error.message });

@@ -20,7 +20,17 @@ export type OrderResponse = {
   }[];
 };
 
+export type QRCodeResponse = {
+  qrCode: string;
+};
+
 export default class OrderPresenter {
+  public static adaptOrderCheckoutData(qrCode: string): QRCodeResponse {
+    return {
+      qrCode: qrCode
+    };
+  }
+
   public static adaptOrderData(order: OrderDTO | undefined): OrderResponse {
     if (!order) return {} as OrderResponse;
     return {

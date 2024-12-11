@@ -1,48 +1,39 @@
 paths:
-  /webhooks/payments:
+  /webhooks:
     post:
-      summary: Recebe confirmação de pagamento aprovado ou recusado
+      summary: Webhooks da Aplicação
       tags:
         - Webhooks
       requestBody:
-        description: Payload de confirmação de pagamento
+        description: Payload do Webhook
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                orderId:
-                  type: integer
-                  description: ID do pedido relacionado ao pagamento
-                  example: 1
-                paymentStatus:
-                  $ref: "#/components/schemas/OrderPaymentsStatus"
-                  description: Status do pagamento (Aprovado ou Recusado)
-                  example: APPROVED
-                timestamp:
-                  type: string
-                  format: date-time
-                  description: Data e hora da confirmação de pagamento
-                  example: "2024-01-01T12:00:00Z"
+                topic:
+                  $ref: "#/components/schemas/SupportedTopics"
+                  description: Tópico do Webhook
+                  example: payment
+                id:
+                  type: number
+                  description: Identificador do recurso associado ao tópico
               required:
-                - orderId
-                - paymentStatus
-                - timestamp
+                - topic
+                - id
       responses:
         "200":
           description: Notificação recebida com sucesso
         "400":
-          description: Payload inválido
+          description: Payload inválido. Tópico não suportado.
         "500":
           description: Erro interno do servidor
 
 components:
   schemas:
-    OrderPaymentsStatus:
+    SupportedTopics:
       type: string
-      description: Status do Pagamento do Pedido
+      description: Tópicos suportados
       enum:
-        - PENDING
-        - DENIED
-        - APPROVED
+        - payment

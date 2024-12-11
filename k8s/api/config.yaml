@@ -6,4 +6,6 @@ metadata:
     app: lanchonete-api
 data:
   API_PORT: "31200"
-  
+  MERCADO_PAGO_NOTIFICATION_URL: ""
+  MERCADO_PAGO_POINT_OF_SALE_ID: ""
+  MERCADO_PAGO_USER_ID: ""

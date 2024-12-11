@@ -24,7 +24,8 @@ import AddItemUseCase from "../core/orders/use-cases/AddItemUseCase";
 import DeleteItemUseCase from "../core/orders/use-cases/DeleteItemUseCase";
 import UpdateItemUseCase from "../core/orders/use-cases/UpdateItemUseCase";
 import ProductGateway from "../gateways/ProductGateway";
-import MockPaymentGateway from "../gateways/MockPaymentGateway";
+import { PaymentSystem } from "../interfaces/PaymentSystem";
+import { PaymentGateway } from "../gateways/PaymentGateway";
 
 export class OrdersFactory {
   public static makeCreateOrder(orderDataSource: OrderDataSource, customerDataSource: CustomerDataSource): CreateOrder {
@@ -50,8 +51,8 @@ export class OrdersFactory {
     return new UpdateOrderStatusUseCase(new OrderGateway(orderDataSource));
   }
 
-  public static makeCheckout(orderDataSource: OrderDataSource): CheckoutOrder {
-    return new CheckoutOrderUseCase(new OrderGateway(orderDataSource), new MockPaymentGateway());
+  public static makeCheckout(orderDataSource: OrderDataSource, paymentSystem: PaymentSystem): CheckoutOrder {
+    return new CheckoutOrderUseCase(new OrderGateway(orderDataSource), new PaymentGateway(new OrderGateway(orderDataSource), paymentSystem));
   }
 
   public static makeAddItem(orderDataSource: OrderDataSource, productDataSource: ProductDataSource): AddItem {
