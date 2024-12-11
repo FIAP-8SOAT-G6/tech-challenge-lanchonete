@@ -164,6 +164,7 @@ jobs:
 
   docker-build-and-push:
     name: "Docker - Build & Push to ECR"
+    needs: terraform-ecr
     runs-on: ubuntu-latest
     environment: production
     steps:
