@@ -13,6 +13,7 @@ permissions:
 
 env:
   AWS_REGION_DEFAULT: us-east-1
+  AWS_ECR_REPOSITORY: tech-challenge-lanchonete/lanchonete-api
 
 jobs:
   terraform-backend:
@@ -186,7 +187,13 @@ jobs:
       - name: Build & Tag Image
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: "lanchonete-api"
+          AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest . -f Dockerfile.prod
+          docker build -t $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest . -f Dockerfile.prod
+
+      - name: Push Image
+        id: push-image
+        env:
+          AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker push $AWS_ECR_REGISTRY/$AWS_ECR_REPOSITORY:latest
