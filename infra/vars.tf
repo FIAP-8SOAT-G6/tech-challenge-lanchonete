@@ -3,5 +3,5 @@ variable "regionDefault" {
 }
 
 variable "repositoryName" {
-  default = "lanchonete-api" 
+  default = "lanchonete-api"
 }
