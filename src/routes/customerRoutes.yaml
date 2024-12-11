@@ -42,7 +42,7 @@ paths:
                 cpf:
                   type: string
                   description: CPF do cliente sem formatação
-                  example: "11111111111"
+                  example: "12345678909"
                 email:
                   type: string
                   description: Email do cliente
@@ -78,7 +78,7 @@ components:
         cpf:
           type: string
           description: CPF do cliente sem formatação
-          example: "11111111111"
+          example: "12345678909"
         email:
           type: string
           description: Email do cliente

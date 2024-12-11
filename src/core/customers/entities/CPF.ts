@@ -17,11 +17,11 @@ export default class CPF {
   }
 
   setCPF(cpf: string) {
-    this.validateCPF(cpf);
+    CPF.validateCPF(cpf);
     this.cpf = cpf;
   }
 
-  private validateCPF(cpf: string) {
+  private static validateCPF(cpf: string) {
     if (!cpf) {
       throw new MissingPropertyError("cpf");
     }
@@ -31,7 +31,7 @@ export default class CPF {
     }
   }
 
-  private isValidCPF(cpf: string): boolean {
+  private static isValidCPF(cpf: string): boolean {
     cpf = cpf.replace(/\D/g, "");
     if (cpf.length !== 11) return false;
 
@@ -39,7 +39,7 @@ export default class CPF {
     return isValid;
   }
 
-  private validateDigits(cpf: string): boolean {
+  private static validateDigits(cpf: string): boolean {
     const numbers = cpf.substring(0, 9);
     const digits = cpf.substring(9);
     const firstDigit = this.calculateDigit(numbers, 10);
@@ -47,7 +47,7 @@ export default class CPF {
     return digits === `${firstDigit}${secondDigit}`;
   }
 
-  private calculateDigit(cpfBase: string, weight: number): number {
+  private static calculateDigit(cpfBase: string, weight: number): number {
     let total = 0;
     for (let i = 0; i < cpfBase.length; i++) {
       total += parseInt(cpfBase[i]) * weight--;

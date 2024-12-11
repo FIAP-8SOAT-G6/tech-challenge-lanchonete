@@ -96,8 +96,8 @@ describe("Get orders by priority", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {
@@ -130,7 +130,7 @@ describe("Get orders by priority", () => {
 
     await addItemToOrder(orderFirst.id!);
     await addItemToOrder(orderSecond.id!);
-    await addItemToOrder(orderThird.id!); //pedido que irá ficar em aberto
+    await addItemToOrder(orderThird.id!);
     await addItemToOrder(orderFourth.id!);
 
     await checkoutUseCase.checkout(orderFirst.id!);
@@ -157,14 +157,14 @@ describe("Get orders by priority", () => {
 
     const orders = await getOrdersUseCase.getOrders();
 
-    const [firstOrder, secondOrder, thirdOrder] = orders;
+    const [doneOrder, preparingOrder, receivedOrder] = orders;
 
     expect(orders).not.to.be.undefined;
     expect(orders.length).to.be.equals(3);
 
-    expect(firstOrder.status).to.be.equals(DONE);
-    expect(secondOrder.status).to.be.equals(PREPARING);
-    expect(thirdOrder.status).to.be.equals(RECEIVED);
+    expect(doneOrder.status).to.be.equals(DONE);
+    expect(preparingOrder.status).to.be.equals(PREPARING);
+    expect(receivedOrder.status).to.be.equals(RECEIVED);
   });
 
   it("should sort the requests by status and from oldest to newest", async () => {

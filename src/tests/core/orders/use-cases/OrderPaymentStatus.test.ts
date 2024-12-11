@@ -41,8 +41,8 @@ describe("Order payment status", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {
@@ -59,23 +59,4 @@ describe("Order payment status", () => {
     const paymentStatus = await getPaymentStatus.getPaymentStatus(order.id!);
     expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
   });
-
-  //TODO - Implementar na tarefa dos webhooks
-  // it('should return "DENIED" after payment is made', async () => {
-  //   const orderDTO = await createOrderDTO();
-  //   const order = await createOrderUseCase.createOrder(orderDTO);
-  //   await addItemToOrder(order.id);
-  // });
-
-  //TODO - Implementar na tarefa dos webhooks
-  // it('should return "APPROVED" after payment is made', async () => {
-  //   const orderDTO = await createOrderDTO();
-  //   const order = await createOrderUseCase.createOrder(orderDTO);
-  //   await addItemToOrder(order.id);
-
-  //   await checkoutUseCase.checkout(order.id);
-
-  //   const paymentStatus = await getPaymentStatus.getPaymentStatus(order.id);
-  //   expect(paymentStatus).to.be.equals(OrderPaymentsStatus.APPROVED);
-  // });
 });
