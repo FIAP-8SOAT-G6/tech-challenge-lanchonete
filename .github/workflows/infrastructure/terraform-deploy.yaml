@@ -2,7 +2,11 @@ name: 'Terraform - Deploy'
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+      - "main"
+  pull_request_target:
+    paths:
+      - "infra/**"
   workflow_dispatch:
 
 permissions:

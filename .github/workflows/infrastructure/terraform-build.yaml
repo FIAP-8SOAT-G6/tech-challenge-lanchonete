@@ -2,10 +2,13 @@ name: 'Terraform - Build'
 
 on:
   push:
-    branches: [ "main" ]
-    paths: ["infra/**"]
+    branches: 
+      - "main"
+    paths: 
+      - "infra/**"
   pull_request_target:
-    paths: ["infra/**"]
+    paths:
+      - "infra/**"
 
 permissions:
   contents: read
