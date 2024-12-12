@@ -4,6 +4,8 @@ Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP ut
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=FIAP-8SOAT-G6_tech-challenge-lanchonete)](https://sonarcloud.io/summary/new_code?id=FIAP-8SOAT-G6_tech-challenge-lanchonete)
+
 #### Tabela de Conteúdos
 
 1. [Requisitos](#requisitos)
