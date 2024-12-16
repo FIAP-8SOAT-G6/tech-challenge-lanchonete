@@ -8,10 +8,10 @@ O projeto é uma solução para o modelo de negócio [B2C](https://www.totvs.com
 ## Introdução: Modelo de negócio e tipo de banco de dados
 
 O modelo de negócios da lanchonete é focado no armazenamento e gerenciamento dos pedidos de venda realizados pelos clientes.
-Cada pedido inclui informações importantes e essenciais, como o cliente que está realizando o pedido (assim como o mesmo pode ser feito de forma anonima), os itens selecionados como sanduíches, bebidas, acompanhamentos, etc, juntamente com o valor total do pedido, a forma de pagamento e o status, que é atualizado conforme as etapas de pedido, pagamento e preparo.
+Cada pedido inclui informações importantes e essenciais, como o cliente que está realizando o pedido (assim como o mesmo pode ser feito de forma anonima), os itens selecionados como sanduíches, bebidas, acompanhamentos, etc., juntamente com o valor total do pedido, a forma de pagamento e a situação, atualizado conforme as etapas de pedido, pagamento e preparo.
 
 O modelo de negócios da lanchonete é focado no armazenamento e gerenciamento dos pedidos de venda realizados pelos clientes.
-Cada pedido contém informações importantes, indo desde o cadastro do cliente, passando pela seleção dos itens, pagamento, e atualização sobre o preprado até sua finalização.
+Cada pedido contém informações importantes, indo desde o cadastro do cliente, passando pela seleção dos itens, pagamento, e atualização sobre o preparado até sua finalização.
 
 A estrutura desses dados precisa ser organizada de maneira eficiente, garantindo confiabilidade e consistência. Por isso, optou-se pela utilização de um banco de dados relacional.
 
@@ -19,27 +19,27 @@ Os principais pontos levados em consideração foram:
 
 - **Entidades**
 
-  No modelo relacional, os dados são organizados em tabelas, que são separadas por entidade ou relacionamento entre as entidades.
+  No modelo relacional, os dados são organizados em tabelas, separadas por entidade ou relacionamento entre as entidades.
 
   Como as entidades são ligadas umas as outras por meio de um identificador (chaves primárias), os dados não precisam ser replicados dentro da entidade que precisa dos dados.
 
-  Caso uma entidade (como o cliente) sejam atualizada, todas as entidades que relacionam com ela (como o caso do pedido) também terão (caso na consulta realizada também retornar esses dados) as informações atualizadas.
+  Caso uma entidade (como o cliente) sejam atualizadas, todas as entidades que relacionam com ela (como o caso do pedido) também terão (caso na consulta realizada também retornar esses dados) as informações atualizadas.
 
 - **Escalabilidade**
 
   A estrutura de tabela por entidade, permite que possa ser criado mais entidades, e relacionar essas com entidades existem sem grandes esforços.
 
-  Como seria o caso da lanchonete expandir suas funcionlidades, e realizar por exemplos outras funções, como seria o caso de cadatrar tabelas promocionais, e vincular apenas os pedidos lançados a partir de uma data, sem precisar atualizar pedidos fechados, pois esses são apenas registros históricos.
+  Como seria o caso da lanchonete expandir suas funcionalidades, e realizar por exemplos outras funções, como seria o caso de cadastrar tabelas promocionais, e vincular apenas os pedidos lançados a partir de uma data, sem precisar atualizar pedidos fechados, pois esses são apenas registros históricos.
 
 - **Consulta dos dados**
   A linguagem SQL permite realizar consultas rápidas e complexas. E com base nos identificadores, é fácil manter um padrão de como os dados são buscados nas tabelas.
 
-Os bancos relacionais permitem o armazenamento de dados como históricos, como pedidos antigos, sem risco de alterações indevidas, e dados mutavéis como o cadastro do cliente.
+Os bancos relacionais permitem o armazenamento de dados como históricos, como pedidos antigos, sem risco de alterações indevidas, e dados mutáveis como o cadastro do cliente.
 Por exemplo, um pedido concluído e entregue não pode ser alterado. Entretanto, mesmo que o pedido seja histórico, é essencial que as informações do cliente vinculado ao pedido, como o número de telefone, sejam sempre atualizadas. Em um banco de dados relacional, isso é possível graças à utilização de identificadores únicos para o cliente. Quando os dados do cliente são atualizados, o vínculo entre o pedido e o cliente permite que as informações do cliente sejam automaticamente refletidas em todos os pedidos associados a ele.
 
 <br/>
 
-## Banco de dados: PostgresSQL
+## Banco de dados: PostgreSQL
 
 Com base nos bancos de dados disponíveis, o escolhido foi o PostgreSQL.
 
@@ -51,7 +51,7 @@ Entre as vantagens da escolha estão os itens como:
 - Suporte nativo para replicação no cenário de uma recuperação/backup
 - Índice avançado para consultas geoespaciais ou com texto
 - Alto desempenho nas operações de leitura e escrita
-- Escalabilidade vertical e orizontal
+- Escalabilidade vertical e horizontal
 - Suporta consultas complexas
 
 <br/>
@@ -60,9 +60,11 @@ Entre as vantagens da escolha estão os itens como:
 
 ### Organização dos dados para o projeto Lanchonete
 
-Documentação seguindo os padrões do Modelo de Entidade-Relacionamento (MER) para o banco de dados.
+Documentação seguindo os padrões do [Modelo de Entidade-Relacionamento](<https://www.alura.com.br/artigos/mer-e-der-funcoes#:~:text=O%20MER%20(Modelo%20Entidade%20Relacionamento)%20%C3%A9%20utilizado%20para%20descrever%20os,atributos%20e%20os%20seus%20relacionamentos.>) (MER) para o banco de dados.
 
 #### Entidades:
+
+Entidades são nomeadas com base em um conjunto de substantivos concretos ou abstratos que representam algo ou função num domínio. Em nosso modelo de negócio as entidades são:
 
 - Customer (Cliente)
 - Order (Pedidos)
@@ -71,6 +73,8 @@ Documentação seguindo os padrões do Modelo de Entidade-Relacionamento (MER) p
 - Image (Imagem do item)
 
 #### Relacionamentos:
+
+Relacionamentos é como as entidades interagem entre sim. Em nosso modelo de negócio os relacionamentos são:
 
 Um cliente pode realizar múltiplos pedidos (1:N).
 Um pedido pode conter múltiplos itens (1:N).
