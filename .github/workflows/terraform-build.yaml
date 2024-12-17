@@ -1,12 +1,12 @@
-name: 'Terraform - Build'
+name: "Terraform - Build"
 
 on:
   push:
-    branches: 
+    branches:
       - "main"
-    paths: 
+    paths:
       - "infra/**"
-  pull_request_target:
+  pull_request:
     paths:
       - "infra/**"
 
@@ -19,74 +19,10 @@ env:
   AWS_ECR_REPOSITORY: tech-challenge-lanchonete/lanchonete-api
 
 jobs:
-  terraform-backend:
-    name: 'Terraform Backend'
-    runs-on: ubuntu-latest
-    environment: production
-
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ env.AWS_REGION_DEFAULT }}
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-
-    - name: "[Backend] Terraform Init"
-      run: terraform -chdir=infra/backend init
-
-    - name: "[Backend] Terraform Plan"
-      id: backend-plan
-      if: github.event_name == 'pull_request'
-      run: terraform -chdir=infra/backend plan -no-color -input=false
-      continue-on-error: true
-
-    - name: "[Backend] Update Pull Request"
-      uses: actions/github-script@v6
-      if: github.event_name == 'pull_request'
-      env:
-        BACKEND_PLAN: ${{ steps.backend-plan.outputs.stdout }}
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Backend
-          #### Terraform Backend Plan 📖\`${{ steps.backend-plan.outcome }}\`
-
-          <details><summary>Show Plan</summary>
-
-          \`\`\`terraform\n
-          ${process.env.BACKEND_PLAN}
-          \`\`\`
-
-          </details>
-
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
-
   terraform-ecr:
     name: "Terraform AWS Elastic Container Registry"
     runs-on: ubuntu-latest
     environment: production
-
-    needs:
-      - terraform-backend
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -94,64 +30,64 @@ jobs:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v4
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ env.AWS_REGION_DEFAULT }}
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION_DEFAULT }}
 
-    - name: Terraform Init
-      id: init
-      run: terraform -chdir=infra init
-    
-    - name: Terraform Format
-      run: terraform -chdir=infra  fmt -check
-    
-    - name: Terraform Validate
-      id: validate
-      run: terraform -chdir=infra  validate -no-color
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: Terraform Plan
-      id: plan
-      if: github.event_name == 'pull_request'
-      run: terraform -chdir=infra  plan -no-color -input=false
-      continue-on-error: true
+      - name: Terraform Init
+        id: init
+        run: terraform -chdir=infra init
 
-    - name: Update Pull Request
-      uses: actions/github-script@v6
-      if: github.event_name == 'pull_request'
-      env:
-        PLAN: ${{ steps.plan.outputs.stdout }}
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+      - name: Terraform Format
+        run: terraform -chdir=infra  fmt -check
 
-          <details><summary>Show Plan</summary>
+      - name: Terraform Validate
+        id: validate
+        run: terraform -chdir=infra  validate -no-color
 
-          \`\`\`terraform\n
-          ${process.env.PLAN}
-          \`\`\`
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform -chdir=infra  plan -no-color -input=false
+        continue-on-error: true
 
-          </details>
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: ${{ steps.plan.outputs.stdout }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            <details><summary>Show Plan</summary>
 
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+            \`\`\`terraform\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
