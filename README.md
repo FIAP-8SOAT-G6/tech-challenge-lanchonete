@@ -79,27 +79,27 @@ A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a se
 - **ConfigMaps lanchonete-api-config e lanchonete-db-config**: Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
 - **Secret lanchonete-db-secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
 
+> **TODO**: Atualizar documentação da Arquitetura do Kubernetes com as últimas alterações da Fase 3.
+
 #### Fluxo de Comunicação
 
 1. O NodePort Service expõe a API externamente, encaminhando as requisições para os diferentes pods gerenciados pelo Deployment `lanchonete-api`.
 2. Os pods `lanchonete-api` se comunicam com o `lanchonete-db` por meio de um ClusterIP Service, que encaminha as requisições para os pods do banco de dados, gerenciados pelo StatefulSet. Assim, o `lanchonete-api` pode realizar as operações necessárias no banco de dados.
    > Os ConfigMaps e o Secret são utilizados durante a inicialização dos pods para configurar a conexão com o banco de dados e outros serviços externos
 
-### Arquitetura AWS - Concepção
-
-> **Importante:** A arquitetura descrita a seguir é apenas uma concepção da equipe de desenvolvimento sobre a aplicação em ambiente AWS. Não foi implementada e testada, estando passível de correções e mudanças para suportar os requerimentos com mais desempenho, segurança e observabilidade.
+### Arquitetura AWS
 
 ![Arquitetura AWS](diagrams/aws-eks-architecture-diagram.png)
 
 A arquitetura proposta utiliza serviços gerenciados da AWS para oferecer uma solução escalável e resiliente. Seguem os principais componentes:
 
-- **Amazon Route 53**: Os usuários finais interagem com a API por meio do **Amazon Route 53**, que atua como um serviço de DNS gerenciado para rotear o tráfego.
+- **Amazon API Gateway**: Os usuários finais interagem com a API por meio do **API Gateway**, que atua como o serviço responsável por rotear o tráfego.
 
 - **Network Load Balancer (NLB)**: Encaminha as requisições dentro da **Virtual Private Cloud (VPC)** para o **Amazon Elastic Kubernetes Service (EKS)**.
 
-- **Kubernetes Ingress**: Gerencia o roteamento das requisições para os serviços corretos da aplicação.
-
 - **Amazon EKS (Elastic Kubernetes Service)**: A aplicação é implantada em um **Amazon EKS Cluster** dentro de uma **sub-rede privada**. Os detalhes sobre o Cluster K8S podem ser encontrados em [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+
+- **Amazon RDS (Relational Database Service)**: Serviço para provisionamento do banco de dados Postgres.
 
 - **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers da aplicação, facilitando a atualização dos pods dentro do cluster EKS que utilizam a tag _latest_.
 
