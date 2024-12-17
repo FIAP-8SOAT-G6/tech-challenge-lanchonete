@@ -18,46 +18,10 @@ env:
   AWS_ECR_REPOSITORY: tech-challenge-lanchonete/lanchonete-api
 
 jobs:
-  terraform-backend:
-    name: 'Terraform Backend'
-    runs-on: ubuntu-latest
-    environment: production
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ env.AWS_REGION_DEFAULT }}
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-
-    - name: "[Backend] Terraform Init"
-      run: terraform -chdir=infra/backend init
-
-    - name: "[Backend] Terraform Apply"
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=infra/backend apply -auto-approve -input=false
-
   terraform-ecr:
     name: "Terraform AWS Elastic Container Registry"
     runs-on: ubuntu-latest
     environment: production
-
-    needs:
-      - terraform-backend
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
