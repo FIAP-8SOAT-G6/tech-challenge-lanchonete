@@ -24,6 +24,13 @@ describe("Get All Products", () => {
     return new GetAllProductUseCase(repository);
   }
 
+  it("should return 'undefined' when there are no Products", async () => {
+    const productUseCase = setupProductUseCase();
+    const products = await productUseCase.getAllProducts();
+
+    expect(products).to.be.undefined;
+  });
+
   it("should return all Products", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();

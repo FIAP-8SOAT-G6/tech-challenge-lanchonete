@@ -7,7 +7,7 @@ export default class GetAllProductsUseCase implements GetAllProducts {
 
   async getAllProducts(): Promise<ProductDTO[] | undefined> {
     const products = await this.productGateway.getAllProducts();
-    if (!products) return undefined;
+    if (!products || products.length === 0) return undefined;
     return products;
   }
 }
