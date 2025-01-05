@@ -7,7 +7,7 @@ import InvalidStatusTransitionError from "../../../../core/orders/exceptions/Inv
 import EmptyOrderError from "../../../../core/orders/exceptions/EmptyOrderError";
 import ClosedOrderError from "../../../../core/orders/exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
-import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 context("Order", () => {
   describe("validations", () => {
@@ -26,6 +26,7 @@ context("Order", () => {
       expect(order.getItems()).to.be.empty;
     });
   });
+
   describe("setStatus", () => {
     it("should allow to create an Order with status `CREATED`", () => {
       expect(
@@ -38,6 +39,7 @@ context("Order", () => {
           })
       ).to.not.throw(InvalidStatusTransitionError);
     });
+
     it("should allow to change from status `CREATED` to `PENDING_PAYMENT` if there are items", () => {
       const order = new Order({
         id: 1,
@@ -56,6 +58,7 @@ context("Order", () => {
       });
       expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.not.throw(InvalidStatusTransitionError);
     });
+
     it("should not allow to change from status `CREATED` to `PENDING_PAYMENT` if there are no items", () => {
       const order = new Order({
         id: 1,
@@ -66,6 +69,7 @@ context("Order", () => {
       });
       expect(() => order.setStatus(OrderStatus.PENDING_PAYMENT)).to.throw(EmptyOrderError);
     });
+
     it("should not allow to change from status `PENDING_PAYMENT` to `CREATED`", () => {
       const order = new Order({
         id: 1,
@@ -86,6 +90,7 @@ context("Order", () => {
       expect(() => order.setStatus(OrderStatus.CREATED)).to.throw(InvalidStatusTransitionError);
     });
   });
+
   describe("addItem", () => {
     it("should add item to order", () => {
       const order = new Order({
@@ -107,6 +112,7 @@ context("Order", () => {
       expect(order.getItems().length).to.be.at.least(1);
       expect(Number(order.getTotalPrice())).to.be.equals(item.quantity * item.unitPrice);
     });
+
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({
         id: 1,
@@ -138,6 +144,7 @@ context("Order", () => {
       ).to.throw(ClosedOrderError);
     });
   });
+
   describe("updateItem", () => {
     it("should update an item if status is `CREATED`", () => {
       const order = new Order({
@@ -167,6 +174,7 @@ context("Order", () => {
       expect(updatedItem.getTotalPrice()).to.be.equals(updateValues.quantity * updatedItem.getUnitPrice());
       expect(Number(order.getTotalPrice())).to.be.equals(updateValues.quantity * Number(updatedItem.getUnitPrice()));
     });
+
     it("should throw an error when updating unexisting item", () => {
       const order = new Order({
         id: 1,
@@ -182,6 +190,7 @@ context("Order", () => {
 
       expect(() => order.updateItem(unexistingId, updateValues)).to.throw(ResourceNotFoundError);
     });
+
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({
         id: 1,
@@ -204,6 +213,7 @@ context("Order", () => {
       expect(() => order.updateItem(1, { quantity: 0 })).to.throw(ClosedOrderError);
     });
   });
+
   describe("removeItem", () => {
     it("should remove an item if status is `CREATED`", () => {
       const order = new Order({
@@ -227,6 +237,7 @@ context("Order", () => {
       order.removeItem(1);
       expect(order.getItems().length).to.be.equals(0);
     });
+
     it("should throw an error when removing unexisting item", () => {
       const order = new Order({
         id: 1,
@@ -241,6 +252,7 @@ context("Order", () => {
 
       expect(() => order.removeItem(unexistingId)).to.throw(ResourceNotFoundError);
     });
+
     it("should throw an error when status is not `CREATED`", () => {
       const order = new Order({
         id: 1,

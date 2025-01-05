@@ -6,7 +6,7 @@ import InvalidStatusTransitionError from "../exceptions/InvalidStatusTransitionE
 import ClosedOrderError from "../exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import ItemDTO from "../dto/ItemDTO";
-import OrderPaymentsStatus, { isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
+import { OrderPaymentsStatus, isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
 import ForbiddenPaymentStatusChangeError from "../exceptions/ForbiddenPaymentStatusChangeError";
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS: {

@@ -2,7 +2,6 @@ import OrderGatewayInterface from "../core/interfaces/OrderGateway";
 import PaymentGatewayInterface from "../core/interfaces/PaymentGateway";
 import PaymentDTO from "../core/orders/dto/PaymentDTO";
 import Order from "../core/orders/entities/Order";
-import OrderPaymentsStatus from "../core/orders/entities/OrderPaymentsStatus";
 import { PaymentSystem } from "../interfaces/PaymentSystem";
 
 export class PaymentGateway implements PaymentGatewayInterface {

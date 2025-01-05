@@ -23,7 +23,7 @@ import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOr
 import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
 import GetOrdersUseCase from "../../../../core/orders/use-cases/GetOrdersUseCase";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
-import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 chai.use(chaiAsPromised);
 
@@ -250,7 +250,7 @@ describe("Get orders by priority", () => {
     const orderThird = await createOrderUseCase.createOrder(orderDTO);
     await addItemToOrder(orderThird.id!);
     await checkoutUseCase.checkout(orderThird.id!);
-    paymentGateway.setMockedPaymentDetails({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED })
+    paymentGateway.setMockedPaymentDetails({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
     await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderThird.id! });
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
 

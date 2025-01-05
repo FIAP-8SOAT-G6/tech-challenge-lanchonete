@@ -6,7 +6,7 @@ import OrderDTO from "../dto/OrderDTO";
 import PaymentDTO from "../dto/PaymentDTO";
 import Item from "../entities/Item";
 import Order from "../entities/Order";
-import OrderPaymentsStatus from "../entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../entities/OrderPaymentsStatus";
 import { OrderStatus } from "../entities/OrderStatus";
 import ProcessOrderPayment from "../interfaces/UpdateOrderPaymentStatus";
 

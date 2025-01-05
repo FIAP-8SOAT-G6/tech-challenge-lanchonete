@@ -4,7 +4,7 @@ import chaiAsPromised from "chai-as-promised";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
-import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 import OrderGateway from "../../../../core/interfaces/OrderGateway";
