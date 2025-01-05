@@ -6,7 +6,7 @@ import Item from "../entities/Item";
 import Order from "../entities/Order";
 import UpdateItem from "../interfaces/UpdateItem";
 
-export default class CreateOrderUseCase implements UpdateItem {
+export default class UpdateItemUseCase implements UpdateItem {
   constructor(private orderGateway: OrderGateway) {}
 
   async updateItem(orderId: number, itemId: number, itemDTO: ItemDTO): Promise<OrderDTO> {
