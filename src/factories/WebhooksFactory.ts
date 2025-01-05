@@ -1,5 +1,5 @@
 import UpdateOrderPaymentStatus from "../core/orders/interfaces/UpdateOrderPaymentStatus";
-import ProcessOrderPaymentUseCase from "../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
+import ProcessOrderPaymentUseCase from "../core/orders/use-cases/ProcessOrderPaymentUseCase";
 import OrderGateway from "../gateways/OrderGateway";
 import { PaymentGateway } from "../gateways/PaymentGateway";
 import { OrderDataSource } from "../interfaces/DataSources";

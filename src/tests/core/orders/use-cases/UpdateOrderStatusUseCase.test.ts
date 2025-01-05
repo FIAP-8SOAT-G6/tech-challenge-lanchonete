@@ -25,7 +25,7 @@ import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOr
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
-import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
+import ProcessOrderPaymentUseCase from "../../../../core/orders/use-cases/ProcessOrderPaymentUseCase";
 
 chai.use(chaiAsPromised);
 
@@ -80,7 +80,7 @@ describe("Update Order Status", () => {
   }
 
   function setupUpdateOrderPaymentUseCase() {
-    return new UpdateOrderPaymentStatusUseCase(orderGateway, paymentGateway);
+    return new ProcessOrderPaymentUseCase(orderGateway, paymentGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -110,7 +110,7 @@ describe("Update Order Status", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrderUseCase = setupGetOrderUseCase();
-    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupUpdateOrderPaymentUseCase();
 
     const { RECEIVED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -120,7 +120,7 @@ describe("Update Order Status", () => {
     await checkoutUseCase.checkout(order.id!);
 
     paymentGateway.setMockedPaymentDetails({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
     await updateOrderStatusUseCase.updateOrderStatus(order.id!, RECEIVED);
 
     const orderUpdated = await getOrderUseCase.getOrder(order.id!);
@@ -134,27 +134,4 @@ describe("Update Order Status", () => {
     const unexistingOrderId = -1;
     await expect(updateOrderStatusUseCase.updateOrderStatus(unexistingOrderId, RECEIVED)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
-
-  // it('should return "PENDING" while the order awaits payment', async () => {
-  //   const createOrderUseCase = setupCreateOrderUseCase();
-  //   const getPaymentStatus = setupGetPaymentStatusUseCase();
-
-  //   const orderDTO = await createOrderDTO();
-  //   const order = await createOrderUseCase.createOrder(orderDTO);
-
-  //   const paymentStatus = await getPaymentStatus.getPaymentStatus(order.id!);
-  //   expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
-  // });
-
-  // it('should return "PENDING" while the order awaits payment', async () => {
-  //   const createOrderUseCase = setupCreateOrderUseCase();
-  //   const getPaymentStatus = setupGetPaymentStatusUseCase();
-
-  //   const orderDTO = await createOrderDTO();
-  //   const order = await createOrderUseCase.createOrder(orderDTO);
-
-  //   const paymentStatus = await getPaymentStatus.getPaymentStatus(order.id!);
-  //   expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
-  //   expect(() => order.setStatus(OrderStatus.PAYED)).to.not.throw(ForbiddenPaymentStatusChangeError);
-  // });
 });

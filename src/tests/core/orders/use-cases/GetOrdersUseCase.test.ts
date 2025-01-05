@@ -20,7 +20,7 @@ import CreateProductUseCase from "../../../../core/products/use-cases/CreateProd
 import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
-import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
+import ProcessOrderPaymentUseCase from "../../../../core/orders/use-cases/ProcessOrderPaymentUseCase";
 import GetOrdersUseCase from "../../../../core/orders/use-cases/GetOrdersUseCase";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
@@ -80,7 +80,7 @@ describe("Get orders by priority", () => {
   }
 
   function setupUpdateOrderPaymentUseCase() {
-    return new UpdateOrderPaymentStatusUseCase(orderGateway, paymentGateway);
+    return new ProcessOrderPaymentUseCase(orderGateway, paymentGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -118,7 +118,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
-    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupUpdateOrderPaymentUseCase();
 
     const { DONE, RECEIVED, PREPARING } = OrderStatus;
 
@@ -138,13 +138,13 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderFourth.id!);
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderSecond.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderSecond.id! });
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderFourth.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderFourth.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderFourth.id! });
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
 
@@ -172,7 +172,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
-    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupUpdateOrderPaymentUseCase();
 
     const { RECEIVED, PREPARING } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -192,13 +192,13 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderThird.id!);
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderSecond.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderSecond.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderSecond.id! });
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderThird.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderThird.id! });
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
@@ -228,7 +228,7 @@ describe("Get orders by priority", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrdersUseCase = setupGetOrdersUseCase();
-    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupUpdateOrderPaymentUseCase();
 
     const { DONE, RECEIVED, PREPARING, FINISHED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -238,7 +238,7 @@ describe("Get orders by priority", () => {
     await checkoutUseCase.checkout(orderFirst.id!);
 
     paymentGateway.setMockedPaymentDetails({ orderId: orderFirst.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderFirst.id! });
 
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), RECEIVED);
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderFirst.id), PREPARING);
@@ -251,7 +251,7 @@ describe("Get orders by priority", () => {
     await addItemToOrder(orderThird.id!);
     await checkoutUseCase.checkout(orderThird.id!);
     paymentGateway.setMockedPaymentDetails({ orderId: orderThird.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: orderThird.id! });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: orderThird.id! });
     await updateOrderStatusUseCase.updateOrderStatus(Number(orderThird.id), RECEIVED);
 
     const orders = await getOrdersUseCase.getOrders();
