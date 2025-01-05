@@ -87,6 +87,8 @@ export default class Item {
       id: this.id,
       orderId: this.orderId,
       productId: this.productId,
+      productDescription: this.productDescription,
+      productName: this.productName,
       quantity: this.quantity,
       unitPrice: this.unitPrice,
       totalPrice: this.totalPrice
