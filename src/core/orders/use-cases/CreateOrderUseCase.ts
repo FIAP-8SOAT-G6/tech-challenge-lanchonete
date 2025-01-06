@@ -1,9 +1,7 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import CustomerGateway from "../../interfaces/CustomerGateway";
 import OrderGateway from "../../interfaces/OrderGateway";
-import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
-import Item from "../entities/Item";
 import Order from "../entities/Order";
 import { OrderStatus } from "../entities/OrderStatus";
 import CreateOrder from "../interfaces/CreateOrder";
@@ -50,24 +48,10 @@ export default class CreateOrderUseCase implements CreateOrder {
       createdAt: orderEntity.getCreatedAt(),
       code: orderEntity.getCode(),
       totalPrice: orderEntity.getTotalPrice(),
-      items: orderEntity.getItems().map(this.toItemDTO),
       customerId: orderEntity.getCustomerId(),
       status: orderEntity.getStatus(),
       paymentStatus: orderEntity.getPaymentStatus(),
       elapsedTime: orderEntity.getElapsedTime()
-    });
-  }
-
-  private toItemDTO(itemEntity: Item) {
-    return new ItemDTO({
-      id: itemEntity.getId(),
-      orderId: itemEntity.getOrderId(),
-      productId: itemEntity.getProductId(),
-      productName: itemEntity.getProductName(),
-      productDescription: itemEntity.getProductDescription(),
-      quantity: itemEntity.getQuantity(),
-      unitPrice: itemEntity.getUnitPrice(),
-      totalPrice: itemEntity.getTotalPrice()
     });
   }
 
@@ -79,8 +63,7 @@ export default class CreateOrderUseCase implements CreateOrder {
       customerId: orderDTO.customerId!,
       status: orderDTO.status!,
       paymentStatus: orderDTO.paymentStatus!,
-      totalPrice: orderDTO.totalPrice,
-      items: orderDTO.items
+      totalPrice: orderDTO.totalPrice
     });
   }
 }
