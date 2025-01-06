@@ -13,7 +13,7 @@ export default class MockPaymentGateway implements PaymentGateway {
     return Promise.resolve(this.mockedPaymentDetails!);
   }
 
-  public setMockedPaymentDetails(paymentDTO: PaymentDTO) {
+  public createPaymentDetails(paymentDTO: PaymentDTO) {
     this.mockedPaymentDetails = paymentDTO;
   }
 }

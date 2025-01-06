@@ -1,6 +1,8 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
+
 import { OrderStatus } from "../../../../core/orders/entities/OrderStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
@@ -15,6 +17,8 @@ import ProductGateway from "../../../../core/interfaces/ProductGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
+import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
+import PaymentGateway from "../../../../core/interfaces/PaymentGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
@@ -23,8 +27,6 @@ import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
-import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
-import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 import ProcessOrderPaymentUseCase from "../../../../core/orders/use-cases/ProcessOrderPaymentUseCase";
 
 chai.use(chaiAsPromised);
@@ -45,7 +47,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 let productGateway: ProductGateway;
-let paymentGateway: MockPaymentGateway;
+let paymentGateway: PaymentGateway;
 
 describe("Update Order Status", () => {
   beforeEach(() => {
@@ -79,7 +81,7 @@ describe("Update Order Status", () => {
     return new AddItemUseCase(orderGateway, productGateway);
   }
 
-  function setupUpdateOrderPaymentUseCase() {
+  function setupProcessOrderPaymentUseCase() {
     return new ProcessOrderPaymentUseCase(orderGateway, paymentGateway);
   }
 
@@ -110,7 +112,7 @@ describe("Update Order Status", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrderUseCase = setupGetOrderUseCase();
-    const processOrderPaymentUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupProcessOrderPaymentUseCase();
 
     const { RECEIVED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -119,7 +121,7 @@ describe("Update Order Status", () => {
     await addItemToOrder(order.id!);
     await checkoutUseCase.checkout(order.id!);
 
-    paymentGateway.setMockedPaymentDetails({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    paymentGateway.createPaymentDetails({ paymentId: order.id!, orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
     await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
     await updateOrderStatusUseCase.updateOrderStatus(order.id!, RECEIVED);
 
@@ -131,7 +133,7 @@ describe("Update Order Status", () => {
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
 
     const { RECEIVED } = OrderStatus;
-    const unexistingOrderId = -1;
-    await expect(updateOrderStatusUseCase.updateOrderStatus(unexistingOrderId, RECEIVED)).to.be.eventually.rejectedWith(ResourceNotFoundError);
+    const nonExistingOrderId = -1;
+    await expect(updateOrderStatusUseCase.updateOrderStatus(nonExistingOrderId, RECEIVED)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
 });

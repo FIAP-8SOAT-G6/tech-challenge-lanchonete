@@ -41,7 +41,7 @@ export class PaymentGateway implements PaymentGatewayInterface {
 
     return new PaymentDTO({
       orderId: Number(paymentDetails.externalReference),
-      paymentId: paymentId,
+      paymentId,
       paymentStatus: paymentDetails.paymentStatus,
       timestamp: new Date(paymentDetails.approvalDate)
     });

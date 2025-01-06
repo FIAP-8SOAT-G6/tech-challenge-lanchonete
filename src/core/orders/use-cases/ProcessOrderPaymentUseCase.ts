@@ -20,12 +20,13 @@ export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {
     const { paymentId } = paymentDTO;
     const detailedPaymentDTO = await this.paymentGateway.getPaymentDetails(paymentId!);
 
+    this.#validatePaymentExists(detailedPaymentDTO?.paymentId!, paymentId!);
+
     const { orderId, paymentStatus } = detailedPaymentDTO;
     const orderDTO = await this.orderGateway.getOrder(orderId!);
     this.#validateOrderExists(orderDTO?.id!, orderId!);
 
     const order = this.#toOrderEntity(orderDTO!);
-
     order.setPaymentStatus(paymentStatus!);
 
     if (order.getPaymentStatus() === OrderPaymentsStatus.APPROVED) {
@@ -33,6 +34,10 @@ export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {
     }
 
     return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
+  }
+
+  #validatePaymentExists(paymentIdFound: number, paymentIdReceived: number) {
+    if (!paymentIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Payment, "id", paymentIdReceived);
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {
