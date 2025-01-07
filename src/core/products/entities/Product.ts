@@ -73,7 +73,7 @@ export default class Product {
   }
 
   setImages(images: { url: string }[]) {
-    this.images = images?.map((url: any) => ({ productId: this.id, url })) || [];
+    this.images = images?.map((image: any) => ({ productId: this.id, url: image.url })) || [];
   }
 
   private static validateName(name: string) {
