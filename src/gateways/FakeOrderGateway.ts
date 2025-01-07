@@ -69,11 +69,6 @@ export default class FakeOrderGateway implements OrderGateway {
     return orders.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
 
-  async getPaymentStatus(orderId: number): Promise<string> {
-    const order = this.orders.find((order) => order.id === orderId);
-    return order?.status || "";
-  }
-
   async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
     const { id } = orderDTO;
     const orderIndex = this.orders.findIndex((order) => order.id === id);
@@ -81,12 +76,6 @@ export default class FakeOrderGateway implements OrderGateway {
       ...this.orders[orderIndex],
       ...orderDTO
     };
-    return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
-  }
-
-  async updateOrderStatus(orderId: number, status: string): Promise<OrderDTO> {
-    const orderIndex = this.orders.findIndex((order) => order.id === orderId);
-    this.orders[orderIndex].status = status;
     return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
   }
 

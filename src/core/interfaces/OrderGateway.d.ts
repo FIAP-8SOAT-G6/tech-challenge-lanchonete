@@ -7,10 +7,8 @@ export default interface OrderGateway {
   getOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[] | []>;
   getOrder(orderId: number): Promise<OrderDTO | undefined>;
   getOrdersAll(): Promise<OrderDTO[] | []>;
-  getPaymentStatus(orderId: number): Promise<string>;
 
   updateOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
-  updateOrderStatus(orderId: number, status: string): Promise<OrderDTO>;
 
   addItem(orderDTO: OrderDTO, itemDTO: ItemDTO);
   updateItem(itemId: number, updateItemDTO: ItemDTO);
