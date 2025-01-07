@@ -19,7 +19,7 @@ context("Customer Management", () => {
     return new FindCustomerByCpfUseCase(customerGateway);
   }
 
-  describe("findByCPF", () => {
+  describe("find by CPF", () => {
     it("should find customer by CPF", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
@@ -44,6 +44,7 @@ context("Customer Management", () => {
       });
 
       const customerManagementUseCase = setupUseCase();
+
       await customerGateway.create(customerDTO);
 
       await expect(customerManagementUseCase.findByCPF("123")).to.be.eventually.rejectedWith(ResourceNotFoundError);

@@ -14,7 +14,6 @@ import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 import OrderGateway from "../../../../core/interfaces/OrderGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
-import PaymentGateway from "../../../../core/interfaces/PaymentGateway";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
 import ProductGateway from "../../../../core/interfaces/ProductGateway";
@@ -27,7 +26,6 @@ import ProcessOrderPaymentUseCase from "../../../../core/orders/use-cases/Proces
 import CreateProductUseCase from "../../../../core/products/use-cases/CreateProductUseCase";
 import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
-import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
 
 chai.use(chaiAsPromised);
@@ -47,7 +45,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
-let paymentGateway: PaymentGateway;
+let paymentGateway: MockPaymentGateway;
 let productGateway: ProductGateway;
 
 describe("Process Order Payment Use Case", () => {
@@ -78,10 +76,6 @@ describe("Process Order Payment Use Case", () => {
 
   function setupCheckoutUseCase() {
     return new CheckoutOrderUseCase(orderGateway, paymentGateway);
-  }
-
-  function setupUpdateOrderStatusUseCase() {
-    return new UpdateOrderStatusUseCase(orderGateway);
   }
 
   function setupCreateProductUseCase() {

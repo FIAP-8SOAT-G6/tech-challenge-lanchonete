@@ -18,7 +18,6 @@ import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
-import PaymentGateway from "../../../../core/interfaces/PaymentGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
@@ -47,7 +46,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 let productGateway: ProductGateway;
-let paymentGateway: PaymentGateway;
+let paymentGateway: MockPaymentGateway;
 
 describe("Update Order Status", () => {
   beforeEach(() => {
@@ -98,8 +97,8 @@ describe("Update Order Status", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {

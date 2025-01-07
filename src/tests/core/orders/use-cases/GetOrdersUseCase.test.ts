@@ -14,7 +14,6 @@ import ProductGateway from "../../../../core/interfaces/ProductGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
-import PaymentGateway from "../../../../core/interfaces/PaymentGateway";
 import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
@@ -44,7 +43,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 let productGateway: ProductGateway;
-let paymentGateway: PaymentGateway;
+let paymentGateway: MockPaymentGateway;
 
 describe("Get orders by priority", () => {
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

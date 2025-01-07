@@ -59,8 +59,8 @@ describe("Add Item", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {
