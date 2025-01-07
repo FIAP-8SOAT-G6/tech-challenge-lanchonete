@@ -51,7 +51,7 @@ export default class FakeOrderGateway implements OrderGateway {
       }))
       .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
 
-    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+    return orders.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
 
   async getOrder(id: number): Promise<OrderDTO | undefined> {
@@ -66,7 +66,7 @@ export default class FakeOrderGateway implements OrderGateway {
       ...order,
       items: this.items.filter((item) => item.OrderId === order.id)
     }));
-    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+    return orders.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
 
   async getPaymentStatus(orderId: number): Promise<string> {
