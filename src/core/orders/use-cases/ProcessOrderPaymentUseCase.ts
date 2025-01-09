@@ -12,22 +12,22 @@ import ProcessOrderPayment from "../interfaces/UpdateOrderPaymentStatus";
 
 export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {
   constructor(
-    private orderGateway: OrderGateway,
-    private paymentGateway: PaymentGateway
+    private readonly orderGateway: OrderGateway,
+    private readonly paymentGateway: PaymentGateway
   ) {}
 
   async updateOrderPaymentStatus(paymentDTO: PaymentDTO): Promise<OrderDTO> {
     const { paymentId } = paymentDTO;
     const detailedPaymentDTO = await this.paymentGateway.getPaymentDetails(paymentId!);
 
-    this.#validatePaymentExists(detailedPaymentDTO?.paymentId!, paymentId!);
+    this.#validatePaymentExists(detailedPaymentDTO?.paymentId, paymentId!);
 
     const { orderId, paymentStatus } = detailedPaymentDTO;
-    const orderDTO = await this.orderGateway.getOrder(orderId!);
-    this.#validateOrderExists(orderDTO?.id!, orderId!);
+    const orderDTO = await this.orderGateway.getOrder(orderId);
+    this.#validateOrderExists(orderDTO?.id!, orderId);
 
     const order = this.#toOrderEntity(orderDTO!);
-    order.setPaymentStatus(paymentStatus!);
+    order.setPaymentStatus(paymentStatus);
 
     if (order.getPaymentStatus() === OrderPaymentsStatus.APPROVED) {
       order.setStatus(OrderStatus.PAYED);
