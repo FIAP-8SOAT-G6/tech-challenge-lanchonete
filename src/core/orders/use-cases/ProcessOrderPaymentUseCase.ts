@@ -20,11 +20,12 @@ export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {
     const { paymentId } = paymentDTO;
     const detailedPaymentDTO = await this.paymentGateway.getPaymentDetails(paymentId!);
 
-    this.#validatePaymentExists(detailedPaymentDTO?.paymentId, paymentId!);
+    this.#validateEntityIDExists(detailedPaymentDTO?.paymentId, ResourceNotFoundError.Resources.Payment, paymentId!);
 
     const { orderId, paymentStatus } = detailedPaymentDTO;
     const orderDTO = await this.orderGateway.getOrder(orderId);
-    this.#validateOrderExists(orderDTO?.id!, orderId);
+
+    this.#validateEntityIDExists(orderDTO?.id!, ResourceNotFoundError.Resources.Order, orderId);
 
     const order = this.#toOrderEntity(orderDTO!);
     order.setPaymentStatus(paymentStatus);
@@ -36,12 +37,10 @@ export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {
     return await this.orderGateway.updateOrder(this.#toOrderDTO(order));
   }
 
-  #validatePaymentExists(paymentIdFound: number, paymentIdReceived: number) {
-    if (!paymentIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Payment, "id", paymentIdReceived);
-  }
-
-  #validateOrderExists(orderIdFound: number, orderIdReceived: number) {
-    if (!orderIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Order, "id", orderIdReceived);
+  #validateEntityIDExists(idFound: number, type: string, idReceived: number) {
+    if (!idFound) {
+      throw new ResourceNotFoundError(type, "id", idReceived);
+    }
   }
 
   #toOrderEntity(orderDTO: OrderDTO) {
