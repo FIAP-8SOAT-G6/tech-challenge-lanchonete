@@ -12,19 +12,19 @@ export default class ProductController {
 
   public static async getByProductId(productDataSource: ProductDataSource, id: number): Promise<ProductResponse> {
     const useCase = ProductsFactory.makeGetById(productDataSource);
-    const createdCustomer = await useCase.getByProductId(id);
-    return ProductPresenter.adaptProductData(createdCustomer);
+    const createdProduct = await useCase.getByProductId(id);
+    return ProductPresenter.adaptProductData(createdProduct);
   }
   public static async create(productDataSource: ProductDataSource, product: ProductDTO): Promise<ProductResponse> {
     const useCase = ProductsFactory.makeCreateProduct(productDataSource);
-    const createdCustomer = await useCase.createProduct(product);
-    return ProductPresenter.adaptProductData(createdCustomer);
+    const createdProduct = await useCase.createProduct(product);
+    return ProductPresenter.adaptProductData(createdProduct);
   }
 
   public static async update(productDataSource: ProductDataSource, product: ProductDTO): Promise<ProductResponse> {
     const useCase = ProductsFactory.makeUpdate(productDataSource);
-    const createdCustomer = await useCase.updateProduct(product);
-    return ProductPresenter.adaptProductData(createdCustomer);
+    const createdProduct = await useCase.updateProduct(product);
+    return ProductPresenter.adaptProductData(createdProduct);
   }
 
   public static async delete(productDataSource: ProductDataSource, id: number): Promise<any> {
@@ -35,7 +35,7 @@ export default class ProductController {
 
   public static async getByCategory(productDataSource: ProductDataSource, category: string): Promise<ProductResponse[]> {
     const useCase = ProductsFactory.makeGetByCategory(productDataSource);
-    const createdCustomer = await useCase.getByCategory(category);
-    return ProductPresenter.adaptProductsData(createdCustomer);
+    const createdProduct = await useCase.getByCategory(category);
+    return ProductPresenter.adaptProductsData(createdProduct);
   }
 }

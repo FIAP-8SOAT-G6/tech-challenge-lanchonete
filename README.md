@@ -168,7 +168,13 @@ Exemplo:
   "price": 12.99,
   "description": "Hamburguer Classico",
   "images": [
-    "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+    },
+    {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/novo-logo.png"
+    },
+
   ]
 }
 ```
