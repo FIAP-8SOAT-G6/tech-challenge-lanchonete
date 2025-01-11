@@ -5,6 +5,7 @@ import OrderDTO from "../dto/OrderDTO";
 import Order from "../entities/Order";
 import { OrderStatus } from "../entities/OrderStatus";
 import CreateOrder from "../interfaces/CreateOrder";
+import { OrderMapper } from "../mappers/OrderMappers";
 
 export default class CreateOrderUseCase implements CreateOrder {
   constructor(
@@ -22,11 +23,11 @@ export default class CreateOrderUseCase implements CreateOrder {
       code: this.generateCode(),
       customerId: customerId!
     });
-    const createdOrderDTO = await this.orderGateway.createOrder(this.toOrderDTO(order));
+    const createdOrderDTO = await this.orderGateway.createOrder(OrderMapper.toOrderDTO(order));
     const completeOrderDTO = await this.orderGateway.getOrder(createdOrderDTO.id!);
-    const completeOrder = this.toOrderEntity(completeOrderDTO!);
+    const completeOrder = OrderMapper.toOrderEntity(completeOrderDTO!);
 
-    return this.toOrderDTO(completeOrder);
+    return OrderMapper.toOrderDTO(completeOrder);
   }
 
   private isCustomerAnonymous(customerId: number | null) {
@@ -40,30 +41,5 @@ export default class CreateOrderUseCase implements CreateOrder {
 
   private generateCode() {
     return Math.floor(1000 + Math.random() * 9000).toString();
-  }
-
-  private toOrderDTO(orderEntity: Order) {
-    return new OrderDTO({
-      id: orderEntity.getId(),
-      createdAt: orderEntity.getCreatedAt(),
-      code: orderEntity.getCode(),
-      totalPrice: orderEntity.getTotalPrice(),
-      customerId: orderEntity.getCustomerId(),
-      status: orderEntity.getStatus(),
-      paymentStatus: orderEntity.getPaymentStatus(),
-      elapsedTime: orderEntity.getElapsedTime()
-    });
-  }
-
-  private toOrderEntity(orderDTO: OrderDTO) {
-    return new Order({
-      id: orderDTO.id,
-      createdAt: orderDTO.createdAt,
-      code: orderDTO.code!,
-      customerId: orderDTO.customerId!,
-      status: orderDTO.status!,
-      paymentStatus: orderDTO.paymentStatus!,
-      totalPrice: orderDTO.totalPrice
-    });
   }
 }

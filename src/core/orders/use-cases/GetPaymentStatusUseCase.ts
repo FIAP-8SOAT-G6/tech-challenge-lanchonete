@@ -1,8 +1,7 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import OrderGateway from "../../interfaces/OrderGateway";
-import OrderDTO from "../dto/OrderDTO";
-import Order from "../entities/Order";
 import GetPaymentStatus from "../interfaces/GetPaymentStatus";
+import { OrderMapper } from "../mappers/OrderMappers";
 
 export default class GetPaymentStatusUseCase implements GetPaymentStatus {
   constructor(private orderGateway: OrderGateway) {}
@@ -11,24 +10,11 @@ export default class GetPaymentStatusUseCase implements GetPaymentStatus {
     const repositoryOrderDTO = await this.orderGateway.getOrder(orderId);
     this.#validateOrderExists(repositoryOrderDTO?.id!, orderId);
 
-    const order = this.#toOrderEntity(repositoryOrderDTO!);
+    const order = OrderMapper.toOrderEntity(repositoryOrderDTO!);
     return order.getPaymentStatus();
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {
     if (!orderIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Order, "id", orderIdReceived);
-  }
-
-  #toOrderEntity(orderDTO: OrderDTO) {
-    return new Order({
-      id: orderDTO.id,
-      createdAt: orderDTO.createdAt,
-      code: orderDTO.code!,
-      customerId: orderDTO.customerId!,
-      status: orderDTO.status!,
-      paymentStatus: orderDTO.paymentStatus!,
-      totalPrice: orderDTO.totalPrice,
-      items: orderDTO.items
-    });
   }
 }

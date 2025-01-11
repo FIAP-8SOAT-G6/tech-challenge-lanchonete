@@ -24,7 +24,7 @@ export class OrderMapper {
       createdAt: orderEntity.getCreatedAt(),
       code: orderEntity.getCode(),
       totalPrice: orderEntity.getTotalPrice(),
-      items: orderEntity.getItems().map(this.toItemDTO),
+      items: orderEntity.getItems().map(OrderMapper.toItemDTO),
       customerId: orderEntity.getCustomerId(),
       status: orderEntity.getStatus(),
       paymentStatus: orderEntity.getPaymentStatus(),
