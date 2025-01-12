@@ -32,7 +32,7 @@ describe("Customer Controller", () => {
   it("should return the customer on successful customer registration", async () => {
     const customer = buildCustomer();
     const customerDTO = new CustomerDTO(customer);
-    const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
+    const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
     createStub.resolves(customerCreated);
@@ -69,7 +69,7 @@ describe("Customer Controller", () => {
 
   it("should return error message when the customer is already registered", async () => {
     const customer = buildCustomer();
-    const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
+    const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
     createStub.resolves(customerCreated);
@@ -99,7 +99,7 @@ describe("Customer Controller", () => {
 
   it("should find customer by cpf", async () => {
     const customer = buildCustomer();
-    const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
+    const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
     createStub.resolves(customerCreated);
@@ -123,16 +123,7 @@ describe("Customer Controller", () => {
     expect(createStub.called).to.be.false;
   });
 
-  it("should return error message of Route not found when the CPF is not informed for customer search", async () => {
-    const res = await request(app).get("/customers/");
-
-    expect(res.status).to.equal(404);
-    expect(res.body).to.deep.equal({ message: "Route not found" });
-    expect(findByPropertiesStub.called).to.be.false;
-    expect(createStub.called).to.be.false;
-  });
-
-  it("should return error message when an error occurs to register the customer", async () => {
+  it("should return error message when an error occurs to search the customer", async () => {
     findByPropertiesStub.rejects();
 
     const res = await request(app).get("/customers/1234");
@@ -140,5 +131,14 @@ describe("Customer Controller", () => {
     expect(res.status).to.equal(500);
     expect(res.body).to.deep.equal({ message: "Error" });
     expect(findByPropertiesStub.calledOnce).to.be.true;
+  });
+
+  it("should return error message of Route not found when route is invalid", async () => {
+    const res = await request(app).get("/customers/");
+
+    expect(res.status).to.equal(404);
+    expect(res.body).to.deep.equal({ message: "Route not found" });
+    expect(findByPropertiesStub.called).to.be.false;
+    expect(createStub.called).to.be.false;
   });
 });
