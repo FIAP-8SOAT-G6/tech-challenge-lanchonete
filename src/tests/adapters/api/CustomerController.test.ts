@@ -12,9 +12,13 @@ import ResourceAlreadyExistsError from "../../../core/common/exceptions/Resource
 
 chai.use(chaiAsPromised);
 
-describe("Customer API", () => {
+describe("Customer Controller", () => {
   let findByPropertiesStub: sinon.SinonStub;
   let createStub: sinon.SinonStub;
+
+  function buildCustomer(customProps = {}) {
+    return { name: "Bob", cpf: "12345678909", email: "test@mail.com", ...customProps };
+  }
 
   beforeEach(() => {
     findByPropertiesStub = sinon.stub(SequelizeCustomerDataSource.prototype, "findByProperties");
@@ -26,20 +30,9 @@ describe("Customer API", () => {
   });
 
   it("should return the customer on successful customer registration", async () => {
-    const customer = {
-      name: "Bob",
-      cpf: "12345678909",
-      email: "test@mail.com"
-    };
-
+    const customer = buildCustomer();
     const customerDTO = new CustomerDTO(customer);
-
-    const customerCreated = {
-      id: "1",
-      name: "Bob",
-      email: "test@mail.com",
-      cpf: "123.456.789-09"
-    };
+    const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
     createStub.resolves(customerCreated);
@@ -54,7 +47,7 @@ describe("Customer API", () => {
   });
 
   it("should return error message when there is missing information on the customer to register the customer", async () => {
-    const customer = { name: "Bob", cpf: "12345678909", email: "" };
+    const customer = buildCustomer({ email: "" });
     const res = await request(app).post("/customers").send(customer);
 
     expect(res.status).to.equal(400);
@@ -64,11 +57,7 @@ describe("Customer API", () => {
   });
 
   it("should return error message when customer information is wrong to register the customer", async () => {
-    const customer = {
-      name: "Bob",
-      cpf: "123",
-      email: "test@mail.com"
-    };
+    const customer = buildCustomer({ cpf: "123" });
 
     const res = await request(app).post("/customers").send(customer);
 
@@ -79,7 +68,7 @@ describe("Customer API", () => {
   });
 
   it("should return error message when the customer is already registered", async () => {
-    const customer = { name: "Bob", cpf: "12345678909", email: "test@mail.com" };
+    const customer = buildCustomer();
     const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
@@ -99,11 +88,7 @@ describe("Customer API", () => {
   it("should return error message when an error occurs to register the customer", async () => {
     findByPropertiesStub.rejects();
 
-    const customer = {
-      name: "Bob",
-      cpf: "12345678909",
-      email: "test@mail.com"
-    };
+    const customer = buildCustomer();
 
     const res = await request(app).post("/customers").send(customer);
 
@@ -113,7 +98,7 @@ describe("Customer API", () => {
   });
 
   it("should find customer by cpf", async () => {
-    const customer = { name: "Bob", cpf: "12345678909", email: "test@mail.com" };
+    const customer = buildCustomer();
     const customerCreated = { ...customer, id: "1", cpf: "123.456.789-09" };
 
     findByPropertiesStub.resolves(undefined);
@@ -145,5 +130,15 @@ describe("Customer API", () => {
     expect(res.body).to.deep.equal({ message: "Route not found" });
     expect(findByPropertiesStub.called).to.be.false;
     expect(createStub.called).to.be.false;
+  });
+
+  it("should return error message when an error occurs to register the customer", async () => {
+    findByPropertiesStub.rejects();
+
+    const res = await request(app).get("/customers/1234");
+
+    expect(res.status).to.equal(500);
+    expect(res.body).to.deep.equal({ message: "Error" });
+    expect(findByPropertiesStub.calledOnce).to.be.true;
   });
 });
