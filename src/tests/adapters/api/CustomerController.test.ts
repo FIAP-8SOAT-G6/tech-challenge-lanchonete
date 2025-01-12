@@ -138,9 +138,11 @@ describe("Customer API", () => {
     expect(createStub.called).to.be.false;
   });
 
-  it("should return status 404 when the CPF is not informed for customer search", async () => {
+  it("should return error message of Route not found when the CPF is not informed for customer search", async () => {
     const res = await request(app).get("/customers/");
+
     expect(res.status).to.equal(404);
+    expect(res.body).to.deep.equal({ message: "Route not found" });
     expect(findByPropertiesStub.called).to.be.false;
     expect(createStub.called).to.be.false;
   });
