@@ -1,7 +1,7 @@
 import * as assert from "assert";
 
 import { When, Then } from "@cucumber/cucumber";
-import { Greeter } from "./../greeter";
+import { Greeter } from "../greeter";
 
 interface MyWorld {
   whatIHeard: string;
