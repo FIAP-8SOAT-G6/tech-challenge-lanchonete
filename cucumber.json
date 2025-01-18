@@ -2,6 +2,6 @@
   "default": {
     "requireModule": ["ts-node/register"],
     "paths": ["src/tests/bdd/features/**/*.feature"],
-    "require": ["src/tests/bdd/features/**/*.ts"]
+    "require": ["src/tests/bdd/features/**/step_definition/**/*.ts"]
   }
 }
