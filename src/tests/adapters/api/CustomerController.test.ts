@@ -1,7 +1,7 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import request from "supertest";
-import app from "../../../../src/server";
+import app from "../../../server";
 import SequelizeCustomerDataSource from "../../../external/SequelizeCustomerDataSource";
 import ResourceNotFoundError from "../../../core/common/exceptions/ResourceNotFoundError";
 import sinon from "sinon";
@@ -71,10 +71,6 @@ describe("Customer Controller", () => {
     const customer = buildCustomer();
     const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
 
-    findByPropertiesStub.resolves(undefined);
-    createStub.resolves(customerCreated);
-    await request(app).post("/customers").send(customer);
-
     findByPropertiesStub.resolves([customerCreated]);
     const res = await request(app).post("/customers").send(customer);
 
@@ -82,14 +78,13 @@ describe("Customer Controller", () => {
     expect(res.body).to.deep.equal({
       message: new ResourceAlreadyExistsError(ResourceAlreadyExistsError.Resources.Customer, "cpf", customer.cpf).message
     });
-    expect(findByPropertiesStub.calledTwice).to.be.true;
+    expect(findByPropertiesStub.calledOnce).to.be.true;
   });
 
   it("should return error message when an error occurs to register the customer", async () => {
     findByPropertiesStub.rejects();
 
     const customer = buildCustomer();
-
     const res = await request(app).post("/customers").send(customer);
 
     expect(res.status).to.equal(500);
@@ -100,13 +95,8 @@ describe("Customer Controller", () => {
   it("should find customer by cpf", async () => {
     const customer = buildCustomer();
     const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
-
-    findByPropertiesStub.resolves(undefined);
-    createStub.resolves(customerCreated);
-    await request(app).post("/customers").send(customer);
-
     findByPropertiesStub.resolves([customerCreated]);
-    await request(app).post("/customers").send(customer);
+
     const res = await request(app).get(`/customers/${customer.cpf}`);
 
     expect(res.status).to.equal(200);
