@@ -2,7 +2,7 @@ import OrderGateway from "../../interfaces/OrderGateway";
 import OrderDTO from "../dto/OrderDTO";
 import { OrderStatus } from "../entities/OrderStatus";
 import GetOrders from "../interfaces/GetOrders";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class GetOrdersUseCase implements GetOrders {
   constructor(private orderGateway: OrderGateway) {}

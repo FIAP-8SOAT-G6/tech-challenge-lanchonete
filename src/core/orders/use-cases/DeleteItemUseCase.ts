@@ -1,7 +1,7 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import OrderGateway from "../../interfaces/OrderGateway";
 import DeleteItem from "../interfaces/DeleteItem";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class DeleteItemUseCase implements DeleteItem {
   constructor(private orderGateway: OrderGateway) {}

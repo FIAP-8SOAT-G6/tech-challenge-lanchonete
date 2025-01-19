@@ -2,7 +2,7 @@ import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError
 import OrderGateway from "../../interfaces/OrderGateway";
 import OrderDTO from "../dto/OrderDTO";
 import UpdateOrderStatus from "../interfaces/UpdateOrderStatus";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class UpdateOrderStatusUseCase implements UpdateOrderStatus {
   constructor(private orderGateway: OrderGateway) {}

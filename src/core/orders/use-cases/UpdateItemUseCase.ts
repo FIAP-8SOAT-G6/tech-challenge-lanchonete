@@ -3,7 +3,7 @@ import OrderGateway from "../../interfaces/OrderGateway";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import UpdateItem from "../interfaces/UpdateItem";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class UpdateItemUseCase implements UpdateItem {
   constructor(private orderGateway: OrderGateway) {}

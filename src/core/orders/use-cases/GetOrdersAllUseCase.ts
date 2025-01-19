@@ -1,7 +1,7 @@
 import OrderGateway from "../../interfaces/OrderGateway";
 import OrderDTO from "../dto/OrderDTO";
 import GetOrdersAll from "../interfaces/GetOrdersAll";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class GetOrdersAllUseCase implements GetOrdersAll {
   constructor(private orderGateway: OrderGateway) {}

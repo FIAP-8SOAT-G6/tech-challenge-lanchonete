@@ -1,7 +1,7 @@
 import ProductDTO from "../dto/ProductDTO";
 import Product from "../entities/Product";
 
-export class ProductMapper {
+export default class ProductMapper {
   static toProductDTO(productEntity: Product) {
     return new ProductDTO({
       id: productEntity.getId(),

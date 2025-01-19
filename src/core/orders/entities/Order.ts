@@ -70,6 +70,9 @@ export default class Order {
     this.items = [];
     this.customerId = customerId;
     this.paymentStatus = paymentStatus as OrderPaymentsStatus;
+
+    if (!status && !this.status) this.status = OrderStatus.CREATED;
+
     this.setItems(items);
     this.setStatus(status);
   }
@@ -107,7 +110,6 @@ export default class Order {
   }
 
   setStatus(status: string) {
-    if (!status) this.status = OrderStatus.CREATED;
     if (!isValidOrderStatus(status)) return;
 
     const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];

@@ -5,7 +5,7 @@ import OrderDTO from "../dto/OrderDTO";
 import PaymentDTO from "../dto/PaymentDTO";
 import { OrderPaymentsStatus } from "../entities/OrderPaymentsStatus";
 import { OrderStatus } from "../entities/OrderStatus";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 import ProcessOrderPayment from "../interfaces/UpdateOrderPaymentStatus";
 
 export default class ProcessOrderPaymentUseCase implements ProcessOrderPayment {

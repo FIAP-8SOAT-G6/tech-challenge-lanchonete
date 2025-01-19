@@ -4,7 +4,7 @@ import Order from "../entities/Order";
 import OrderDTO from "../dto/OrderDTO";
 import ItemDTO from "../dto/ItemDTO";
 
-export class OrderMapper {
+export default class OrderMapper {
   static toOrderEntity(orderDTO: OrderDTO) {
     return new Order({
       id: orderDTO.id,

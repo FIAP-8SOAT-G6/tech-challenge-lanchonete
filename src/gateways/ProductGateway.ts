@@ -5,7 +5,7 @@ import ProductDTO from "../core/products/dto/ProductDTO";
 export default class ProductGateway implements ProductGatewayInterface {
   constructor(private dataSource: ProductDataSource) {}
 
-  async getAllProducts(): Promise<ProductDTO[] | []> {
+  async getAllProducts(): Promise<ProductDTO[]> {
     const products = await this.dataSource.findAll();
     return products;
   }
@@ -16,7 +16,7 @@ export default class ProductGateway implements ProductGatewayInterface {
     return product;
   }
 
-  async getByCategory(category: string): Promise<ProductDTO[] | []> {
+  async getByCategory(category: string): Promise<ProductDTO[]> {
     const products = await this.dataSource.findByCategory(category);
     return products;
   }

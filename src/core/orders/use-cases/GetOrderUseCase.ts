@@ -2,7 +2,7 @@ import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError
 import OrderGateway from "../../interfaces/OrderGateway";
 import OrderDTO from "../dto/OrderDTO";
 import GetOrder from "../interfaces/GetOrder";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class GetOrderUseCase implements GetOrder {
   constructor(private orderGateway: OrderGateway) {}

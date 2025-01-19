@@ -40,7 +40,7 @@ export default class FakeProductGateway implements ProductGateway {
     return this.#createProductDTO(createdProduct);
   }
 
-  async getAllProducts(): Promise<ProductDTO[] | []> {
+  async getAllProducts(): Promise<ProductDTO[]> {
     const products = this.#findProductWithImage(this.products);
 
     if (!products || products.length === 0) return [];
@@ -57,7 +57,7 @@ export default class FakeProductGateway implements ProductGateway {
     return Promise.resolve(product ? this.#createProductDTO(product) : undefined);
   }
 
-  async getByCategory(category: string): Promise<ProductDTO[] | []> {
+  async getByCategory(category: string): Promise<ProductDTO[]> {
     const productsByCategory = this.products.filter((product) => product.category === category);
 
     const products = this.#findProductWithImage(productsByCategory);

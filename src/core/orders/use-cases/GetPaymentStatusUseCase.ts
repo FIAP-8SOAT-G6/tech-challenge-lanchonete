@@ -1,7 +1,7 @@
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
 import OrderGateway from "../../interfaces/OrderGateway";
 import GetPaymentStatus from "../interfaces/GetPaymentStatus";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class GetPaymentStatusUseCase implements GetPaymentStatus {
   constructor(private orderGateway: OrderGateway) {}

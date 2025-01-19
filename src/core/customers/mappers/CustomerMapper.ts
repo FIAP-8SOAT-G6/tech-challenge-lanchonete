@@ -1,7 +1,7 @@
 import CustomerDTO from "../dto/CustomerDTO";
 import Customer from "../entities/Customer";
 
-export class CustomerMapper {
+export default class CustomerMapper {
   static toCustomerDTO(customerEntity: Customer) {
     return new CustomerDTO({
       id: customerEntity.getId(),

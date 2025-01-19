@@ -44,18 +44,14 @@ describe("Product Controller", () => {
   });
 
   describe("create product", () => {
-    //BDD format test
     it("should return the product created when create an product with success", async () => {
-      //given: conjunto de informações a serem utilizadas no teste
       const product = buildProduct();
       const productDTO = new ProductDTO(product);
       const productCreated = { ...product, id: "1" };
       createStub.resolves(productCreated);
 
-      //when: local onde as informações serão usadas e processadas
       const res = await request(app).post("/products").send(product);
 
-      //then: validação com base no retorno dos dados
       expect(res.status).to.equal(201);
       expect(res.body).to.deep.equal(productCreated);
       expect(createStub.calledOnce).to.be.true;

@@ -4,7 +4,7 @@ import ProductGateway from "../../interfaces/ProductGateway";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
 import AddItem from "../interfaces/AddItem";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class AddItemUseCase implements AddItem {
   constructor(

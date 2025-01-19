@@ -25,9 +25,9 @@ export interface OrderDataSource {
 export interface ProductDataSource {
   create(productDTO: ProductDTO): Promise<ProductDTO>;
 
-  findAll(): Promise<ProductDTO[] | []>;
+  findAll(): Promise<ProductDTO[]>;
   findById(id: number): Promise<ProductDTO | undefined>;
-  findByCategory(status: string): Promise<ProductDTO[] | []>;
+  findByCategory(status: string): Promise<ProductDTO[]>;
 
   update(productDTO: ProductDTO): Promise<ProductDTO | undefined>;
   delete(id: number);

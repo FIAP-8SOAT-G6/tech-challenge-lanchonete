@@ -3,7 +3,7 @@ import OrderGateway from "../../interfaces/OrderGateway";
 import PaymentGateway from "../../interfaces/PaymentGateway";
 import { OrderStatus } from "../entities/OrderStatus";
 import CheckoutOrder from "../interfaces/CheckoutOrder";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class CheckoutOrderUseCase implements CheckoutOrder {
   constructor(

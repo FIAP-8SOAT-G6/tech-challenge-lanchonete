@@ -2,7 +2,7 @@ import ProductDTO from "../dto/ProductDTO";
 import ProductGateway from "../../interfaces/ProductGateway";
 import UpdateProduct from "../interfaces/UpdateProduct";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import { ProductMapper } from "../mappers/ProductMapper";
+import ProductMapper from "../mappers/ProductMapper";
 
 export default class UpdateProductUseCase implements UpdateProduct {
   constructor(private productGateway: ProductGateway) {}

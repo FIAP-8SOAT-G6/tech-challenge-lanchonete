@@ -2,7 +2,7 @@ import ResourceAlreadyExistsError from "../../common/exceptions/ResourceAlreadyE
 import CustomerGateway from "../../interfaces/CustomerGateway";
 import CustomerDTO from "../dto/CustomerDTO";
 import CreateCustomer from "../interfaces/CreateCustomer";
-import { CustomerMapper } from "../mappers/CustomerMapper";
+import CustomerMapper from "../mappers/CustomerMapper";
 
 export default class CreateCustomerUseCase implements CreateCustomer {
   constructor(private customerGateway: CustomerGateway) {}

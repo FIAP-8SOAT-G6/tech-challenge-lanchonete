@@ -34,7 +34,7 @@ export default class ProductModelDataSource implements ProductDataSource {
     return product ? this.#createProductDTO(product) : undefined;
   }
 
-  async findByCategory(category: string): Promise<ProductDTO[] | []> {
+  async findByCategory(category: string): Promise<ProductDTO[]> {
     const products = await this.#findAllProducts({ where: { category } });
 
     return products ? products?.map(this.#createProductDTO) : [];

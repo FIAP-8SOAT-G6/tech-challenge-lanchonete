@@ -5,7 +5,7 @@ import OrderDTO from "../dto/OrderDTO";
 import Order from "../entities/Order";
 import { OrderStatus } from "../entities/OrderStatus";
 import CreateOrder from "../interfaces/CreateOrder";
-import { OrderMapper } from "../mappers/OrderMappers";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class CreateOrderUseCase implements CreateOrder {
   constructor(
