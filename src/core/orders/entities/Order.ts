@@ -1,13 +1,15 @@
 import Item from "./Item";
+import ItemDTO from "../dto/ItemDTO";
+
 import { OrderStatus, isValidOrderStatus } from "./OrderStatus";
+import { OrderPaymentsStatus, isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
 
 import EmptyOrderError from "../exceptions/EmptyOrderError";
 import InvalidStatusTransitionError from "../exceptions/InvalidStatusTransitionError";
 import ClosedOrderError from "../exceptions/ClosedOrderError";
 import ResourceNotFoundError from "../../common/exceptions/ResourceNotFoundError";
-import ItemDTO from "../dto/ItemDTO";
-import OrderPaymentsStatus, { isValidOrderPaymentStatus } from "./OrderPaymentsStatus";
 import ForbiddenPaymentStatusChangeError from "../exceptions/ForbiddenPaymentStatusChangeError";
+import OrderFinishedError from "../exceptions/OrderFinishedError";
 
 const ALLOWED_TARGET_STATUS_TRANSITIONS: {
   [key in OrderStatus]: OrderStatus[];
@@ -68,6 +70,9 @@ export default class Order {
     this.items = [];
     this.customerId = customerId;
     this.paymentStatus = paymentStatus as OrderPaymentsStatus;
+
+    if (!status && !this.status) this.status = OrderStatus.CREATED;
+
     this.setItems(items);
     this.setStatus(status);
   }
@@ -105,15 +110,20 @@ export default class Order {
   }
 
   setStatus(status: string) {
-    if (isValidOrderStatus(status)) {
-      const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
-      if (!this.status || requiredStatusForTarget.includes(this.status)) {
-        const transitionValidator = statusTransitionValidator[status];
-        transitionValidator(this);
-        this.status = status;
-      } else {
-        throw new InvalidStatusTransitionError(this.status as string, status, ALLOWED_TARGET_STATUS_TRANSITIONS[status]);
-      }
+    if (!isValidOrderStatus(status)) return;
+
+    const requiredStatusForTarget = ALLOWED_TARGET_STATUS_TRANSITIONS[status];
+
+    if (this.getStatus() === OrderStatus.FINISHED && status !== OrderStatus.FINISHED) {
+      throw new OrderFinishedError();
+    }
+
+    if (!this.status || requiredStatusForTarget.includes(this.status)) {
+      const transitionValidator = statusTransitionValidator[status];
+      transitionValidator(this);
+      this.status = status;
+    } else {
+      throw new InvalidStatusTransitionError(this.status as string, status, ALLOWED_TARGET_STATUS_TRANSITIONS[status]);
     }
   }
 

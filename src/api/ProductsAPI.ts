@@ -65,11 +65,11 @@ productsAPIRouter.put("/products/:id", async (req, res) => {
     const product = await ProductController.update(new SequelizeProductDataSource(), productDTO);
     return res.status(201).json(product);
   } catch (error: any) {
-    if (error instanceof ResourceNotFoundError) {
-      return res.status(404).json({ message: error.message });
-    }
     if (error instanceof MissingPropertyError || error instanceof InvalidCategoryError) {
       return res.status(400).json({ message: error.message });
+    }
+    if (error instanceof ResourceNotFoundError) {
+      return res.status(404).json({ message: error.message });
     }
     return res.status(500).json({ message: error.message });
   }

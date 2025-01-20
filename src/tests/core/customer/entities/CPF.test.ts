@@ -16,4 +16,8 @@ describe("CPF Validations", () => {
   it("should throw an error when CPF is invalid", () => {
     expect(() => new CPF({ cpf: "123.456.789-10" })).to.throw(InvalidAttributeError);
   });
+
+  it("should throw an error when CPF does not contain 11 digits", () => {
+    expect(() => new CPF({ cpf: "12345" })).to.throw(InvalidAttributeError);
+  });
 });

@@ -26,14 +26,14 @@ describe("Update Product", () => {
     return new GetByProductIdUseCase(repository);
   }
 
-  function setupUpdatetUseCase() {
+  function setupUpdateUseCase() {
     return new UpdateProductUseCase(repository);
   }
 
   it("should update only product fields", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();
-    const updateUseCase = setupUpdatetUseCase();
+    const updateUseCase = setupUpdateUseCase();
 
     const productDTO = new ProductDTO({
       name: "Hamburguer",
@@ -64,7 +64,7 @@ describe("Update Product", () => {
   it("should delete actual images and add new images in product when updated", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();
-    const updateUseCase = setupUpdatetUseCase();
+    const updateUseCase = setupUpdateUseCase();
 
     const productDTO = new ProductDTO({
       name: "Hamburguer",
@@ -93,12 +93,13 @@ describe("Update Product", () => {
     expect(foundProductDTO.description).to.be.equals("This should actually be some French Fries");
     expect(foundProductDTO.price).to.be.equals(12.0);
     expect(foundProductDTO.images!.length).to.be.equals(1);
+    expect(foundProductDTO.images![0].url).to.be.equals("image3");
   });
 
   it("should remove images when the updated product has no images", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();
-    const updateUseCase = setupUpdatetUseCase();
+    const updateUseCase = setupUpdateUseCase();
 
     const productDTO = new ProductDTO({
       name: "Hamburguer",
@@ -129,7 +130,7 @@ describe("Update Product", () => {
   });
 
   it("should reject if product does not exist", async () => {
-    const updateUseCase = setupUpdatetUseCase();
+    const updateUseCase = setupUpdateUseCase();
     const unexistingProductDTO = new ProductDTO({
       id: -1,
       description: "Very Big Hamburguer"

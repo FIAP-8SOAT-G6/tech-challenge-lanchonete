@@ -51,7 +51,7 @@ export default class FakeOrderGateway implements OrderGateway {
       }))
       .sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
 
-    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
+    return orders.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
 
   async getOrder(id: number): Promise<OrderDTO | undefined> {
@@ -66,12 +66,7 @@ export default class FakeOrderGateway implements OrderGateway {
       ...order,
       items: this.items.filter((item) => item.OrderId === order.id)
     }));
-    return orders?.length === 0 ? [] : orders.map(this.#createOrderDTO);
-  }
-
-  async getPaymentStatus(orderId: number): Promise<string> {
-    const order = this.orders.find((order) => order.id === orderId);
-    return order?.status || "";
+    return orders.length === 0 ? [] : orders.map(this.#createOrderDTO);
   }
 
   async updateOrder(orderDTO: OrderDTO): Promise<OrderDTO> {
@@ -81,12 +76,6 @@ export default class FakeOrderGateway implements OrderGateway {
       ...this.orders[orderIndex],
       ...orderDTO
     };
-    return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
-  }
-
-  async updateOrderStatus(orderId: number, status: string): Promise<OrderDTO> {
-    const orderIndex = this.orders.findIndex((order) => order.id === orderId);
-    this.orders[orderIndex].status = status;
     return Promise.resolve(this.#createOrderDTO(this.orders[orderIndex]));
   }
 

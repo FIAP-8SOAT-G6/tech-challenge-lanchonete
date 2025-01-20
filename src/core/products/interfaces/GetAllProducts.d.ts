@@ -1,5 +1,5 @@
 import ProductDTO from "../dto/ProductDTO";
 
 export default interface GetAllProducts {
-  getAllProducts(): Promise<ProductDTO[] | undefined>;
+  getAllProducts(): Promise<ProductDTO[]>;
 }

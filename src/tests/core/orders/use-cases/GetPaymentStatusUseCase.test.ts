@@ -4,7 +4,7 @@ import chaiAsPromised from "chai-as-promised";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
 import OrderDTO from "../../../../core/orders/dto/OrderDTO";
 
-import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 import OrderGateway from "../../../../core/interfaces/OrderGateway";
@@ -14,6 +14,7 @@ import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
 import GetPaymentStatusUseCase from "../../../../core/orders/use-cases/GetPaymentStatusUseCase";
+import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
 chai.use(chaiAsPromised);
 
@@ -26,7 +27,7 @@ const CUSTOMER_DTO = new CustomerDTO({
 let customerGateway: CustomerGateway;
 let orderGateway: OrderGateway;
 
-describe("Order payment status", () => {
+describe("Get Payment Status Use Case", () => {
   beforeEach(() => {
     customerGateway = new FakeCustomerGateway();
     orderGateway = new FakeOrderGateway();
@@ -49,6 +50,7 @@ describe("Order payment status", () => {
     const customer = await createCustomer();
     return new OrderDTO({ customerId: customer!.id });
   }
+
   it('should return "PENDING" while the order awaits payment', async () => {
     const createOrderUseCase = setupCreateOrderUseCase();
     const getPaymentStatus = setupGetPaymentStatusUseCase();
@@ -58,5 +60,12 @@ describe("Order payment status", () => {
 
     const paymentStatus = await getPaymentStatus.getPaymentStatus(order.id!);
     expect(paymentStatus).to.be.equals(OrderPaymentsStatus.PENDING);
+  });
+
+  it("should throw error message when order non-existing", async () => {
+    const getPaymentStatus = setupGetPaymentStatusUseCase();
+    const nonExistingId = -1;
+
+    await expect(getPaymentStatus.getPaymentStatus(nonExistingId)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
 });

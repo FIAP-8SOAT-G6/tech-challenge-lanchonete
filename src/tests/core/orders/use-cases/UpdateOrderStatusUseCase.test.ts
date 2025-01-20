@@ -1,6 +1,8 @@
 import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
+
 import { OrderStatus } from "../../../../core/orders/entities/OrderStatus";
+import { OrderPaymentsStatus } from "../../../../core/orders/entities/OrderPaymentsStatus";
 
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 
@@ -15,6 +17,7 @@ import ProductGateway from "../../../../core/interfaces/ProductGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import FakeOrderGateway from "../../../../gateways/FakeOrderGateway";
 import FakeProductGateway from "../../../../gateways/FakeProductGateway";
+import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
 
 import CreateOrderUseCase from "../../../../core/orders/use-cases/CreateOrderUseCase";
 import CreateCustomerUseCase from "../../../../core/customers/use-cases/CreateCustomerUseCase";
@@ -23,9 +26,7 @@ import AddItemUseCase from "../../../../core/orders/use-cases/AddItemUseCase";
 import CheckoutOrderUseCase from "../../../../core/orders/use-cases/CheckoutOrderUseCase";
 import UpdateOrderStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderStatusUseCase";
 import GetOrderUseCase from "../../../../core/orders/use-cases/GetOrderUseCase";
-import MockPaymentGateway from "../../../../gateways/MockPaymentGateway";
-import OrderPaymentsStatus from "../../../../core/orders/entities/OrderPaymentsStatus";
-import UpdateOrderPaymentStatusUseCase from "../../../../core/orders/use-cases/UpdateOrderPaymentStatusUseCase";
+import ProcessOrderPaymentUseCase from "../../../../core/orders/use-cases/ProcessOrderPaymentUseCase";
 
 chai.use(chaiAsPromised);
 
@@ -79,8 +80,8 @@ describe("Update Order Status", () => {
     return new AddItemUseCase(orderGateway, productGateway);
   }
 
-  function setupUpdateOrderPaymentUseCase() {
-    return new UpdateOrderPaymentStatusUseCase(orderGateway, paymentGateway);
+  function setupProcessOrderPaymentUseCase() {
+    return new ProcessOrderPaymentUseCase(orderGateway, paymentGateway);
   }
 
   async function addItemToOrder(orderId: number) {
@@ -96,8 +97,8 @@ describe("Update Order Status", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {
@@ -110,7 +111,7 @@ describe("Update Order Status", () => {
     const checkoutUseCase = setupCheckoutUseCase();
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
     const getOrderUseCase = setupGetOrderUseCase();
-    const updateOrderPaymentStatusUseCase = setupUpdateOrderPaymentUseCase();
+    const processOrderPaymentUseCase = setupProcessOrderPaymentUseCase();
 
     const { RECEIVED } = OrderStatus;
     const orderDTO = await createOrderDTO();
@@ -119,8 +120,8 @@ describe("Update Order Status", () => {
     await addItemToOrder(order.id!);
     await checkoutUseCase.checkout(order.id!);
 
-    paymentGateway.setMockedPaymentDetails({ orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
-    await updateOrderPaymentStatusUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
+    paymentGateway.createPaymentDetails({ paymentId: order.id!, orderId: order.id!, paymentStatus: OrderPaymentsStatus.APPROVED });
+    await processOrderPaymentUseCase.updateOrderPaymentStatus({ paymentId: order.id! });
     await updateOrderStatusUseCase.updateOrderStatus(order.id!, RECEIVED);
 
     const orderUpdated = await getOrderUseCase.getOrder(order.id!);
@@ -131,7 +132,7 @@ describe("Update Order Status", () => {
     const updateOrderStatusUseCase = setupUpdateOrderStatusUseCase();
 
     const { RECEIVED } = OrderStatus;
-    const unexistingOrderId = -1;
-    await expect(updateOrderStatusUseCase.updateOrderStatus(unexistingOrderId, RECEIVED)).to.be.eventually.rejectedWith(ResourceNotFoundError);
+    const nonExistingOrderId = -1;
+    await expect(updateOrderStatusUseCase.updateOrderStatus(nonExistingOrderId, RECEIVED)).to.be.eventually.rejectedWith(ResourceNotFoundError);
   });
 });

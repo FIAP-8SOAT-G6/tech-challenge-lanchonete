@@ -1,10 +1,10 @@
 import CustomerDTO from "../core/customers/dto/CustomerDTO";
-import Customer from "../infrastructure/database/models/customer";
+import CustomerModel from "../infrastructure/database/models/customer";
 import { CustomerDataSource, IndexedObject } from "../interfaces/DataSources";
 
 export default class SequelizeCustomerDataSource implements CustomerDataSource {
   async create(customerDTO: CustomerDTO): Promise<CustomerDTO> {
-    const customer = await Customer.create({
+    const customer = await CustomerModel.create({
       cpf: customerDTO.cpf!,
       email: customerDTO.email!,
       name: customerDTO.name!
@@ -13,7 +13,7 @@ export default class SequelizeCustomerDataSource implements CustomerDataSource {
   }
 
   async findByProperties(properties: IndexedObject): Promise<CustomerDTO[]> {
-    const customers = await Customer.findAll({
+    const customers = await CustomerModel.findAll({
       where: {
         ...properties
       }

@@ -61,7 +61,7 @@ describe("Checkout Order", () => {
   function setupCheckoutUseCase() {
     return new CheckoutOrderUseCase(orderGateway, paymentGateway);
   }
-  
+
   function setupGetOrderUseCase() {
     return new GetOrderUseCase(orderGateway);
   }
@@ -87,8 +87,8 @@ describe("Checkout Order", () => {
   }
 
   async function createCustomer() {
-    const customeUseCase = new CreateCustomerUseCase(customerGateway);
-    return await customeUseCase.create(CUSTOMER_DTO);
+    const customerUseCase = new CreateCustomerUseCase(customerGateway);
+    return await customerUseCase.create(CUSTOMER_DTO);
   }
 
   async function createOrderDTO() {

@@ -41,29 +41,34 @@ export default class FakeProductGateway implements ProductGateway {
   }
 
   async getAllProducts(): Promise<ProductDTO[]> {
-    const products = await this.#findProductWithImage(this.products);
-    return Promise.resolve(products?.map(this.#createProductDTO));
+    const products = this.#findProductWithImage(this.products);
+
+    if (!products || products.length === 0) return [];
+
+    return Promise.resolve(products.map(this.#createProductDTO));
   }
 
   async getByProductId(id: number): Promise<ProductDTO | undefined> {
     const product = this.products.find((product) => product?.id === id);
-    const images = this.images.filter((image) => image?.productId === id);
+    const images = this.images.filter((image) => image.productId === id);
 
-    if (images?.length > 0) product!.images = images;
+    if (images.length > 0) product!.images = images;
 
     return Promise.resolve(product ? this.#createProductDTO(product) : undefined);
   }
 
   async getByCategory(category: string): Promise<ProductDTO[]> {
-    const productsByCategory = this.products.filter((product) => product?.category === category);
+    const productsByCategory = this.products.filter((product) => product.category === category);
 
     const products = this.#findProductWithImage(productsByCategory);
 
-    return Promise.resolve(products?.map(this.#createProductDTO));
+    if (!products || products.length === 0) return [];
+
+    return Promise.resolve(products.map(this.#createProductDTO));
   }
 
   updateProduct(productDTO: ProductDTO): Promise<ProductDTO> {
-    const productIndex = this.products.findIndex((persistedProduct) => persistedProduct?.id === productDTO.id);
+    const productIndex = this.products.findIndex((persistedProduct) => persistedProduct.id === productDTO.id);
 
     this.products[productIndex].name = productDTO.name;
     this.products[productIndex].category = productDTO.category;
@@ -73,31 +78,31 @@ export default class FakeProductGateway implements ProductGateway {
     this.#deleteImages(productDTO.id!);
     this.products[productIndex].images = this.#addImages({
       productId: productDTO.id!,
-      images: productDTO?.images as FakeImage[]
+      images: productDTO.images as FakeImage[]
     });
 
     return Promise.resolve(this.#createProductDTO(this.products[productIndex]));
   }
 
   deleteProduct(id: number): Promise<void> {
-    const productIndex = this.products.findIndex((product) => product?.id === id);
+    const productIndex = this.products.findIndex((product) => product.id === id);
     delete this.products[productIndex];
     return Promise.resolve();
   }
 
   #findProductWithImage(products: FakeProduct[]) {
     return products.map((product) => {
-      const images = this.images.filter((image) => image?.productId === product.id);
-      if (images?.length > 0) product.images = images;
+      const images = this.images.filter((image) => image.productId === product.id);
+      if (images.length > 0) product.images = images;
       return product;
     });
   }
 
   #addImages({ productId, images }: { productId: number; images?: FakeImage[] }): FakeImage[] {
-    if (!images || images?.length === 0) return [];
+    if (!images || images.length === 0) return [];
 
-    images?.forEach((image) => {
-      image.id = this.images?.length + 1;
+    images.forEach((image) => {
+      image.id = this.images.length + 1;
       image.productId = productId;
       this.images.push(image);
     });
@@ -106,7 +111,7 @@ export default class FakeProductGateway implements ProductGateway {
   }
 
   #deleteImages(productId: number) {
-    this.images = this.images.filter((image) => image?.productId !== productId);
+    this.images = this.images.filter((image) => image.productId !== productId);
   }
 
   #createProductDTO(databaseProduct: FakeProduct) {

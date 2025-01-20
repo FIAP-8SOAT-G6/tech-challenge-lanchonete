@@ -3,9 +3,8 @@ import OrderGateway from "../../interfaces/OrderGateway";
 import ProductGateway from "../../interfaces/ProductGateway";
 import ItemDTO from "../dto/ItemDTO";
 import OrderDTO from "../dto/OrderDTO";
-import Item from "../entities/Item";
-import Order from "../entities/Order";
 import AddItem from "../interfaces/AddItem";
+import OrderMapper from "../mappers/OrderMappers";
 
 export default class AddItemUseCase implements AddItem {
   constructor(
@@ -21,62 +20,22 @@ export default class AddItemUseCase implements AddItem {
     this.#validateOrderExists(orderDTO?.id!, orderId);
     if (!productDTO) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Product, "id", productId);
 
-    const order = this.#toOrderEntity(orderDTO!);
+    const order = OrderMapper.toOrderEntity(orderDTO!);
     const item = order.addItem({
       productId: productDTO.id!,
       quantity: quantity!,
       unitPrice: productDTO.price!
     });
 
-    await this.orderGateway.addItem(this.#toOrderDTO(order), this.#toItemDTO(item));
+    await this.orderGateway.addItem(OrderMapper.toOrderDTO(order), OrderMapper.toItemDTO(item));
 
     const updatedOrderDTO = await this.orderGateway.getOrder(orderId);
-    const updatedOrder = this.#toOrderEntity(updatedOrderDTO!);
+    const updatedOrder = OrderMapper.toOrderEntity(updatedOrderDTO!);
 
-    return this.#toOrderDTO(updatedOrder);
+    return OrderMapper.toOrderDTO(updatedOrder);
   }
 
   #validateOrderExists(orderIdFound: number, orderIdReceived: number) {
     if (!orderIdFound) throw new ResourceNotFoundError(ResourceNotFoundError.Resources.Order, "id", orderIdReceived);
-  }
-
-  #toOrderEntity(orderDTO: OrderDTO) {
-    return new Order({
-      id: orderDTO.id,
-      createdAt: orderDTO.createdAt,
-      code: orderDTO.code!,
-      customerId: orderDTO.customerId!,
-      status: orderDTO.status!,
-      paymentStatus: orderDTO.paymentStatus!,
-      totalPrice: orderDTO.totalPrice,
-      items: orderDTO.items
-    });
-  }
-
-  #toOrderDTO(orderEntity: Order) {
-    return new OrderDTO({
-      id: orderEntity.getId(),
-      createdAt: orderEntity.getCreatedAt(),
-      code: orderEntity.getCode(),
-      totalPrice: orderEntity.getTotalPrice(),
-      items: orderEntity.getItems().map(this.#toItemDTO),
-      customerId: orderEntity.getCustomerId(),
-      status: orderEntity.getStatus(),
-      paymentStatus: orderEntity.getPaymentStatus(),
-      elapsedTime: orderEntity.getElapsedTime()
-    });
-  }
-
-  #toItemDTO(itemEntity: Item) {
-    return new ItemDTO({
-      id: itemEntity.getId(),
-      orderId: itemEntity.getOrderId(),
-      productId: itemEntity.getProductId(),
-      productName: itemEntity.getProductName(),
-      productDescription: itemEntity.getProductDescription(),
-      quantity: itemEntity.getQuantity(),
-      unitPrice: itemEntity.getUnitPrice(),
-      totalPrice: itemEntity.getTotalPrice()
-    });
   }
 }

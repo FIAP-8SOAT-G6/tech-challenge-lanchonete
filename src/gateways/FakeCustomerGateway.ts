@@ -24,7 +24,7 @@ export default class FakeCustomerGateway implements CustomerGateway {
   }
 
   async findByCPF(cpf: string): Promise<CustomerDTO | undefined> {
-    const customer = this.customers.find((customer) => customer?.cpf === cpf);
+    const customer = this.customers.find((customer) => customer.cpf === cpf);
     return Promise.resolve(this.#createCustomerDTO(customer));
   }
 

@@ -42,9 +42,12 @@ paths:
                 images:
                   type: array
                   items:
-                    type: string
-                    description: Lista de url de imagens
-                    example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: Lista de url de imagens
+                        example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
               required:
                 - name
                 - category
@@ -120,9 +123,12 @@ paths:
                 images:
                   type: array
                   items:
-                    type: string
-                    description: Lista de url de imagens
-                    example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: Lista de url de imagens
+                        example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
               required:
                 - name
                 - category

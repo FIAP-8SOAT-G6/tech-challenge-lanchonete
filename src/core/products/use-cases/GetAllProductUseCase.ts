@@ -5,9 +5,9 @@ import GetAllProducts from "../interfaces/GetAllProducts";
 export default class GetAllProductsUseCase implements GetAllProducts {
   constructor(private productGateway: ProductGateway) {}
 
-  async getAllProducts(): Promise<ProductDTO[] | undefined> {
+  async getAllProducts(): Promise<ProductDTO[]> {
     const products = await this.productGateway.getAllProducts();
-    if (!products) return undefined;
+    if (!products || products.length === 0) return [];
     return products;
   }
 }

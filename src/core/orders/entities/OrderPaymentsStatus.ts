@@ -1,4 +1,4 @@
-enum OrderPaymentsStatus {
+export enum OrderPaymentsStatus {
   PENDING = "PENDING",
   DENIED = "DENIED",
   APPROVED = "APPROVED"
@@ -7,5 +7,3 @@ enum OrderPaymentsStatus {
 export function isValidOrderPaymentStatus(paymentStatus: string): paymentStatus is OrderPaymentsStatus {
   return Object.keys(OrderPaymentsStatus).includes(paymentStatus as OrderPaymentsStatus);
 }
-
-export default OrderPaymentsStatus;

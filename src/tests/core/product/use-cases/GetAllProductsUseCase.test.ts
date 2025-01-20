@@ -24,6 +24,14 @@ describe("Get All Products", () => {
     return new GetAllProductUseCase(repository);
   }
 
+  it("should return empty list when there are no Products", async () => {
+    const productUseCase = setupProductUseCase();
+    const products = await productUseCase.getAllProducts();
+
+    expect(products).not.to.be.undefined;
+    expect(products.length).to.be.equal(0);
+  });
+
   it("should return all Products", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();

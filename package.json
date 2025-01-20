@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon",
-    "test": "mocha --configs=.mocharc.json 'src/tests/' --recursive",
+    "test": "mocha --configs=.mocharc.json 'src/tests/**/*.test.ts' --recursive",
     "test:k6": "k6 run k8s/stress_test.js",
+    "bdd": "cucumber-js",
+    "bdd:format": "npx cucumber-js --format json",
     "build": "tsc -p tsconfig.json",
     "coverage": "nyc --reporter=text --reporter=lcov npm run test",
     "docker-compose:up:dev": "docker-compose -f docker-compose.dev.yml up --build",
@@ -26,16 +28,17 @@
     "sinon": "^19.0.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "tech-challenge-lanchonete": "file:",
-    "typescript": "^5.6.2"
+    "tech-challenge-lanchonete": "file:"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
     "@eslint/js": "^9.8.0",
     "@types/axios": "^0.14.4",
     "@types/chai": "^4.3.16",
     "@types/chai-as-promised": "^7.1.8",
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.7",
+    "@types/node": "^22.10.7",
     "@types/sequelize": "^4.28.20",
     "@types/sinon": "^17.0.3",
     "@types/supertest": "^6.0.2",
@@ -51,7 +54,8 @@
     "prettier": "^3.3.3",
     "sequelize-cli": "^6.6.2",
     "supertest": "^7.0.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

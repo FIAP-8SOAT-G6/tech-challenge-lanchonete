@@ -25,6 +25,14 @@ describe("Get By Category", () => {
     return new GetByCategoryUseCase(repository);
   }
 
+  it("should return empty list when there are no Product by Category", async () => {
+    const productUseCase = setupProductUseCase();
+    const products = await productUseCase.getByCategory(ProductCategory.Lanche);
+
+    expect(products).not.to.be.undefined;
+    expect(products.length).to.be.equal(0);
+  });
+
   it("should return all Products of given category", async () => {
     const createUseCase = setupCreateUseCase();
     const productUseCase = setupProductUseCase();

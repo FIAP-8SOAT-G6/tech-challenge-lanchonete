@@ -12,7 +12,7 @@ export interface OrderDataSource {
   create(orderDTO: OrderDTO): Promise<OrderDTO>;
 
   findById(id: number): Promise<OrderDTO | undefined>;
-  findAll(): Promise<OrderDTO[] | undefined>;
+  findAll(): Promise<OrderDTO[] | []>;
   findOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[] | []>;
 
   updateOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
@@ -25,9 +25,9 @@ export interface OrderDataSource {
 export interface ProductDataSource {
   create(productDTO: ProductDTO): Promise<ProductDTO>;
 
-  findAll(): Promise<ProductDTO[] | undefined>;
+  findAll(): Promise<ProductDTO[]>;
   findById(id: number): Promise<ProductDTO | undefined>;
-  findByCategory(status: string): Promise<ProductDTO[] | []>;
+  findByCategory(status: string): Promise<ProductDTO[]>;
 
   update(productDTO: ProductDTO): Promise<ProductDTO | undefined>;
   delete(id: number);

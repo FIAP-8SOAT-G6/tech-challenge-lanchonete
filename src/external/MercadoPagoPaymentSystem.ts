@@ -1,7 +1,7 @@
 import axios from "axios";
 import { WEBHOOK_PATH } from "../api/WebhooksAPI";
 import { OrderPaymentPayload, PaymentDetails, PaymentSystem } from "../interfaces/PaymentSystem";
-import OrderPaymentsStatus from "../core/orders/entities/OrderPaymentsStatus";
+import { OrderPaymentsStatus } from "../core/orders/entities/OrderPaymentsStatus";
 
 const MERCADO_PAGO_QR_CODE_URL = "https://api.mercadopago.com/instore/orders/qr/seller/collectors/{USER_ID}/pos/{EXTERNAL_POS_ID}/qrs";
 const MERCADO_PAGO_PAYMENT_URL = "https://api.mercadopago.com/v1/payments/";

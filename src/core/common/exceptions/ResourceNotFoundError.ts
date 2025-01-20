@@ -5,7 +5,8 @@ export default class ResourceNotFoundError extends Error {
     Product: "Product",
     Item: "Item",
     Customer: "Customer",
-    Order: "Order"
+    Order: "Order",
+    Payment: "Payment"
   };
 
   constructor(resourceName: string, attributeName: string, attributeValue: any) {

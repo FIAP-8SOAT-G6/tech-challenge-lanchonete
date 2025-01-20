@@ -6,7 +6,7 @@ export default interface OrderManagement {
 
   getOrders(): Promise<OrderDTO[]>;
 
-  getOrdersAll(): Promise<OrderDTO[]>;
+  getOrdersAll(): Promise<OrderDTO[] | []>;
 
   getOrder(orderId: number): Promise<OrderDTO | undefined>;
 

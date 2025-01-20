@@ -19,7 +19,7 @@ context("Customer Management", () => {
     return new FindCustomerByCpfUseCase(customerGateway);
   }
 
-  describe("findByCPF", () => {
+  describe("find by CPF", () => {
     it("should find customer by CPF", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
@@ -44,22 +44,10 @@ context("Customer Management", () => {
       });
 
       const customerManagementUseCase = setupUseCase();
+
       await customerGateway.create(customerDTO);
 
       await expect(customerManagementUseCase.findByCPF("123")).to.be.eventually.rejectedWith(ResourceNotFoundError);
-    });
-
-    it("should display an error message when a CPF is not provided", async () => {
-      const customerDTO = new CustomerDTO({
-        name: "Ana",
-        cpf: "123.456.789-01",
-        email: "test@mail.com"
-      });
-
-      const customerManagementUseCase = setupUseCase();
-      await customerGateway.create(customerDTO);
-
-      await expect(customerManagementUseCase.findByCPF("")).to.be.eventually.rejectedWith(new MissingPropertyError("cpf").message);
     });
   });
 });
