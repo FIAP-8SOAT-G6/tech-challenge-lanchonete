@@ -111,7 +111,6 @@ export default class OrderModelDataSource implements OrderDataSource {
       totalPrice: databaseOrder.totalPrice,
       customerId: databaseOrder.CustomerId,
       paymentStatus: databaseOrder.paymentStatus,
-      customerName: databaseOrder.Customer?.name,
       items: databaseOrder.Items?.map(
         (databaseItem: any) =>
           new ItemDTO({

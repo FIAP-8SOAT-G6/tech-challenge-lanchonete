@@ -6,9 +6,13 @@ import { PaymentSystem } from "../interfaces/PaymentSystem";
 import OrderPresenter, { OrderResponse, QRCodeResponse } from "../presenters/OrderPresenters";
 
 export default class OrderController {
-  public static async createOrder(orderDataSource: OrderDataSource, customerDataSource: CustomerDataSource, order: OrderDTO): Promise<OrderResponse> {
+  public static async createOrder(
+    orderDataSource: OrderDataSource,
+    customerDataSource: CustomerDataSource,
+    orderDTO: OrderDTO
+  ): Promise<OrderResponse> {
     const useCase = OrdersFactory.makeCreateOrder(orderDataSource, customerDataSource);
-    const createdOrder = await useCase.createOrder(order);
+    const createdOrder = await useCase.createOrder(orderDTO);
     return OrderPresenter.adaptOrderData(createdOrder);
   }
 
