@@ -17,9 +17,9 @@ customersAPIRouter.get("/customers/:cpf", async (req, res) => {
     return res.status(200).json(customerFound);
   } catch (error: any) {
     if (error instanceof ResourceNotFoundError) {
-      return res.status(404).json({ message: error.message });
+      return res.status(404).json({ error: error.message });
     }
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -36,9 +36,9 @@ customersAPIRouter.post("/customers", async (req, res) => {
     return res.status(201).json(customerCreated);
   } catch (error: any) {
     if (error instanceof MissingPropertyError || error instanceof ResourceAlreadyExistsError || error instanceof InvalidAttributeError) {
-      return res.status(400).json({ message: error.message });
+      return res.status(400).json({ error: error.message });
     }
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 

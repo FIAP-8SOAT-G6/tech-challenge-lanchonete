@@ -48,7 +48,9 @@ ordersAPIRouter.get("/orders/:orderId", async (req, res) => {
     const order = await OrderController.getOrder(new SequelizeOrderDataSource(), orderId);
     return res.status(201).json(order);
   } catch (error: any) {
-    if (error instanceof ResourceNotFoundError) return res.status(404).json({ error: error.message });
+    if (error instanceof ResourceNotFoundError) {
+      return res.status(404).json({ error: error.message });
+    }
     return res.status(500).json({ error: error.message });
   }
 });

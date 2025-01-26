@@ -15,7 +15,7 @@ app.use(productAPIRouter);
 app.use(webhooksAPIRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({ message: new Error("Route not found").message });
+  res.status(404).json({ error: new Error("Route not found").message });
 });
 
 app.get("/", (req, res) => {
