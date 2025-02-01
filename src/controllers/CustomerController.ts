@@ -15,4 +15,10 @@ export default class CustomerController {
     const foundCustomer = await useCase.findByCPF(cpf);
     return CustomerPresenter.adaptCustomerData(foundCustomer);
   }
+
+  public static async findCustomerByID(customerDataSource: CustomerDataSource, id: number): Promise<CustomerResponse> {
+    const useCase = CustomersFactory.makeFindCustomerById(customerDataSource);
+    const foundCustomer = await useCase.findByID(id);
+    return CustomerPresenter.adaptCustomerData(foundCustomer);
+  }
 }
