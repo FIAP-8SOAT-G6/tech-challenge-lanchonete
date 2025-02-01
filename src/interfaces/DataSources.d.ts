@@ -12,8 +12,8 @@ export interface OrderDataSource {
   create(orderDTO: OrderDTO): Promise<OrderDTO>;
 
   findById(id: number): Promise<OrderDTO | undefined>;
-  findAll(): Promise<OrderDTO[] | []>;
-  findOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[] | []>;
+  findAll(): Promise<OrderDTO[]>;
+  findOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[]>;
 
   updateOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
 

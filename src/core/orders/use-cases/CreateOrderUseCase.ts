@@ -19,14 +19,13 @@ export default class CreateOrderUseCase implements CreateOrder {
     if (!this.isCustomerAnonymous(customerId!)) await this.validateCustomerExists(customerId!);
 
     const order = new Order({
-      status: OrderStatus.CREATED,
       code: this.generateCode(),
-      customerId: customerId!
+      customerId: customerId!,
+      status: OrderStatus.CREATED
     });
-    const createdOrderDTO = await this.orderGateway.createOrder(OrderMapper.toOrderDTO(order));
-    const completeOrderDTO = await this.orderGateway.getOrder(createdOrderDTO.id!);
-    const completeOrder = OrderMapper.toOrderEntity(completeOrderDTO!);
 
+    const createdOrderDTO = await this.orderGateway.createOrder(OrderMapper.toOrderDTO(order));
+    const completeOrder = OrderMapper.toOrderEntity(createdOrderDTO!);
     return OrderMapper.toOrderDTO(completeOrder);
   }
 

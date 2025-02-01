@@ -2,9 +2,9 @@ import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import request from "supertest";
 import app from "../../../server";
+import sinon from "sinon";
 import SequelizeCustomerDataSource from "../../../external/SequelizeCustomerDataSource";
 import ResourceNotFoundError from "../../../core/common/exceptions/ResourceNotFoundError";
-import sinon from "sinon";
 import CustomerDTO from "../../../core/customers/dto/CustomerDTO";
 import MissingPropertyError from "../../../core/common/exceptions/MissingPropertyError";
 import InvalidAttributeError from "../../../core/common/exceptions/InvalidAttributeError";
@@ -51,7 +51,7 @@ describe("Customer Controller", () => {
     const res = await request(app).post("/customers").send(customer);
 
     expect(res.status).to.equal(400);
-    expect(res.body).to.deep.equal({ message: new MissingPropertyError("email").message });
+    expect(res.body).to.deep.equal({ error: new MissingPropertyError("email").message });
     expect(findByPropertiesStub.called).to.be.false;
     expect(createStub.called).to.be.false;
   });
@@ -62,7 +62,7 @@ describe("Customer Controller", () => {
     const res = await request(app).post("/customers").send(customer);
 
     expect(res.status).to.equal(400);
-    expect(res.body).to.deep.equal({ message: new InvalidAttributeError("cpf", customer.cpf).message });
+    expect(res.body).to.deep.equal({ error: new InvalidAttributeError("cpf", customer.cpf).message });
     expect(findByPropertiesStub.called).to.be.false;
     expect(createStub.called).to.be.false;
   });
@@ -76,7 +76,7 @@ describe("Customer Controller", () => {
 
     expect(res.status).to.equal(400);
     expect(res.body).to.deep.equal({
-      message: new ResourceAlreadyExistsError(ResourceAlreadyExistsError.Resources.Customer, "cpf", customer.cpf).message
+      error: new ResourceAlreadyExistsError(ResourceAlreadyExistsError.Resources.Customer, "cpf", customer.cpf).message
     });
     expect(findByPropertiesStub.calledOnce).to.be.true;
   });
@@ -88,7 +88,7 @@ describe("Customer Controller", () => {
     const res = await request(app).post("/customers").send(customer);
 
     expect(res.status).to.equal(500);
-    expect(res.body).to.deep.equal({ message: "Error" });
+    expect(res.body).to.deep.equal({ error: "Error" });
     expect(findByPropertiesStub.calledOnce).to.be.true;
   });
 
@@ -108,7 +108,7 @@ describe("Customer Controller", () => {
     const res = await request(app).get(`/customers/${cpf}`);
 
     expect(res.status).to.equal(404);
-    expect(res.body).to.deep.equal({ message: new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "cpf", cpf).message });
+    expect(res.body).to.deep.equal({ error: new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "cpf", cpf).message });
     expect(findByPropertiesStub.called).to.be.true;
     expect(createStub.called).to.be.false;
   });
@@ -119,7 +119,7 @@ describe("Customer Controller", () => {
     const res = await request(app).get("/customers/1234");
 
     expect(res.status).to.equal(500);
-    expect(res.body).to.deep.equal({ message: "Error" });
+    expect(res.body).to.deep.equal({ error: "Error" });
     expect(findByPropertiesStub.calledOnce).to.be.true;
   });
 
@@ -127,7 +127,7 @@ describe("Customer Controller", () => {
     const res = await request(app).get("/customers/");
 
     expect(res.status).to.equal(404);
-    expect(res.body).to.deep.equal({ message: "Route not found" });
+    expect(res.body).to.deep.equal({ error: "Route not found" });
     expect(findByPropertiesStub.called).to.be.false;
     expect(createStub.called).to.be.false;
   });

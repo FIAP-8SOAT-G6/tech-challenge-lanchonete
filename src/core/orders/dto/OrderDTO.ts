@@ -8,7 +8,6 @@ export default class OrderDTO {
   public totalPrice?: number;
   public items?: ItemDTO[];
   public customerId?: number | null;
-  public customerName?: string;
   public elapsedTime?: number;
   public paymentStatus?: string;
   constructor({
@@ -19,7 +18,6 @@ export default class OrderDTO {
     totalPrice,
     items,
     customerId,
-    customerName,
     elapsedTime,
     paymentStatus
   }: {
@@ -30,7 +28,6 @@ export default class OrderDTO {
     totalPrice?: number;
     items?: ItemDTO[];
     customerId?: number | null;
-    customerName?: string;
     elapsedTime?: number;
     paymentStatus?: string;
   }) {
@@ -38,10 +35,9 @@ export default class OrderDTO {
     this.createdAt = createdAt;
     this.code = code;
     this.status = status;
-    this.totalPrice = Number(totalPrice);
+    this.totalPrice = Number(totalPrice) || 0;
     this.items = items;
     this.customerId = customerId;
-    this.customerName = customerName;
     this.elapsedTime = elapsedTime;
     this.paymentStatus = paymentStatus;
   }
