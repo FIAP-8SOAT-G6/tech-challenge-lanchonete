@@ -62,6 +62,9 @@ ordersAPIRouter.post("/orders/:orderId/checkout", async (req, res) => {
     return res.status(200).json(checkoutResponse);
   } catch (error: any) {
     if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
+    if (error instanceof ResourceNotFoundError) {
+      return res.status(404).json({ error: error.message });
+    }
     return res.status(500).json({ error: error.message });
   }
 });
@@ -72,7 +75,9 @@ ordersAPIRouter.get("/orders/:orderId/payment_status", async (req, res) => {
     const status = await OrderController.getPaymentStatus(new SequelizeOrderDataSource(), orderId);
     return res.status(200).json(status);
   } catch (error: any) {
-    if (error instanceof EmptyOrderError) return res.status(400).json({ error: error.message });
+    if (error instanceof ResourceNotFoundError) {
+      return res.status(404).json({ error: error.message });
+    }
     return res.status(500).json({ error: error.message });
   }
 });
