@@ -35,7 +35,7 @@ export default class OrderDTO {
     this.createdAt = createdAt;
     this.code = code;
     this.status = status;
-    this.totalPrice = Number(totalPrice);
+    this.totalPrice = Number(totalPrice) || 0;
     this.items = items;
     this.customerId = customerId;
     this.elapsedTime = elapsedTime;
