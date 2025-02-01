@@ -4,9 +4,9 @@ import OrderDTO from "../orders/dto/OrderDTO";
 export default interface OrderGateway {
   createOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
 
-  getOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[] | []>;
+  getOrdersByStatusAndSortByAscDate(status: string): Promise<OrderDTO[]>;
   getOrder(orderId: number): Promise<OrderDTO | undefined>;
-  getOrdersAll(): Promise<OrderDTO[] | []>;
+  getOrdersAll(): Promise<OrderDTO[]>;
 
   updateOrder(orderDTO: OrderDTO): Promise<OrderDTO>;
 
