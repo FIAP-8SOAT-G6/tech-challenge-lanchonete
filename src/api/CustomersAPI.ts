@@ -10,9 +10,9 @@ import ResourceNotFoundError from "../core/common/exceptions/ResourceNotFoundErr
 
 const customersAPIRouter = Router();
 
-customersAPIRouter.get("/customers/:cpf", async (req, res) => {
+customersAPIRouter.get("/customers/", async (req, res) => {
   try {
-    const cpf = req.params.cpf;
+    const cpf = req.query.cpf as string;
     const customerFound = await CustomerController.findCustomerByCpf(new SequelizeCustomerDataSource(), cpf);
     return res.status(200).json(customerFound);
   } catch (error: any) {
@@ -23,7 +23,7 @@ customersAPIRouter.get("/customers/:cpf", async (req, res) => {
   }
 });
 
-customersAPIRouter.get("/customers/id/:id", async (req, res) => {
+customersAPIRouter.get("/customers/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const customerFound = await CustomerController.findCustomerByID(new SequelizeCustomerDataSource(), Number(id));

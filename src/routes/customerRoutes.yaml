@@ -1,11 +1,35 @@
 paths:
-  /customers/{cpf}:
+  /customers/{id}:
+    get:
+      summary: Exibe dados de um cliente pelo ID
+      tags:
+        - Clientes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno do servidor
+
+  /customers:
     get:
       summary: Exibe dados de um cliente pelo CPF
       tags:
         - Clientes
       parameters:
-        - in: path
+        - in: query
           name: cpf
           required: true
           description: CPF do cliente
@@ -23,7 +47,7 @@ paths:
         "500":
           description: Erro interno do servidor
 
-  /customers:
+
     post:
       summary: Cria um novo cliente
       tags:

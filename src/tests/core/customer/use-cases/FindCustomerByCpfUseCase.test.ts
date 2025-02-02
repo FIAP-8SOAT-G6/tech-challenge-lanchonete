@@ -1,12 +1,12 @@
-import MissingPropertyError from "../../../../core/common/exceptions/MissingPropertyError";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
 import FindCustomerByCpfUseCase from "../../../../core/customers/use-cases/FindCustomerByCpfUseCase";
 
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
+import MissingParameterError from "../../../../core/common/exceptions/MissingParameterError";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
-import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
+import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -48,6 +48,11 @@ context("Customer Management", () => {
       await customerGateway.create(customerDTO);
 
       await expect(customerManagementUseCase.findByCPF("123")).to.be.eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it("should throw an error when cpf is not provided", async () => {
+      const customerManagementUseCase = setupUseCase();
+      await expect(customerManagementUseCase.findByCPF("")).to.be.eventually.rejectedWith(MissingParameterError);
     });
   });
 });
