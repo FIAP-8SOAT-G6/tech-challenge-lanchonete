@@ -97,7 +97,7 @@ describe("Customer Controller", () => {
     const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
     findByPropertiesStub.resolves([customerCreated]);
 
-    const res = await request(app).get(`/customers/${customer.cpf}`);
+    const res = await request(app).get(`/customers`).query({ cpf: customer.cpf });
 
     expect(res.status).to.equal(200);
     expect(res.body).to.deep.equal(customerCreated);
@@ -105,7 +105,7 @@ describe("Customer Controller", () => {
 
   it("should return error message when client is not found", async () => {
     const cpf = "12345678909";
-    const res = await request(app).get(`/customers/${cpf}`);
+    const res = await request(app).get(`/customers`).query({ cpf });
 
     expect(res.status).to.equal(404);
     expect(res.body).to.deep.equal({ error: new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "cpf", cpf).message });
@@ -116,7 +116,37 @@ describe("Customer Controller", () => {
   it("should return error message when an error occurs to search the customer", async () => {
     findByPropertiesStub.rejects();
 
-    const res = await request(app).get("/customers/1234");
+    const res = await request(app).get("/customers").query({ cpf: "1234" });
+
+    expect(res.status).to.equal(500);
+    expect(res.body).to.deep.equal({ error: "Error" });
+    expect(findByPropertiesStub.calledOnce).to.be.true;
+  });
+
+  it("should find customer by id", async () => {
+    const customer = buildCustomer();
+    const customerCreated = { ...customer, id: 1, cpf: "123.456.789-09" };
+    findByPropertiesStub.resolves([customerCreated]);
+
+    const res = await request(app).get(`/customers/1`);
+
+    expect(res.status).to.equal(200);
+    expect(res.body).to.deep.equal(customerCreated);
+  });
+
+  it("should return error message when client is not found", async () => {
+    const id = "2";
+    const res = await request(app).get(`/customers/${id}`);
+    expect(res.status).to.equal(404);
+    expect(res.body).to.deep.equal({ error: new ResourceNotFoundError(ResourceNotFoundError.Resources.Customer, "id", id).message });
+    expect(findByPropertiesStub.called).to.be.true;
+    expect(createStub.called).to.be.false;
+  });
+
+  it("should return error message when an error occurs to search the customer", async () => {
+    findByPropertiesStub.rejects();
+
+    const res = await request(app).get(`/customers/1234`);
 
     expect(res.status).to.equal(500);
     expect(res.body).to.deep.equal({ error: "Error" });
@@ -124,7 +154,7 @@ describe("Customer Controller", () => {
   });
 
   it("should return error message of Route not found when route is invalid", async () => {
-    const res = await request(app).get("/customers/");
+    const res = await request(app).put("/customers/");
 
     expect(res.status).to.equal(404);
     expect(res.body).to.deep.equal({ error: "Route not found" });

@@ -1,12 +1,12 @@
+import MissingPropertyError from "../../../../core/common/exceptions/MissingPropertyError";
 import ResourceNotFoundError from "../../../../core/common/exceptions/ResourceNotFoundError";
-import FindCustomerByCpfUseCase from "../../../../core/customers/use-cases/FindCustomerByCpfUseCase";
 
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import MissingParameterError from "../../../../core/common/exceptions/MissingParameterError";
 import CustomerDTO from "../../../../core/customers/dto/CustomerDTO";
-import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
 import FakeCustomerGateway from "../../../../gateways/FakeCustomerGateway";
+import CustomerGateway from "../../../../core/interfaces/CustomerGateway";
+import FindCustomerByIdUseCase from "../../../../core/customers/use-cases/FindCustomerByIdUseCase";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -16,11 +16,11 @@ context("Customer Management", () => {
   function setupUseCase() {
     customerGateway = new FakeCustomerGateway();
 
-    return new FindCustomerByCpfUseCase(customerGateway);
+    return new FindCustomerByIdUseCase(customerGateway);
   }
 
-  describe("find by CPF", () => {
-    it("should find customer by CPF", async () => {
+  describe("find by ID", () => {
+    it("should find customer by ID", async () => {
       const customerDTO = new CustomerDTO({
         name: "Ana",
         cpf: "123.456.789-01",
@@ -28,9 +28,9 @@ context("Customer Management", () => {
       });
 
       const customerManagementUseCase = setupUseCase();
-      await customerGateway.create(customerDTO);
+      const { id } = await customerGateway.create(customerDTO);
 
-      const customerFound = await customerManagementUseCase.findByCPF(customerDTO.cpf!);
+      const customerFound = await customerManagementUseCase.findByID(id!);
 
       expect(customerFound).to.not.be.undefined;
       expect(customerFound.cpf).to.be.equal(customerDTO.cpf);
@@ -47,12 +47,7 @@ context("Customer Management", () => {
 
       await customerGateway.create(customerDTO);
 
-      await expect(customerManagementUseCase.findByCPF("123")).to.be.eventually.rejectedWith(ResourceNotFoundError);
-    });
-
-    it("should throw an error when cpf is not provided", async () => {
-      const customerManagementUseCase = setupUseCase();
-      await expect(customerManagementUseCase.findByCPF("")).to.be.eventually.rejectedWith(MissingParameterError);
+      await expect(customerManagementUseCase.findByID(123)).to.be.eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });
