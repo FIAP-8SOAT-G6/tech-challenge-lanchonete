@@ -1,0 +1,159 @@
+services:
+  ## Monolith
+  lanchonete-db:
+    env_file: .env
+    image: postgres:latest
+    container_name: lanchonete_postgres
+    restart: always
+    ports:
+      - "${LANCHONETE_PORT_DB}:${LANCHONETE_PORT_DB}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${LANCHONETE_POSTGRES_DB}
+    volumes:
+      - lanchonete_db_data:/var/lib/postgresql/data
+    networks:
+      - fiap
+    expose:
+      - ${LANCHONETE_PORT_DB}
+
+  lanchonete-node:
+    env_file: .env
+    image: vitorrafael/lanchonete-api:latest
+    container_name: lanchonete-node-monolith
+    depends_on:
+      - lanchonete-db
+    environment:
+      PORT_SERVER: ${LANCHONETE_CONTAINER_PORT_SERVER}
+      PORT_DB: ${LANCHONETE_PORT_DB}
+      DB_NAME: ${LANCHONETE_POSTGRES_DB}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${LANCHONETE_POSTGRES_HOST}
+    ports:
+      - "${LANCHONETE_HOST_PORT_SERVER}:${LANCHONETE_CONTAINER_PORT_SERVER}"
+    restart: always
+    networks:
+      - fiap
+    expose:
+      - ${LANCHONETE_CONTAINER_PORT_SERVER}
+    volumes:
+      - lanchonete_node_data:/home/node/app
+
+  orders-db:
+    env_file: .env
+    image: postgres:latest
+    container_name: orders-postgres
+    restart: always
+    ports:
+      - "${ORDERS_PORT_DB}:${ORDERS_PORT_DB}"
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${ORDERS_DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - fiap
+    expose:
+      - ${ORDERS_PORT_DB}
+
+  orders-api:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orders-api
+    depends_on:
+      - orders-db
+      - orders-redis
+    environment:
+      PORT_SERVER: ${ORDERS_CONTAINER_PORT_SERVER}
+      DATABASE_PORT: ${ORDERS_PORT_DB}
+      DATABASE_NAME: ${ORDERS_DB_NAME}
+      DATABASE_HOST: ${ORDERS_POSTGRES_HOST}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DIALECT: ${DATABASE_DIALECT}
+
+      CACHE_NAME: ${REDIS_DATABASE}
+      CACHE_HOST: ${REDIS_HOST}
+      CACHE_PORT: ${REDIS_PORT}
+
+      PRODUCTS_SERVICE_HOST: lanchonete-node
+      PRODUCTS_SERVICE_PORT: ${LANCHONETE_CONTAINER_PORT_SERVER}
+
+      CUSTOMERS_SERVICE_HOST: customers-api
+      CUSTOMERS_SERVICE_PORT: ${CUSTOMER_CONTAINER_PORT_SERVER}
+    ports:
+      - "${ORDERS_HOST_PORT_SERVER}:${ORDERS_CONTAINER_PORT_SERVER}"
+    restart: always
+    networks:
+      - fiap
+    expose:
+      - ${ORDERS_CONTAINER_PORT_SERVER}
+    volumes:
+      - node_data:/home/node/app
+
+  orders-redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - fiap
+
+  customer-db:
+    env_file: .env
+    image: postgres:latest
+    container_name: customer-postgres
+    restart: always
+    ports:
+      - "${CUSTOMER_PORT_DB}:${CUSTOMER_PORT_DB}"
+    environment:
+      POSTGRES_USER: ${CUSTOMER_DATABASE_USER}
+      POSTGRES_PASSWORD: ${CUSTOMER_DATABASE_PASSWORD}
+      POSTGRES_DB: ${CUSTOMER_DATABASE_NAME}
+    volumes:
+      - customer_db_data:/var/lib/postgresql/customer_data
+    networks:
+      - fiap
+    expose:
+      - ${CUSTOMER_PORT_DB}
+
+  customers-api:
+    env_file: .env
+    image: anadezuo/customer-api:latest
+    container_name: customer-api
+    depends_on:
+      - customer-db
+    environment:
+      PORT_SERVER: ${CUSTOMER_CONTAINER_PORT_SERVER}
+      DATABASE_PORT: ${CUSTOMER_PORT_DB}
+      DATABASE_NAME: ${CUSTOMER_DB_NAME}
+      DATABASE_HOST: ${CUSTOMER_POSTGRES_HOST}
+      DATABASE_USER: ${CUSTOMER_DATABASE_USER}
+      DATABASE_PASSWORD: ${CUSTOMER_DATABASE_PASSWORD}
+      DATABASE_DIALECT: ${DATABASE_DIALECT}
+    ports:
+      - "${CUSTOMER_HOST_PORT_SERVER}:${CUSTOMER_CONTAINER_PORT_SERVER}"
+    restart: always
+    networks:
+      - fiap
+    expose:
+      - ${CUSTOMER_HOST_PORT_SERVER}
+    volumes:
+      - node_data:/home/node/app
+
+volumes:
+  db_data:
+  customer_db_data:
+  lanchonete_db_data:
+  lanchonete_node_data:
+  node_data:
+  redis_data:
+
+networks:
+  fiap:
+    driver: bridge

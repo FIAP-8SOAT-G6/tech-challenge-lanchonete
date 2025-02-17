@@ -1,0 +1,39 @@
+paths:
+  /webhooks:
+    post:
+      summary: Webhooks da Aplicação
+      tags:
+        - Webhooks
+      requestBody:
+        description: Payload do Webhook
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  $ref: "#/components/schemas/SupportedTopics"
+                  description: Tópico do Webhook
+                  example: payment
+                id:
+                  type: number
+                  description: Identificador do recurso associado ao tópico
+              required:
+                - topic
+                - id
+      responses:
+        "200":
+          description: Notificação recebida com sucesso
+        "400":
+          description: Payload inválido. Tópico não suportado.
+        "500":
+          description: Erro interno do servidor
+
+components:
+  schemas:
+    SupportedTopics:
+      type: string
+      description: Tópicos suportados
+      enum:
+        - payment

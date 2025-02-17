@@ -1,0 +1,6 @@
+apiVersion: v2
+name: stateless-microservice
+description: A chart for stateless microservices of Tech Challenge Lanchonete, allowing the creation of only an application
+type: application
+version: 0.1.0
+appVersion: "1.16.0"

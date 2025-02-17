@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  labels:
+    name: lanchonete-ingress
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-docs-service
+                port:
+                  number: 8080
+          - path: /api-docs
+            pathType: Prefix
+            backend:
+              service:
+                name: api-docs-service
+                port:
+                  number: 8080
+          - path: /orders
+            pathType: Prefix
+            backend:
+              service:
+                name: orders-service
+                port:
+                  number: 8080
+          - path: /webhooks
+            pathType: Prefix
+            backend:
+              service:
+                name: orders-service
+                port:
+                  number: 8080
+          - path: /customers
+            pathType: Prefix
+            backend:
+              service:
+                name: customer-service
+                port:
+                  number: 8080
+          - path: /products
+            pathType: Prefix
+            backend:
+              service:
+                name: products-service
+                port:
+                  number: 8080
+          - path: /category
+            pathType: Prefix
+            backend:
+              service:
+                name: products-service
+                port:
+                  number: 8080

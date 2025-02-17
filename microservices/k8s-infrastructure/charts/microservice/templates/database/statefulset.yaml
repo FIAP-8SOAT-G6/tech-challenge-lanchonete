@@ -1,0 +1,34 @@
+{{- if .Values.database.useStatefulSet }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-db-statefulset
+spec:
+  serviceName: "{{ .Release.Name }}-db-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-db
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.database.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-db-config
+            - secretRef:
+                name: {{ .Release.Name }}-db-secret
+          volumeMounts:
+            - mountPath: {{ .Values.database.configMapData.VOLUME_DB_DATA }}
+              subPath: {{ .Release.Name }}-db-data
+              name: {{ .Release.Name }}-db-data
+      volumes:
+        - name: {{ .Release.Name }}-db-data
+          emptyDir: {}
+{{- end }}
