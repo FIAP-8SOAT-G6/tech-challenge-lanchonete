@@ -53,7 +53,7 @@ O sistema foi desenvolvido com uma arquitetura de microsserviços com os seguint
 
 Adicionalmente, os seguintes repositórios são utilizados para suportar a API e infraestrutura:
 | Repositório | Descrição
-|------|-----------|-------------
+|------|-----------
 | [tech-challenge-swagger-ui](https://github.com/FIAP-8SOAT-G6/tech-challenge-swagger-ui) | Consolidação da documentação de Swagger.
 | [k8s-infrastructure](https://github.com/FIAP-8SOAT-G6/k8s-infrastructure) | Responsável pela criação da infraestrutura Kubernetes.
 | [db-infrastructure](https://github.com/FIAP-8SOAT-G6/db-infrastructure) | Responsável pela criação dos bancos de dados Postgres (SQL) e Elasticache (NoSQL).
