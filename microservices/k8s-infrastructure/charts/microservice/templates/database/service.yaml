@@ -1,0 +1,15 @@
+{{- if .Values.database.useStatefulSet }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.database.exposedPort }}
+      targetPort: {{ .Values.database.port }}
+  selector:
+    app: {{ .Release.Name }}-db
+{{- end }} 

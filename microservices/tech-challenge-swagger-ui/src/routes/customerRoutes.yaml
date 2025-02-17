@@ -1,0 +1,109 @@
+paths:
+  /customers/{id}:
+    get:
+      summary: Exibe dados de um cliente pelo ID
+      tags:
+        - Clientes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno do servidor
+
+  /customers:
+    get:
+      summary: Exibe dados de um cliente pelo CPF
+      tags:
+        - Clientes
+      parameters:
+        - in: query
+          name: cpf
+          required: true
+          description: CPF do cliente
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno do servidor
+
+
+    post:
+      summary: Cria um novo cliente
+      tags:
+        - Clientes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nome do cliente
+                  example: John Doe
+                cpf:
+                  type: string
+                  description: CPF do cliente sem formatação
+                  example: "12345678909"
+                email:
+                  type: string
+                  description: Email do cliente
+                  example: john.doe@gmail.com
+              required:
+                - name
+                - cpf
+                - email
+      responses:
+        "201":
+          description: Cliente criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "400":
+          description: Erro na validação dos dados do cliente
+        "500":
+          description: Erro interno do servidor
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do Cliente
+          example: 1
+        name:
+          type: string
+          description: Nome do cliente
+          example: John Doe
+        cpf:
+          type: string
+          description: CPF do cliente sem formatação
+          example: "12345678909"
+        email:
+          type: string
+          description: Email do cliente
+          example: john.doe@gmail.com

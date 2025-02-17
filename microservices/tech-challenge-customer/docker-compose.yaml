@@ -1,0 +1,54 @@
+services:
+  customer-db:
+    env_file: .env
+    image: postgres:latest
+    container_name: customer-postgres
+    restart: always
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - fiap
+    expose:
+      - ${DATABASE_PORT}
+
+  customers-api:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: customers-api
+    depends_on:
+      - customer-db
+    environment:
+      PORT_SERVER: ${CUSTOMER_CONTAINER_PORT_SERVER}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DIALECT: ${DATABASE_DIALECT}
+    ports:
+      - "${CUSTOMER_CONTAINER_PORT_SERVER}:${CUSTOMER_CONTAINER_PORT_SERVER}"
+    restart: always
+    networks:
+      - fiap
+    expose:
+      - ${CUSTOMER_CONTAINER_PORT_SERVER}
+    volumes:
+      - node_data:/home/node/app
+
+volumes:
+  customer_db_data:
+  customer_node_data:
+  db_data:
+  node_data:
+
+networks:
+  fiap:
+    driver: bridge

@@ -1,0 +1,243 @@
+paths:
+  /products:
+    get:
+      summary: Lista produtos
+      tags:
+        - Produtos
+      responses:
+        "200":
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "500":
+          description: Erro interno do servidor
+
+    post:
+      summary: Cria um novo produto
+      tags:
+        - Produtos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Hamburguer
+                category:
+                  $ref: "#/components/schemas/ProductCategory"
+                price:
+                  type: number
+                  format: float
+                  example: 12.99
+                description:
+                  type: string
+                  example: "Hamburguer Classico"
+                images:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: Lista de url de imagens
+                        example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
+              required:
+                - name
+                - category
+                - price
+                - description
+      responses:
+        "201":
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Erro de validação
+        "500":
+          description: Erro interno do servidor
+
+  /products/{id}:
+    get:
+      summary: Exibe um produto pelo ID
+      tags:
+        - Produtos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        "201":
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno do servidor
+
+    put:
+      summary: Atualiza um produto existente
+      tags:
+        - Produtos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Hamburguer
+                category:
+                  $ref: "#/components/schemas/ProductCategory"
+                  example: "Lanche"
+                price:
+                  type: number
+                  format: float
+                  example: 12.99
+                description:
+                  type: string
+                  example: "Hamburguer Classico"
+                images:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: Lista de url de imagens
+                        example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
+              required:
+                - name
+                - category
+                - price
+                - description
+
+      responses:
+        "201":
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Erro de validação
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno do servidor
+
+    delete:
+      summary: Remove um produto existente
+      tags:
+        - Produtos
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        "204":
+          description: Produto removido com sucesso
+        "500":
+          description: Erro interno do servidor
+
+  /category/{category}/products:
+    get:
+      summary: Lista produtos por categoria
+      tags:
+        - Produtos
+      parameters:
+        - in: path
+          name: category
+          schema:
+            $ref: "#/components/schemas/ProductCategory"
+          required: true
+          description: Categoria do produto
+      responses:
+        "200":
+          description: Lista de produtos na categoria
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Categoria inválida
+        "500":
+          description: Erro interno do servidor
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID do produto
+          example: 1
+        name:
+          type: string
+          description: Nome do produto
+          example: Hamburguer
+        category:
+          $ref: "#/components/schemas/ProductCategory"
+          example: Lanche
+        price:
+          type: number
+          format: float
+          description: Preço do produto
+          example: 12.99
+        description:
+          type: string
+          description: Descrição do produto
+          example: Hamburguer Classico
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Identificador único da imagem
+                example: 1
+              productId:
+                type: integer
+                description: Código do produto em que a imagem está associada
+                example: 1
+              url:
+                type: string
+                description: Lista de url de imagens
+                example: https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png
+
+    ProductCategory:
+      type: string
+      description: Categoria do produto
+      enum:
+        - "Lanche"
+        - "Acompanhamento"
+        - "Bebida"
+        - "Sobremesa"
