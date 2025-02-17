@@ -4,24 +4,15 @@ Projeto desenvolvido para a pós-graduação em Software Architecture da FIAP ut
 
 Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
-[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=FIAP-8SOAT-G6_tech-challenge-lanchonete)](https://sonarcloud.io/summary/new_code?id=FIAP-8SOAT-G6_tech-challenge-lanchonete)
-
 #### Tabela de Conteúdos
 
 1. [Requisitos](#requisitos)
-2. [Arquitetura](#arquitetura)
+2. [Microsserviços](#microsservicos)
+3. [Arquitetura](#arquitetura)
    1. [Arquitetura da Aplicação](#arquitetura-da-aplicação)
    2. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
    3. [Arquitetura AWS - Concepção](#arquitetura-aws---concepção)
-3. [Rodando o Projeto](#rodando-o-projeto)
-   1. [Pré-Requsiitos](#pré-requisitos)
-   2. [Executando o Docker](#executando-o-docker)
-   3. [Executando o Kubernetes](#executando-o-kubernetes)
-   4. [Acessando as APIs](#acessando-as-apis)
-   5. [Executando os Testes](#executando-os-testes)
-4. [Tarefas](#tarefas)
-5. [Tecnologias & Bibliotecas](#tecnologias--bibliotecas)
-6. [Estrutura do Projeto](#estrutura-do-projeto)
+5. [Tarefas](#tarefas)
 
 ## Requisitos
 
@@ -39,7 +30,7 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 | RF-8          | Aplicação deve fornecer um _webhook_ para receber confirmação do pagamento aprovado ou recusado.                                                           |
 | RF-9          | Aplicação deverá ordernar os pedidos pelo status 'Pronto' > 'Em Preparação' > 'Recebido' e data de criação. Pedidos 'Finalizado' não devem ser retornados. |
 | RF-10         | Aplicação deverá fornecer API para atualizar o status do pedido.                                                                                           |
-| RF-11         | \[**Opcional**\] Aplicação deverá integrar com Mercado Pago.                                                                                               |
+| RF-11         | Aplicação deverá integrar com Mercado Pago.                                                                                               |
 
 ### Requisitos Não-Funcionais
 
@@ -49,6 +40,22 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 | RNF-2         | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection                                                 |
 | RNF-3         | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.                           |
 | RNF-4         | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta. |
+| RNF-4         | Infraestrutura - Aplicação deverá seguir arquitetura de microsserviços.                                                             |
+
+## Microsserviços
+O sistema foi desenvolvido com uma arquitetura de microsserviços com os seguintes serviços implementados em Kubernetes:
+| Nome | Descrição | Repositório
+|------|-----------|-------------
+| `customer` | Responsável pelo gerenciamento dos clientes cadastrados. | [tech-challenge-customer](https://github.com/FIAP-8SOAT-G6/tech-challenge-customer)
+| `products` | Responsável pelo gerenciamento dos produtos. | [tech-challenge-products](https://github.com/FIAP-8SOAT-G6/tech-challenge-products)
+| `orders`   | Responsável pelo gerenciamento dos pedidos, interagindo com os outros microsserviços através de chamadas síncronas HTTP. | [tech-challenge-orders](https://github.com/FIAP-8SOAT-G6/tech-challenge-orders)
+
+Adicionalmente, os seguintes repositórios são utilizados para suportar a API e infraestrutura:
+| Repositório | Descrição 
+|------|-----------|-------------
+| [tech-challenge-swagger-ui](https://github.com/FIAP-8SOAT-G6/tech-challenge-swagger-ui) | Consolidação da documentação de Swagger. 
+| [k8s-infrastructure](https://github.com/FIAP-8SOAT-G6/k8s-infrastructure) | Responsável pela criação da infraestrutura Kubernetes.
+| [db-infrastructure](https://github.com/FIAP-8SOAT-G6/db-infrastructure)   | Responsável pela criação dos bancos de dados Postgres (SQL) e Elasticache (NoSQL).
 
 ## Arquitetura
 
@@ -74,17 +81,15 @@ A arquitetura K8s foi desenvolvida para permitir a escalabilidade do sistema con
 
 A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a seguinte estrutura:
 
-- **Deployment lanchonete-api:** Responsável por gerenciar os pods que executam a aplicação desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service NodePort** para que clientes consigam consumir as APIs desenvolvidas.
-- **StatefulSet lanchonete-db:** Responsável por gerenciar o banco de dados da aplicação. Está vinculado a um **Persistent Volume Claim (PVC)** para garantir o armazenamento persistente dos dados, utilizando um Persistent Volume. O banco de dados é acessível apenas dentro do cluster K8s por meio de um **ClusterIP Service**, de forma que os pods da aplicação possam se conectar ao banco de dados de maneira segura.
-- **ConfigMaps lanchonete-api-config e lanchonete-db-config**: Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
-- **Secret lanchonete-db-secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
-
-> **TODO**: Atualizar documentação da Arquitetura do Kubernetes com as últimas alterações da Fase 3.
+- **Ingress:** Responsável por encaminhar as requisições para o serviço correspondente ao recurso solicitado.
+- **Deployment:** Responsável por gerenciar os pods que executam o microserviço desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service ClusterIP** para que clientes consigam consumir as APIs desenvolvidas por meio de um **Ingress**.
+- **ConfigMap:** Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
+- **Secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
 
 #### Fluxo de Comunicação
 
-1. O NodePort Service expõe a API externamente, encaminhando as requisições para os diferentes pods gerenciados pelo Deployment `lanchonete-api`.
-2. Os pods `lanchonete-api` se comunicam com o `lanchonete-db` por meio de um ClusterIP Service, que encaminha as requisições para os pods do banco de dados, gerenciados pelo StatefulSet. Assim, o `lanchonete-api` pode realizar as operações necessárias no banco de dados.
+1. O Ingress faz o mapeamento dos recursos para os Services ClusterIP que expõem as APIs externamente, encaminhando as requisições para os diferentes pods gerenciados pelos Deployments.
+2. Os pods se comunicam com o banco de dados por meio de um ExternalName Service, que encaminha as requisições para serviços de bancos de dados.
    > Os ConfigMaps e o Secret são utilizados durante a inicialização dos pods para configurar a conexão com o banco de dados e outros serviços externos
 
 ### Arquitetura AWS
@@ -93,65 +98,20 @@ A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a se
 
 A arquitetura proposta utiliza serviços gerenciados da AWS para oferecer uma solução escalável e resiliente. Seguem os principais componentes:
 
-- **Amazon API Gateway**: Os usuários finais interagem com a API por meio do **API Gateway**, que atua como o serviço responsável por rotear o tráfego.
-
 - **Network Load Balancer (NLB)**: Encaminha as requisições dentro da **Virtual Private Cloud (VPC)** para o **Amazon Elastic Kubernetes Service (EKS)**.
 
-- **Amazon EKS (Elastic Kubernetes Service)**: A aplicação é implantada em um **Amazon EKS Cluster** dentro de uma **sub-rede privada**. Os detalhes sobre o Cluster K8S podem ser encontrados em [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+- **Amazon EKS (Elastic Kubernetes Service)**: O sistema é implantado em um **Amazon EKS Cluster** dentro de uma **sub-rede privada**. Os detalhes sobre o Cluster K8S podem ser encontrados em [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
 
 - **Amazon RDS (Relational Database Service)**: Serviço para provisionamento do banco de dados Postgres.
 
-- **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers da aplicação, facilitando a atualização dos pods dentro do cluster EKS que utilizam a tag _latest_.
+- **Amazon Elasticache (Cache Database Service)**: Serviço para provisionamento do banco de dados Elasticache.
 
-## Executando o Projeto
+- **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers do sistema, facilitando a atualização dos pods dentro do cluster EKS que utilizam tags versionadas.
 
-#### Pré-requisitos
 
-- Ter a instalação do `docker` localmente.
-- Ter alguma ferramenta para executar `kubernetes` localmente.
+## Order de execução das APIs
 
-#### Executando o Docker
-
-Para executar o projeto, deve ser realizado um dos seguintes comandos:
-
-- `docker-compose up --build`
-- `docker compose up --build`
-
-\*_A flag `--build` é adicionada para garantir que a imagem esteja atualizada com as últimas modificações locais._
-
-Para parar a execução do projeto, pode ser executado Ctrl+C e em seguida o comando
-
-- `docker-compose down`
-
-#### Executando o Kubernetes
-
-Para executar o projeto utilizando Kubernetes, execute o seguinte comando:
-
-- `kubectl apply -f k8s/ -R`
-  > Pode ser necessário utilizar outro comando dependendo da ferramente de Kubernetes que estiveres utilizando.
-
-Isso criará os artefatos necessários accessar o projeto de um Cluster K8s.
-
-#### Acessando as APIs
-
-Ao acessar a URL `http://localhost:8080/` (`docker compose`) ou `http://localhost:31200` (`kubernetes`), você será redirecionado a documentação Swagger das APIs e poderá executar as requisições conforme documentado.
-
-> Caso você esteja executando em Cluster Kubernetes, pode ser necessário habilitar criar um _tunnel_ entre a sua máquina e o Cluster Kubernetes. Por exemplo:  
-> Minikube - `minikube service lanchonete-api-servce --url`  
-> Docker Desktop - `kubectl port-forward services/lanchonete-api-service 8080:80`  
-> Isso é necessário apenas se não conseguir acessar o Cluster de seu `localhost`.
-
-#### Executando os testes
-
-Execute `npm run test` para rodar os testes unitários da aplicação
-
-Execute teste de carga `k6` com `npm run test:k8s`
-
-> Obs.: Instale o `k6` em sua máquina conforme: https://grafana.com/docs/k6/latest/set-up/install-k6/
-
-## Orderm de execução das APIs
-
-Para realiar a emissão de um pedido até sua finalização, as APIs precisam ser chamadas na seguinte sequência:
+Para realizar a emissão de um pedido até sua finalização, as APIs precisam ser chamadas na seguinte sequência:
 
 #### 1. Adicionar produtos
 
@@ -354,39 +314,4 @@ As tarefas estão descritas em projetos da organização do GitHub.
 - [Fase 1](https://github.com/orgs/FIAP-8SOAT-G6/projects/1)
 - [Fase 2](https://github.com/orgs/FIAP-8SOAT-G6/projects/2)
   - [Apresentação do Projeto](https://youtu.be/1UloxK_VfNE)
-
-## Tecnologias & Bibliotecas
-
-- NodeJS (^v22) & TypeScript
-  - `express` - https://www.npmjs.com/package/express
-  - `sequelize` - https://www.npmjs.com/package/sequelize
-- Postgres
-- Docker
-- Swagger
-  - `swagger-jsdoc` - https://www.npmjs.com/package/swagger-jsdoc
-  - `swagger-ui-express` - https://www.npmjs.com/package/swagger-ui-express
-
-## Estrutura do Projeto
-
-- `src` - Código fonte do projeto.
-- `src/api` - **Framework & Drivers** - Objetos que fazem a comunicação com o `express` para criar a API.
-- `src/external` - **Frameworks & Drivers** - Objetos que fazem a comunicação com o sistemas externos. Por exemplo, objetos `DataSource`que interagem com o `sequelize` para accessar o banco de dados.
-- `src/controllers` - **Interface Adapters** - Objetos que fazem a orquestração dos casos de uso para executar as regras de negócio.
-- `src/gateways`- **Interface Adapters** - Objetos que intermediam a comunicação entre os casos de uso e os dados externos da aplicação, implementando as interfaces definidas pelos `use-cases`.
-- `src/presenters` - **Interface Adapters** - Objetos que formatam os dados retornados pelos `use-cases` para serem retornados ao cliente.
-- `src/interfaces` - **Interface Adapters** - Interfaces definidas pelos objetos pertencentes a esta camada para comunicação com objetos da camada **Framework & Drivers**
-- `src/core` - Objetos do domínio da solução. Não devem depender de objetos que são criados fora dessa camada, devendo utilizar interfaces e injeção de dependência para execução da aplicação.
-- `src/core/interfaces` - Interfaces definidas pelos objetos pertencentes a esta camada para comunicação com objetos externos (**Interface Adapters**);
-- `src/core/<domain>/entities` - **Enteprise Business Rules** Entidades do domínio conforme identificado através dos exercícios de Domain-Driven Design.
-- `src/core/<domain>/use-cases` - **Application Business Rules** Processos de negócio que foram identificados dentro do domínio; executados através da orquestração das entidades e das interfaces.
-- `src/core/<domain>/exceptions` - Exceções lançadas pelos processos de negócio e entidades;
-- `src/core/<domain>/dto` - Objetos para transferência de dados entre as camadas da aplicação;
-- `src/factories` - Classes que auxiliam a instanciar os objetos das demais camadas.
-- `src/tests` - Testes do projeto.
-- `src/infrastructure` - Configurações de infraestrutura como banco de dados e documentação
-- `src/routes` - Descrição das rotas do projeto para o Swagger.
-- `app.js` - Ponto de entrada da aplicação, onde os objetos são instanciados com suas respectivas dependências e a aplicação começa a ser executada.
-
-**OBS:** O arquivo `.env` foi compartilhado neste repositório para fins didáticos e facilidade nos testes, sendo esta uma má prática em ambientes de desenvolvimento real.
-
-![Estrutura do Projeto](diagrams/project-structure.png)
+- [Fase 3](https://github.com/orgs/FIAP-8SOAT-G6/projects/4)
