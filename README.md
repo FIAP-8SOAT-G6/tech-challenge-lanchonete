@@ -9,62 +9,63 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 1. [Requisitos](#requisitos)
 2. [Microsserviços](#microsservicos)
 3. [Arquitetura](#arquitetura)
-   1. [Arquitetura da Aplicação](#arquitetura-da-aplicação)
-   2. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
-   3. [Arquitetura AWS - Concepção](#arquitetura-aws---concepção)
-5. [Tarefas](#tarefas)
+4. [Arquitetura do Sistema](#arquitetura-do-sistema)
+5. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+6. [Arquitetura AWS](#arquitetura-aws)
+7. [Tarefas](#tarefas)
 
 ## Requisitos
 
 ### Requisitos Funcionais
 
-| Identificador | Descrição                                                                                                                                                  |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RF-1          | Aplicação deve fornecer API para cadastrar o cliente.                                                                                                      |
-| RF-2          | Aplicação deve fornecer API para identificar o cliente por CPF.                                                                                            |
-| RF-3          | Aplicação deve fornecer API para criar, editar e remover produtos.                                                                                         |
-| RF-4          | Aplicação deve fornecer API para buscar produtos por categoria.                                                                                            |
-| RF-5          | Aplicação deve fornecer API para realizar o checkout do pedido; durante a Fase 1, deverá ser implementado um _fake checkout_.                              |
-| RF-6          | Aplicação deve fornecer API para listar os pedidos.                                                                                                        |
-| RF-7          | Aplicação deve fornecer API para consultar o status de pagamento do pedido, se foi aprovado ou recusado.                                                   |
-| RF-8          | Aplicação deve fornecer um _webhook_ para receber confirmação do pagamento aprovado ou recusado.                                                           |
-| RF-9          | Aplicação deverá ordernar os pedidos pelo status 'Pronto' > 'Em Preparação' > 'Recebido' e data de criação. Pedidos 'Finalizado' não devem ser retornados. |
-| RF-10         | Aplicação deverá fornecer API para atualizar o status do pedido.                                                                                           |
-| RF-11         | Aplicação deverá integrar com Mercado Pago.                                                                                               |
+| Identificador | Descrição                                                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RF-1          | Sistema deve fornecer API para cadastrar o cliente.                                                                                                     |
+| RF-2          | Sistema deve fornecer API para identificar o cliente por CPF.                                                                                           |
+| RF-3          | Sistema deve fornecer API para criar, editar e remover produtos.                                                                                        |
+| RF-4          | Sistema deve fornecer API para buscar produtos por categoria.                                                                                           |
+| RF-5          | Sistema deve fornecer API para realizar o checkout do pedido; durante a Fase 1, deverá ser implementado um _fake checkout_.                             |
+| RF-6          | Sistema deve fornecer API para listar os pedidos.                                                                                                       |
+| RF-7          | Sistema deve fornecer API para consultar o status de pagamento do pedido, se foi aprovado ou recusado.                                                  |
+| RF-8          | Sistema deve fornecer um _webhook_ para receber confirmação do pagamento aprovado ou recusado.                                                          |
+| RF-9          | Sistema deverá ordenar os pedidos pelo status 'Pronto' > 'Em Preparação' > 'Recebido' e data de criação. Pedidos 'Finalizado' não devem ser retornados. |
+| RF-10         | Sistema deverá fornecer API para atualizar o status do pedido.                                                                                          |
+| RF-11         | Sistema deverá integrar com Mercado Pago.                                                                                                               |
 
 ### Requisitos Não-Funcionais
 
-| Identificador | Descrição                                                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| RNF-1         | Aplicação deverá ser desenvolvida seguindo os princípios de Arquitetura Limpa                                                       |
-| RNF-2         | Aplicação deverá fornecer a documentação das APIs por Swagger ou Postman Collection                                                 |
-| RNF-3         | Infraestrutura - Aplicação deverá ser desenvolvida utilizando Kubernetes para aumentar a sua resiliência.                           |
-| RNF-4         | Infraestrutura - Aplicação deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta. |
-| RNF-4         | Infraestrutura - Aplicação deverá seguir arquitetura de microsserviços.                                                             |
+| Identificador | Descrição                                                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| RNF-1         | Sistema deverá ser desenvolvido seguindo os princípios de Arquitetura Limpa.                                                      |
+| RNF-2         | Sistema deverá fornecer a documentação das APIs por Swagger ou Postman Collection.                                                |
+| RNF-3         | Infraestrutura - Sistema deverá ser desenvolvido utilizando Kubernetes para aumentar a sua resiliência.                           |
+| RNF-4         | Infraestrutura - Sistema deverá suportar o aumento de demanda, subindo novas instâncias conforme o número de requisições aumenta. |
+| RNF-5         | Infraestrutura - Sistema deverá seguir arquitetura de microsserviços.                                                             |
 
 ## Microsserviços
+
 O sistema foi desenvolvido com uma arquitetura de microsserviços com os seguintes serviços implementados em Kubernetes:
 | Nome | Descrição | Repositório
 |------|-----------|-------------
 | `customer` | Responsável pelo gerenciamento dos clientes cadastrados. | [tech-challenge-customer](https://github.com/FIAP-8SOAT-G6/tech-challenge-customer)
 | `products` | Responsável pelo gerenciamento dos produtos. | [tech-challenge-products](https://github.com/FIAP-8SOAT-G6/tech-challenge-products)
-| `orders`   | Responsável pelo gerenciamento dos pedidos, interagindo com os outros microsserviços através de chamadas síncronas HTTP. | [tech-challenge-orders](https://github.com/FIAP-8SOAT-G6/tech-challenge-orders)
+| `orders` | Responsável pelo gerenciamento dos pedidos, interagindo com os outros microsserviços através de chamadas síncronas HTTP. | [tech-challenge-orders](https://github.com/FIAP-8SOAT-G6/tech-challenge-orders)
 
 Adicionalmente, os seguintes repositórios são utilizados para suportar a API e infraestrutura:
-| Repositório | Descrição 
+| Repositório | Descrição
 |------|-----------|-------------
-| [tech-challenge-swagger-ui](https://github.com/FIAP-8SOAT-G6/tech-challenge-swagger-ui) | Consolidação da documentação de Swagger. 
+| [tech-challenge-swagger-ui](https://github.com/FIAP-8SOAT-G6/tech-challenge-swagger-ui) | Consolidação da documentação de Swagger.
 | [k8s-infrastructure](https://github.com/FIAP-8SOAT-G6/k8s-infrastructure) | Responsável pela criação da infraestrutura Kubernetes.
-| [db-infrastructure](https://github.com/FIAP-8SOAT-G6/db-infrastructure)   | Responsável pela criação dos bancos de dados Postgres (SQL) e Elasticache (NoSQL).
+| [db-infrastructure](https://github.com/FIAP-8SOAT-G6/db-infrastructure) | Responsável pela criação dos bancos de dados Postgres (SQL) e Elasticache (NoSQL).
 
 ## Arquitetura
 
-### Arquitetura da Aplicação
+### Arquitetura do Sistema
 
 A aplicação foi desenvolvida seguindo os princípios da Arquitetura Limpa (Clean Architecture) proposta por Robert C. Martin. O objetivo é garantir que as regras de negócio fiquem isoladas e independentes de detalhes externos, como frameworks ou banco de dados, facilitando a manutenção, escalabilidade e testabilidade da aplicação.
 
 - **Enterprise Business Rules**: Camada que contém as entidades (_Entities_) do domínio, que representam os conceitos centrais e regras mais importantes da aplicação que garantem a consistência das regras de negócio. São independentes de infraestrutura ou do caso de uso em que são utilizadas.
-- **Aplication Business Rules**: Camada que contém os casos de uso (_Use Case_) que definem como as entidades interagem entre si para cumprir os requisitos funcionais da aplicação. São independentes dos detalhes de infraestrutura e dependem apenas de interfaces para interagir com objetos externos.
+- **Application Business Rules**: Camada que contém os casos de uso (_Use Case_) que definem como as entidades interagem entre si para cumprir os requisitos funcionais da aplicação. São independentes dos detalhes de infraestrutura e dependem apenas de interfaces para interagir com objetos externos.
 - **Interface Adapters**: Camada que adapta a entrada e saída de dados entre o sistema e os consumidores externos, responsável pela lógica que conecta os casos de uso ao mundo exterior. Seus principais componentes são:
   - **Gateways:** Implementações das interfaces dos casos de uso para acessar sistemas externos (exemplo: banco de dados, sistemas de pagamento);
   - **Presenters:** Adaptam o resultado dos casos de uso para as camadas externas conforme o formato esperado;
@@ -72,7 +73,7 @@ A aplicação foi desenvolvida seguindo os princípios da Arquitetura Limpa (Cle
 - **Frameworks & Drivers**: Camada com _frameworks_ e serviços externos usados pela aplicação como bibliotecas de _Web API_, objetos que encapsulam comunicação com banco de dados, sistemas externos, etc. Serve apenas para viabilizar a interação com o mundo exterior, sem lógica de negócios.
 
 No diagrama a seguir, é possível identificar que cada camada se comunica de forma unidirecional, com as camadas externas dependendo das internas. Isso garante que as regras de negócio permaneçam independentes de detalhes técnicos. Para tanto, é necessário seguir os princípios SOLID como o _Single Responsibility Principle_, uma vez que cada objeto e camada tem uma única responsabilidade, e o _Dependency Inversion Principle_, visto que as camadas internas dependem de abstrações e as implementações são fornecidas pelas camadas externas.
-![Arquitetura da Aplicação](diagrams/application-architecture.png)
+![Arquitetura do Sistema](diagrams/application-architecture.png)
 
 ### Arquitetura do Kubernetes
 
@@ -82,7 +83,7 @@ A arquitetura K8s foi desenvolvida para permitir a escalabilidade do sistema con
 A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a seguinte estrutura:
 
 - **Ingress:** Responsável por encaminhar as requisições para o serviço correspondente ao recurso solicitado.
-- **Deployment:** Responsável por gerenciar os pods que executam o microserviço desenvolvida. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service ClusterIP** para que clientes consigam consumir as APIs desenvolvidas por meio de um **Ingress**.
+- **Deployment:** Responsável por gerenciar os pods que executam o microserviço desenvolvido. Possui um **Horizontal Pod Autoscaler (HPA)** associado para monitorar a utilização de CPU e escalar horizontalmente os pods, a fim de suportar a demanda por recursos. É exposto ao exterior através de um **Service ClusterIP** para que clientes consigam consumir as APIs desenvolvidas por meio de um **Ingress**.
 - **ConfigMap:** Utilizados para armazenar os valores de configuração da API e do banco de dados, como parâmetros não sensíveis e informações de ambiente.
 - **Secret:** Utilizado para armazenar valores sensíveis, como a senha de acesso ao banco de dados.
 
@@ -108,14 +109,13 @@ A arquitetura proposta utiliza serviços gerenciados da AWS para oferecer uma so
 
 - **Amazon ECR (Elastic Container Registry)**: Armazenamento das imagens dos containers do sistema, facilitando a atualização dos pods dentro do cluster EKS que utilizam tags versionadas.
 
-
-## Order de execução das APIs
+## Ordem de execução das APIs
 
 Para realizar a emissão de um pedido até sua finalização, as APIs precisam ser chamadas na seguinte sequência:
 
 #### 1. Adicionar produtos
 
-Os produtos precisaram ser adicionados a um catálogo para que posteriormente possam ser adicionados no pedido de venda.
+Os produtos precisam ser adicionados a um catálogo para que posteriormente possam ser adicionados no pedido de venda.
 
 Endpoint: `POST /products`
 
@@ -126,7 +126,7 @@ Exemplo:
   "name": "Hamburguer",
   "category": "Lanche",
   "price": 12.99,
-  "description": "Hamburguer Classico",
+  "description": "Hamburguer Clássico",
   "images": [
     {
       "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
@@ -157,7 +157,7 @@ Endpoint: `GET /category/{category}/products`
 
 #### 1.4 [Opcional] Editar produto
 
-Todos os campos que compõem um produto poderão ser alterados, com execessão do ID.
+Todos os campos que compõem um produto poderão ser alterados, com exceção do ID.
 
 Endpoint: `PUT /products/{id}`
 
