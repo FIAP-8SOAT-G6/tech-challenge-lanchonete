@@ -9,9 +9,9 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 1. [Requisitos](#requisitos)
 2. [Microsserviços](#microsservicos)
 3. [Arquitetura](#arquitetura)
-4. [Arquitetura do Sistema](#arquitetura-do-sistema)
-5. [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
-6. [Arquitetura AWS](#arquitetura-aws)
+    - [Arquitetura do Sistema](#arquitetura-do-sistema)
+    - [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
+    - [Arquitetura AWS](#arquitetura-aws)
 7. [Tarefas](#tarefas)
 
 ## Requisitos
