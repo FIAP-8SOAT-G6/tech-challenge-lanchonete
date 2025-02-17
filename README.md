@@ -7,7 +7,7 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 #### Tabela de Conteúdos
 
 1. [Requisitos](#requisitos)
-2. [Microsserviços](#microsservicos)
+2. [Microsserviços](#microsserviços)
 3. [Arquitetura](#arquitetura)
     - [Arquitetura do Sistema](#arquitetura-do-sistema)
     - [Arquitetura do Kubernetes](#arquitetura-do-kubernetes)
@@ -44,7 +44,7 @@ Desenvolvido por @ThawanFidelis, @gabrielescodino, @vitorrafael e @anadezuo.
 
 ## Microsserviços
 
-O sistema foi desenvolvido com uma arquitetura de microsserviços com os seguintes serviços implementados em Kubernetes:
+O sistema foi desenvolvido em uma arquitetura de microsserviços com os seguintes serviços implementados em Kubernetes:
 | Nome | Descrição | Repositório
 |------|-----------|-------------
 | `customer` | Responsável pelo gerenciamento dos clientes cadastrados. | [tech-challenge-customer](https://github.com/FIAP-8SOAT-G6/tech-challenge-customer)
