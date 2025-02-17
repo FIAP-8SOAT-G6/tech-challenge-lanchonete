@@ -73,11 +73,13 @@ A aplicação foi desenvolvida seguindo os princípios da Arquitetura Limpa (Cle
 - **Frameworks & Drivers**: Camada com _frameworks_ e serviços externos usados pela aplicação como bibliotecas de _Web API_, objetos que encapsulam comunicação com banco de dados, sistemas externos, etc. Serve apenas para viabilizar a interação com o mundo exterior, sem lógica de negócios.
 
 No diagrama a seguir, é possível identificar que cada camada se comunica de forma unidirecional, com as camadas externas dependendo das internas. Isso garante que as regras de negócio permaneçam independentes de detalhes técnicos. Para tanto, é necessário seguir os princípios SOLID como o _Single Responsibility Principle_, uma vez que cada objeto e camada tem uma única responsabilidade, e o _Dependency Inversion Principle_, visto que as camadas internas dependem de abstrações e as implementações são fornecidas pelas camadas externas.
+
 ![Arquitetura do Sistema](diagrams/application-architecture.png)
 
 ### Arquitetura do Kubernetes
 
 A arquitetura K8s foi desenvolvida para permitir a escalabilidade do sistema conforme a demanda. O diagrama a seguir representa essa estrutura:
+
 ![Arquitetura K8s](diagrams/k8s-architecture.png)
 
 A aplicação opera dentro de um cluster Kubernetes, onde os _nodes_ seguem a seguinte estrutura:
