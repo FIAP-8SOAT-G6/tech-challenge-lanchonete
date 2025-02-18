@@ -1,18 +1,18 @@
-[submodule "tech-challenge-orders"]
+[submodule "microservices/tech-challenge-orders"]
 	path = microservices/tech-challenge-orders
 	url = https://github.com/FIAP-8SOAT-G6/tech-challenge-orders
-[submodule "tech-challenge-products"]
+[submodule "microservices/tech-challenge-products"]
 	path = microservices/tech-challenge-products
 	url = https://github.com/FIAP-8SOAT-G6/tech-challenge-products
-[submodule "tech-challenge-customer"]
+[submodule "microservices/tech-challenge-customer"]
 	path = microservices/tech-challenge-customer
 	url = https://github.com/FIAP-8SOAT-G6/tech-challenge-customer
-[submodule "tech-challenge-swagger-ui"]
+[submodule "microservices/tech-challenge-swagger-ui"]
 	path = microservices/tech-challenge-swagger-ui
 	url = https://github.com/FIAP-8SOAT-G6/tech-challenge-swagger-ui
-[submodule "k8s-infrastructure"]
+[submodule "microservices/k8s-infrastructure"]
 	path = microservices/k8s-infrastructure
 	url = https://github.com/FIAP-8SOAT-G6/k8s-infrastructure
-[submodule "db-infrastructure"]
+[submodule "microservices/db-infrastructure"]
 	path = microservices/db-infrastructure
 	url = https://github.com/FIAP-8SOAT-G6/db-infrastructure
